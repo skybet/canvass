@@ -1,0 +1,9 @@
+{
+  "name": "canvass",
+  "version": "0.0.1",
+  "description": "Canvass is a framework for implementing something.",
+  "main": "index.js",
+  "repository": "ssh://git@stash.skybet.net:7999/vegas/canvass.git",
+  "author": "Adam Blanchard, Steve Goode",
+  "license": "UNLICENSED"
+}
