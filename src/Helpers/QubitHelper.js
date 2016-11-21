@@ -1,6 +1,5 @@
 class QubitHelper {
-    trackAction(action, callback)
-    {
+    trackAction(action, callback) {
         if (!action) {
             throw new Error("Missing argument: action");
         }
@@ -10,8 +9,7 @@ class QubitHelper {
         }
     }
 
-    triggerExperiment(experiment, callback)
-    {
+    triggerExperiment(experiment, callback) {
         if (!experiment) {
             throw new Error("Missing argument: experiment");
         }
