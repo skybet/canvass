@@ -1,4 +1,4 @@
-import experiment from '../../src/Toolkit/Experiment';
+import Experiment from '../../src/Toolkit/Experiment';
 import sinon from 'sinon';
 import assert from 'assert';
 
@@ -6,13 +6,14 @@ describe('Experiment', () => {
     let testExperiment, testObserver;
 
     beforeEach(() => {
-        testExperiment = new experiment();
+        testExperiment = new Experiment('1');
         testObserver = {
             notify: sinon.spy(),
         };
     });
 
     describe('Observable', () => {
+
         it('should be observable', () => {
             testExperiment.subscribe(testObserver);
 
@@ -61,5 +62,22 @@ describe('Experiment', () => {
 
         });
     });
-});
 
+    describe('Initialization', () => {
+        it('throws an error if id is not an argument of constructor', () => {
+            assert.throws(() => {new Experiment();}, /id/);
+        });
+
+        it('has an id', () => {
+            assert.equal('1', testExperiment.getId());
+        });
+
+        it('has a status by default of INITIALIZING', () => {
+            assert.equal('INITIALIZING', testExperiment.getStatus());
+        });
+
+        it('has a group by default of 0', () => {
+            assert.equal(testExperiment.getGroup(), 0);
+        });
+    });
+});
