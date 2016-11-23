@@ -77,16 +77,28 @@ describe('Experiment', () => {
             assert.throws(() => {new Experiment();}, /id/);
         });
 
-        it('throws an error if variants is not an argument of constructor', () => {
-            assert.throws(() => {new Experiment('1', {});}, /variants/);
+        it('has an id', () => {
+            assert.equal('1', testExperiment.getId());
         });
 
         it('throws an error if triggers is not an argument of constructor', () => {
             assert.throws(() => {new Experiment('1');}, /triggers/);
         });
 
-        it('has an id', () => {
-            assert.equal('1', testExperiment.getId());
+        it('populates the triggers', () => {
+            let experiment = new Experiment('1', ['triggers'], []);
+
+            assert.deepEqual(['triggers'], experiment.triggers);
+        });
+
+        it('throws an error if variants is not an argument of constructor', () => {
+            assert.throws(() => {new Experiment('1', {});}, /variants/);
+        });
+
+        it('populates the variants', () => {
+            let experiment = new Experiment('1', ['triggers'], ['variants']);
+
+            assert.deepEqual(['variants'], experiment.variants);
         });
 
         it('has a status by default of WAITING', () => {
@@ -96,6 +108,7 @@ describe('Experiment', () => {
         it('has a group by default of null', () => {
             assert.equal(testExperiment.getGroup(), null);
         });
+
     });
 
     describe('Trigger', () => {
@@ -198,6 +211,13 @@ describe('Experiment', () => {
             testExperiment.notify();
 
             assert.equal(testExperiment.status, Experiment.Status.TRIGGERED);
+        });
+
+        it('should not change status if already active', () => {
+            testExperiment.status = Experiment.Status.ACTIVE;
+            testExperiment.notify();
+
+            assert.equal(Experiment.Status.ACTIVE, testExperiment.status);
         });
     });
 });

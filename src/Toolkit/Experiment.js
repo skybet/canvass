@@ -22,6 +22,8 @@ class Experiment
         this.id = id;
         this.status = Experiment.Status.WAITING;
         this.group = null;
+        this.triggers = triggers;
+        this.variants = variants;
 
         this.observers = [];
     }
@@ -135,6 +137,9 @@ class Experiment
      * and change status of the experiment if necessary.
      */
     notify() {
+        if (this.status === Experiment.Status.ACTIVE) {
+            return;
+        }
         let fired = true;
         this.triggers.forEach((trigger) => {
             fired &= trigger.hasTriggered();
