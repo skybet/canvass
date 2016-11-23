@@ -89,12 +89,12 @@ describe('Experiment', () => {
             assert.equal('1', testExperiment.getId());
         });
 
-        it('has a status by default of INITIALIZING', () => {
-            assert.equal('INITIALIZING', testExperiment.getStatus());
+        it('has a status by default of WAITING', () => {
+            assert.equal('WAITING', testExperiment.getStatus());
         });
 
-        it('has a group by default of 0', () => {
-            assert.equal(testExperiment.getGroup(), 0);
+        it('has a group by default of null', () => {
+            assert.equal(testExperiment.getGroup(), null);
         });
     });
 
@@ -114,4 +114,90 @@ describe('Experiment', () => {
         });
     });
 
+    describe('GetVariant', () => {
+        it('should return the correct variant for the group', () => {
+            testExperiment.variants = {
+                '0': 'MOCK_CONTROL',
+                '1': 'MOCK_VARIANT_1',
+                'frog': 'MOCK_VARIANT_FROG'
+            };
+
+            testExperiment.group = '0';
+            assert.equal(testExperiment.getVariant(), testExperiment.variants['0']);
+
+            testExperiment.group = '1';
+            assert.equal(testExperiment.getVariant(), testExperiment.variants['1']);
+
+            testExperiment.group = 'frog';
+            assert.equal(testExperiment.getVariant(), testExperiment.variants['frog']);
+        });
+
+        it('should throw an error if there is no variant for the group', () => {
+            testExperiment.variants = {
+                '0': 'MOCK_CONTROL',
+                '1': 'MOCK_VARIANT_1',
+                'frog': 'MOCK_VARIANT_FROG'
+            };
+            testExperiment.group = 'NO_VARIANT';
+
+            assert.throws(() => {testExperiment.getVariant()}, testExperiment.group);
+        });
+    });
+
+    describe('Group', () => {
+        it('should set group correctly', () => {
+            testExperiment.setGroup('frog');
+
+            assert.equal('frog', testExperiment.group);
+        });
+
+        it('should update the status to active', () => {
+            testExperiment.setGroup('frog');
+
+            assert.equal(Experiment.Status.ACTIVE, testExperiment.status);
+        });
+    });
+
+    describe('Status', () => {
+        it('should set a status', () => {
+            testExperiment.setStatus(Experiment.Status.TRIGGERED);
+
+            assert.equal(Experiment.Status.TRIGGERED, testExperiment.status);
+        });
+
+        it('should throw an error if it is not a valid status', () => {
+            let status = 'frog';
+            assert.throws(() => {testExperiment.setStatus(status);}, status);
+        });
+
+        it('should emit when called', () => {
+            let emitSpy = sinon.spy(testExperiment, 'emit');
+            testExperiment.setStatus(Experiment.Status.WAITING);
+
+            sinon.assert.calledOnce(emitSpy);
+            sinon.assert.calledWith(emitSpy, testExperiment.id);
+        });
+    });
+
+    describe('Notify', () => {
+        it('should not update the status to TRIGGERED if any triggers have not fired', () => {
+            testExperiment.triggers = [
+                {hasTriggered: sinon.stub().returns(true)},
+                {hasTriggered: sinon.stub().returns(false)}
+            ];
+            testExperiment.notify();
+
+            assert.notEqual(testExperiment.status, Experiment.Status.TRIGGERED);
+        });
+
+        it('should update the status to TRIGGERED when all triggers have fired', () => {
+            testExperiment.triggers = [
+                {hasTriggered: sinon.stub().returns(true)},
+                {hasTriggered: sinon.stub().returns(true)}
+            ];
+            testExperiment.notify();
+
+            assert.equal(testExperiment.status, Experiment.Status.TRIGGERED);
+        });
+    });
 });
