@@ -66,6 +66,12 @@ describe('Experiment', () => {
         });
     });
 
+    describe('Observer', () => {
+        it('should have a notify method', () => {
+            assert.equal(typeof(testExperiment.notify), 'function');
+        });
+    });
+
     describe('Initialization', () => {
         it('throws an error if id is not an argument of constructor', () => {
             assert.throws(() => {new Experiment();}, /id/);
@@ -91,4 +97,21 @@ describe('Experiment', () => {
             assert.equal(testExperiment.getGroup(), 0);
         });
     });
+
+    describe('Trigger', () => {
+        it('changes the status to TRIGGERED once called', () => {
+            testExperiment.trigger();
+
+            assert.equal(Experiment.Status.TRIGGERED, testExperiment.status);
+        });
+
+        it('should emit once triggered', () => {
+            let emitSpy = sinon.spy(testExperiment, 'emit');
+            testExperiment.trigger();
+
+            sinon.assert.calledOnce(emitSpy);
+            sinon.assert.calledWith(emitSpy, testExperiment.id);
+        });
+    });
+
 });

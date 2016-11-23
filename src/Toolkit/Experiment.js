@@ -1,9 +1,10 @@
-const Status = { // TODO refactor me. enum types?
-    INITIALIZING: 'INITIALIZING'
-};
-
 class Experiment
 {
+    static Status = {
+        INITIALIZING: 'INITIALIZING',
+        TRIGGERED: 'TRIGGERED'
+    };
+
     constructor(id, triggers, variants) {
         if (!id) {
             throw new Error('Missing argument: id');
@@ -18,7 +19,7 @@ class Experiment
         }
 
         this.id = id;
-        this.status = Status.INITIALIZING;
+        this.status = Experiment.Status.INITIALIZING;
         this.group = 0;
 
         this.observers = [];
@@ -42,6 +43,14 @@ class Experiment
         this.observers.forEach((observer) => {
             observer.notify(payload);
         });
+    }
+
+    notify() {
+    }
+
+    trigger() {
+        this.status = Experiment.Status.TRIGGERED;
+        this.emit(this.getId());
     }
 
     getId() {
