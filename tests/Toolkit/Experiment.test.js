@@ -6,7 +6,7 @@ describe('Experiment', () => {
     let testExperiment, testObserver;
 
     beforeEach(() => {
-        testExperiment = new Experiment('1');
+        testExperiment = new Experiment('1', []);
         testObserver = {
             notify: sinon.spy(),
         };
@@ -78,6 +78,10 @@ describe('Experiment', () => {
 
         it('has a group by default of 0', () => {
             assert.equal(testExperiment.getGroup(), 0);
+        });
+
+        it('throws an error if triggers is not an argument of constructor', () => {
+            assert.throws(() => {new Experiment('1');}, /triggers/);
         });
     });
 });
