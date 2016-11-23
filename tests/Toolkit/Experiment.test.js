@@ -7,12 +7,15 @@ describe('Experiment', () => {
 
     beforeEach(() => {
         testExperiment = new Experiment('1', []);
-        testObserver = {
-            notify: sinon.spy(),
-        };
     });
 
     describe('Observable', () => {
+
+        beforeEach(() => {
+            testObserver = {
+                notify: sinon.spy(),
+            };
+        });
 
         it('should be observable', () => {
             testExperiment.subscribe(testObserver);
