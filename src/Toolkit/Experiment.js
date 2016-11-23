@@ -4,13 +4,17 @@ const Status = { // TODO refactor me. enum types?
 
 class Experiment
 {
-    constructor(id, triggers) {
+    constructor(id, triggers, variants) {
         if (!id) {
             throw new Error('Missing argument: id');
         }
 
         if (!triggers) {
             throw new Error('Missing argument: triggers');
+        }
+
+        if (!variants) {
+            throw new Error('Missing argument: variants');
         }
 
         this.id = id;

@@ -6,7 +6,7 @@ describe('Experiment', () => {
     let testExperiment, testObserver;
 
     beforeEach(() => {
-        testExperiment = new Experiment('1', []);
+        testExperiment = new Experiment('1', [], []);
     });
 
     describe('Observable', () => {
@@ -71,6 +71,14 @@ describe('Experiment', () => {
             assert.throws(() => {new Experiment();}, /id/);
         });
 
+        it('throws an error if variants is not an argument of constructor', () => {
+            assert.throws(() => {new Experiment('1', {});}, /variants/);
+        });
+
+        it('throws an error if triggers is not an argument of constructor', () => {
+            assert.throws(() => {new Experiment('1');}, /triggers/);
+        });
+
         it('has an id', () => {
             assert.equal('1', testExperiment.getId());
         });
@@ -81,10 +89,6 @@ describe('Experiment', () => {
 
         it('has a group by default of 0', () => {
             assert.equal(testExperiment.getGroup(), 0);
-        });
-
-        it('throws an error if triggers is not an argument of constructor', () => {
-            assert.throws(() => {new Experiment('1');}, /triggers/);
         });
     });
 });
