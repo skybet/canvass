@@ -16,7 +16,15 @@ class Registry
         return this.register[id];
     }
 
-    notify() {
+    notify(experimentId) {
+        if (!(experimentId in this.register)) {
+            throw new Error('Experiment not in register: ' + experimentId);
+        }
+        this.triggerExperiment(experimentId);
+    }
+
+    triggerExperiment() {
+
     }
 }
 

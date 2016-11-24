@@ -17,12 +17,12 @@ class QubitHelper {
     }
 
     /**
-     * Informs Qubit an experiment has been triggered, and returns the variant
-     * to display to the user.
+     * Informs Qubit an experiment has been triggered, and returns the group
+     * that the user belongs to.
      *
      * @param {string} experiment The name of the experiment in Qubit
      * @param {function} [callback] A method to call after triggering the experiment
-     * @returns {number} Variant
+     * @returns {number} Group
      */
     triggerExperiment(experiment, callback) {
         if (!experiment) {
