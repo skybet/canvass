@@ -15,6 +15,11 @@ class Experiment
             throw new Error('Missing argument: triggers');
         }
 
+        if (!triggers.length) {
+            throw new Error('Must be initialized with at least one trigger');
+        }
+
+
         if (!variants) {
             throw new Error('Missing argument: variants');
         }

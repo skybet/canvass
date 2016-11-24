@@ -6,7 +6,7 @@ describe('Experiment', () => {
     let testExperiment, testObserver;
 
     beforeEach(() => {
-        testExperiment = new Experiment('1', [], []);
+        testExperiment = new Experiment('1', ['trigger'], []);
     });
 
     describe('Observable', () => {
@@ -85,6 +85,10 @@ describe('Experiment', () => {
             assert.throws(() => {new Experiment('1');}, /triggers/);
         });
 
+        it('throws an error if there is not at least one trigger', () => {
+            assert.throws(() => {new Experiment('1', [])}, /trigger/);
+        });
+
         it('populates the triggers', () => {
             let experiment = new Experiment('1', ['triggers'], []);
 
@@ -92,7 +96,7 @@ describe('Experiment', () => {
         });
 
         it('throws an error if variants is not an argument of constructor', () => {
-            assert.throws(() => {new Experiment('1', {});}, /variants/);
+            assert.throws(() => {new Experiment('1', ['trigger']);}, /variants/);
         });
 
         it('populates the variants', () => {
