@@ -5,6 +5,7 @@ class Registry
     }
 
     addExperiment(experiment) {
+        experiment.subscribe(this);
         this.register[experiment.getId()] = experiment;
     }
 
