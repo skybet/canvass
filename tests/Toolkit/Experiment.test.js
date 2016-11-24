@@ -192,25 +192,42 @@ describe('Experiment', () => {
         });
     });
 
-    describe('Notify', () => {
-        it('should not update the status to TRIGGERED if any triggers have not fired', () => {
+    describe('Check Fired', () => {
+        it('should return false when ANY of the triggers have not fires', () => {
             testExperiment.triggers = [
                 {hasTriggered: sinon.stub().returns(true)},
                 {hasTriggered: sinon.stub().returns(false)}
             ];
-            testExperiment.notify();
 
-            assert.notEqual(testExperiment.status, Experiment.Status.TRIGGERED);
+            assert.equal(testExperiment.haveTriggersFired(), false);
         });
 
-        it('should update the status to TRIGGERED when all triggers have fired', () => {
+        it('should return false when ANY of the triggers have not fires', () => {
             testExperiment.triggers = [
                 {hasTriggered: sinon.stub().returns(true)},
                 {hasTriggered: sinon.stub().returns(true)}
             ];
+
+            assert.equal(testExperiment.haveTriggersFired(), true);
+        });
+
+    });
+
+    describe('Notify', () => {
+        it('should not update the status to TRIGGERED if any triggers have not fired', () => {
+            let firedSpy = sinon.stub(testExperiment, 'haveTriggersFired').returns(false);
+            testExperiment.notify();
+
+            assert.notEqual(testExperiment.status, Experiment.Status.TRIGGERED);
+            sinon.assert.calledOnce(firedSpy);
+        });
+
+        it('should update the status to TRIGGERED when all triggers have fired', () => {
+            let firedSpy = sinon.stub(testExperiment, 'haveTriggersFired').returns(true);
             testExperiment.notify();
 
             assert.equal(testExperiment.status, Experiment.Status.TRIGGERED);
+            sinon.assert.calledOnce(firedSpy);
         });
 
         it('should not change status if already active', () => {

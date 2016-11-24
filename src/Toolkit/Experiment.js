@@ -143,14 +143,24 @@ class Experiment
         if (this.status === Experiment.Status.ACTIVE) {
             return;
         }
+
+        if (this.haveTriggersFired()) {
+            this.setStatus(Experiment.Status.TRIGGERED);
+        }
+    }
+
+    /**
+     * Checks if all the triggers have fired
+     *
+     * @return {bool} If all the triggered have fired
+     */
+    haveTriggersFired() {
         let fired = true;
         this.triggers.forEach((trigger) => {
             fired &= trigger.hasTriggered();
         });
 
-        if (fired) {
-            this.setStatus(Experiment.Status.TRIGGERED);
-        }
+        return fired;
     }
 
 }
