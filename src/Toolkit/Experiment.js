@@ -62,7 +62,10 @@ class Experiment
      * @param {string} status The status to set the experiment to
      */
     setStatus(status) {
-        if (Object.values(Experiment.Status).indexOf(status) === -1) {
+        let values = Object.keys(Experiment.Status).map(
+            (key) => Experiment.Status[key]
+        );
+        if (values.indexOf(status) === -1) {
             throw new Error('Tried to set invalid status: ' + status);
         }
         this.status = status;
