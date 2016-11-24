@@ -5,15 +5,26 @@ import assert from 'assert';
 
 describe('Registry', () => {
 
-    let testRegistry;
+    let testRegistry, mockHelper;
 
     beforeEach(() => {
-        testRegistry = new Registry();
+        mockHelper = {
+            triggerExperiment: sinon.spy()
+        };
+        testRegistry = new Registry(mockHelper);
     });
 
     describe('Initialization', () => {
         it('should create an empty register', () => {
             assert.deepEqual(testRegistry.register, []);
+        });
+
+        it('should accept and store a helper', () => {
+            assert.deepEqual(testRegistry.helper, mockHelper);
+        })
+
+        it('should error if helper was not provided', () => {
+            assert.throws(() => {new Registry();}, /helper/);
         });
     });
 
@@ -63,6 +74,7 @@ describe('Registry', () => {
             let experimentIds = ['1', 'FROG', 'SHEEP'];
             let mockExperiment = {
                 getStatus: sinon.stub().returns(Experiment.Status.TRIGGERED),
+                setGroup: sinon.spy(),
             };
             let triggerExperimentSpy = sinon.spy(testRegistry, 'triggerExperiment');
 

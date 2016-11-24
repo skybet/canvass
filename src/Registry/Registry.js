@@ -1,7 +1,11 @@
 class Registry
 {
-    constructor() {
+    constructor(helper) {
+        if (!helper) {
+            throw new Error('Missing argument: helper');
+        }
         this.register = [];
+        this.helper = helper;
     }
 
     addExperiment(experiment) {
@@ -23,8 +27,9 @@ class Registry
         this.triggerExperiment(experimentId);
     }
 
-    triggerExperiment() {
-
+    triggerExperiment(experimentId) {
+        let group = this.helper.triggerExperiment(experimentId);
+        this.register[experimentId].setGroup(group);
     }
 }
 
