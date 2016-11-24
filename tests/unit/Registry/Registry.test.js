@@ -21,7 +21,7 @@ describe('Registry', () => {
 
         it('should accept and store a helper', () => {
             assert.deepEqual(testRegistry.helper, mockHelper);
-        })
+        });
 
         it('should error if helper was not provided', () => {
             assert.throws(() => {new Registry();}, /helper/);
@@ -65,7 +65,7 @@ describe('Registry', () => {
         });
     });
 
-    describe('Oberver', () => {
+    describe('Observer', () => {
         it('should have a notify method', () => {
             assert.equal(typeof testRegistry.notify, 'function')
         });
@@ -87,6 +87,25 @@ describe('Registry', () => {
                 sinon.assert.calledOnce(triggerExperimentSpy);
                 sinon.assert.calledWith(triggerExperimentSpy, experimentId);
             });
+        });
+
+        it('should not trigger experiment if in any other status', () => {
+
+            let triggerExperimentSpy = sinon.spy(testRegistry, 'triggerExperiment');
+
+            [Experiment.Status.WAITING, Experiment.Status.ACTIVE].forEach((status) => {
+                triggerExperimentSpy.reset();
+
+                let mockExperiment = {
+                    getStatus: sinon.stub().returns(status),
+                    setGroup: sinon.spy(),
+                };
+                testRegistry.register['1'] = mockExperiment;
+                testRegistry.notify('1');
+
+                sinon.assert.notCalled(triggerExperimentSpy);
+            });
+
         });
 
         it('should throw an error if the experiment is not registered', () => {

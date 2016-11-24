@@ -1,3 +1,5 @@
+import Experiment from '../Toolkit/Experiment';
+
 class Registry
 {
     /**
@@ -39,8 +41,9 @@ class Registry
     }
 
     /**
-     * Notify the registry that some experiment has updated
-     * 
+     * Notify the registry that some experiment has updated and trigger the experiment
+     * if necessary.
+     *
      * @public
      * @param {string} experimentId ID of the experiment that has changed
      */
@@ -48,7 +51,11 @@ class Registry
         if (!(experimentId in this.register)) {
             throw new Error('Experiment not in register: ' + experimentId);
         }
-        this.triggerExperiment(experimentId);
+
+        let experimentStatus = this.register[experimentId].getStatus();
+        if (experimentStatus === Experiment.Status.TRIGGERED) {
+            this.triggerExperiment(experimentId);
+        }
     }
 
     /**

@@ -1,4 +1,6 @@
 import Registry from '../../../src/Registry/Registry';
+import Experiment from '../../../src/Toolkit/Experiment';
+
 import sinon from 'sinon';
 
 describe('Registry Integration', () => {
@@ -39,6 +41,7 @@ describe('Registry Integration', () => {
                 setGroup: sinon.spy(),
                 subscribe: sinon.spy(),
                 getId: sinon.stub().returns(experimentId),
+                getStatus: sinon.stub().returns(Experiment.Status.TRIGGERED),
             }
 
             registry = new Registry(mockHelper);
