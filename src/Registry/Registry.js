@@ -1,5 +1,9 @@
 class Registry
 {
+    /**
+     * @public
+     * @param {Helper} helper The helper for the registry to use
+     */
     constructor(helper) {
         if (!helper) {
             throw new Error('Missing argument: helper');
@@ -8,11 +12,25 @@ class Registry
         this.helper = helper;
     }
 
+    /**
+     * Adds an experiment to the registry
+     *
+     * @public
+     * @param {Experiment} experiment The experiment to add to the registry
+     */
     addExperiment(experiment) {
         experiment.subscribe(this);
         this.register[experiment.getId()] = experiment;
     }
 
+    /**
+     * Get an experiment from the registry
+     *
+     * @public
+     * @param {string} id ID of the experiment to retrieve
+     * @return {Experiment} The requested experiment
+     * @throws When an experiment can not be found in the registry with the id supplied
+     */
     getExperiment(id) {
         if (!(id in this.register)) {
             throw new Error('Experiment not in register: ' + id);
@@ -20,6 +38,12 @@ class Registry
         return this.register[id];
     }
 
+    /**
+     * Notify the registry that some experiment has updated
+     * 
+     * @public
+     * @param {string} experimentId ID of the experiment that has changed
+     */
     notify(experimentId) {
         if (!(experimentId in this.register)) {
             throw new Error('Experiment not in register: ' + experimentId);
@@ -27,9 +51,15 @@ class Registry
         this.triggerExperiment(experimentId);
     }
 
-    triggerExperiment(experimentId) {
-        let group = this.helper.triggerExperiment(experimentId);
-        this.register[experimentId].setGroup(group);
+    /**
+     * Triggers an experiment in the registry
+     *
+     * @private
+     * @param {string} id ID of the experiment to trigger
+     */
+    triggerExperiment(id) {
+        let group = this.helper.triggerExperiment(id);
+        this.register[id].setGroup(group);
     }
 }
 
