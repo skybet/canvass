@@ -2,7 +2,7 @@ class Experiment
 {
     static Status = {
         WAITING: 'WAITING',
-        TRIGGERED: 'TRIGGERED',
+        ENROLLED: 'ENROLLED',
         ACTIVE: 'ACTIVE'
     };
 
@@ -24,7 +24,6 @@ class Experiment
             throw new Error('Must be initialized with at least one trigger');
         }
 
-
         if (!variants) {
             throw new Error('Missing argument: variants');
         }
@@ -34,17 +33,16 @@ class Experiment
         this.group = null;
         this.triggers = triggers;
         this.variants = variants;
-
         this.observers = [];
     }
 
     /**
-     * Trigger the experiment
+     * Enroll into the experiment
      *
      * @public
      */
-    trigger() {
-        this.setStatus(Experiment.Status.TRIGGERED);
+    enroll() {
+        this.setStatus(Experiment.Status.ENROLLED);
     }
 
     /**
@@ -158,7 +156,7 @@ class Experiment
 
     /**
      * Called when observed objects change. Checks if all triggers have been fired
-     * and change status of the experiment if necessary.
+     * and enroll into the experiment if necessary.
      *
      * @public
      */
@@ -168,7 +166,7 @@ class Experiment
         }
 
         if (this.haveTriggersFired()) {
-            this.trigger();
+            this.enroll();
         }
     }
 
