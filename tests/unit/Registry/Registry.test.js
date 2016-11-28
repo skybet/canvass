@@ -1,5 +1,5 @@
-import Registry from '../../../src/Registry/Registry';
-import Experiment from '../../../src/Toolkit/Experiment';
+import Registry from '~/src/Registry/Registry';
+import Experiment from '~/src/Toolkit/Experiment';
 import sinon from 'sinon';
 import assert from 'assert';
 

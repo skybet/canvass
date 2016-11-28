@@ -1,4 +1,4 @@
-import Experiment from '../../../src/Toolkit/Experiment';
+import Experiment from '~/src/Toolkit/Experiment';
 import sinon from 'sinon';
 import assert from 'assert';
 
