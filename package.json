@@ -20,12 +20,12 @@
     "sinon": "^1.17.6"
   },
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha --compilers js:babel-register tests/**/*.test.js",
-    "test:unit": "node_modules/mocha/bin/mocha --compilers js:babel-register tests/unit/**/*.test.js",
-    "test:integration": "node_modules/mocha/bin/mocha --compilers js:babel-register tests/integration/**/*.test.js",
-    "watch": "node_modules/mocha/bin/mocha --watch --compilers js:babel-register tests/**/*.test.js",
-    "watch:unit": "node_modules/mocha/bin/mocha --watch --compilers js:babel-register tests/unit/**/*.test.js",
-    "watch:integration": "node_modules/mocha/bin/mocha --watch --compilers js:babel-register tests/integration/**/*.test.js",
+    "test": "node_modules/mocha/bin/mocha --recursive --compilers js:babel-register tests",
+    "test:unit": "node_modules/mocha/bin/mocha --recursive --compilers js:babel-register tests/unit",
+    "test:integration": "node_modules/mocha/bin/mocha --recursive --compilers js:babel-register tests/integration",
+    "watch": "node_modules/mocha/bin/mocha --recursive --watch --compilers js:babel-register tests",
+    "watch:unit": "node_modules/mocha/bin/mocha --recursive --watch --compilers js:babel-register tests/unit",
+    "watch:integration": "node_modules/mocha/bin/mocha --recursive --watch --compilers js:babel-register tests/integration",
     "lint": "node_modules/eslint/bin/eslint.js ./src/ ./tests/"
   }
 }

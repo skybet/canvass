@@ -62,7 +62,7 @@ describe('Experiment Integration', () => {
             let mockListener = sinon.spy();
 
             let experiment = new Experiment('1', mockTriggers, []);
-            experiment.status = Experiment.Status.TRIGGERED;
+            experiment.status = 'ENROLLED';
             experiment.on(Experiment.Status.ACTIVE, mockListener);
             experiment.setGroup('TOAD');
 
@@ -70,4 +70,3 @@ describe('Experiment Integration', () => {
         });
     });
 });
-
