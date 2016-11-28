@@ -175,6 +175,6 @@
         "react/jsx-no-duplicate-props": 1, // jsx components must not use the same prop name twice e.g. <App prop="first" prop="second">
         "react/jsx-no-undef": 2, // ensure all React components are required before being used
         "react/no-multi-comp": 1, // only one React component per file
-        "react/wrap-multilines": 1, // multiline JSX must be wrapped in parentheses for readability
+        "react/jsx-wrap-multilines": 1, // multiline JSX must be wrapped in parentheses for readability
     }
 }

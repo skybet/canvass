@@ -1,3 +1,5 @@
+/* eslint no-new: 0 */
+
 import Experiment from '~/src/Toolkit/Experiment';
 import sinon from 'sinon';
 import assert from 'assert';
@@ -68,13 +70,13 @@ describe('Experiment', () => {
 
     describe('Observer', () => {
         it('should have a notify method', () => {
-            assert.equal(typeof(testExperiment.notify), 'function');
+            assert.equal(typeof testExperiment.notify, 'function');
         });
     });
 
     describe('Initialization', () => {
         it('throws an error if id is not an argument of constructor', () => {
-            assert.throws(() => {new Experiment();}, /id/);
+            assert.throws(() => { new Experiment(); }, /id/);
         });
 
         it('has an id', () => {
@@ -82,11 +84,11 @@ describe('Experiment', () => {
         });
 
         it('throws an error if triggers is not an argument of constructor', () => {
-            assert.throws(() => {new Experiment('1');}, /triggers/);
+            assert.throws(() => { new Experiment('1'); }, /triggers/);
         });
 
         it('throws an error if there is not at least one trigger', () => {
-            assert.throws(() => {new Experiment('1', [])}, /trigger/);
+            assert.throws(() => { new Experiment('1', []); }, /trigger/);
         });
 
         it('populates the triggers', () => {
@@ -96,7 +98,7 @@ describe('Experiment', () => {
         });
 
         it('throws an error if variants is not an argument of constructor', () => {
-            assert.throws(() => {new Experiment('1', ['trigger']);}, /variants/);
+            assert.throws(() => { new Experiment('1', ['trigger']); }, /variants/);
         });
 
         it('populates the variants', () => {
@@ -134,9 +136,9 @@ describe('Experiment', () => {
     describe('GetVariant', () => {
         it('should return the correct variant for the group', () => {
             testExperiment.variants = {
-                '0': 'MOCK_CONTROL',
-                '1': 'MOCK_VARIANT_1',
-                'frog': 'MOCK_VARIANT_FROG'
+                0: 'MOCK_CONTROL',
+                1: 'MOCK_VARIANT_1',
+                frog: 'MOCK_VARIANT_FROG',
             };
 
             testExperiment.group = '0';
@@ -146,18 +148,18 @@ describe('Experiment', () => {
             assert.equal(testExperiment.getVariant(), testExperiment.variants['1']);
 
             testExperiment.group = 'frog';
-            assert.equal(testExperiment.getVariant(), testExperiment.variants['frog']);
+            assert.equal(testExperiment.getVariant(), testExperiment.variants.frog);
         });
 
         it('should throw an error if there is no variant for the group', () => {
             testExperiment.variants = {
-                '0': 'MOCK_CONTROL',
-                '1': 'MOCK_VARIANT_1',
-                'frog': 'MOCK_VARIANT_FROG'
+                0: 'MOCK_CONTROL',
+                1: 'MOCK_VARIANT_1',
+                frog: 'MOCK_VARIANT_FROG',
             };
             testExperiment.group = 'NO_VARIANT';
 
-            assert.throws(() => {testExperiment.getVariant()}, testExperiment.group);
+            assert.throws(() => { testExperiment.getVariant(); }, testExperiment.group);
         });
     });
 
@@ -184,7 +186,7 @@ describe('Experiment', () => {
 
         it('should throw an error if it is not a valid status', () => {
             let status = 'frog';
-            assert.throws(() => {testExperiment.setStatus(status);}, status);
+            assert.throws(() => { testExperiment.setStatus(status); }, status);
         });
 
         it('should emit when called', () => {
@@ -200,7 +202,7 @@ describe('Experiment', () => {
         it('should return false when ANY of the triggers have not fired', () => {
             testExperiment.triggers = [
                 {hasTriggered: sinon.stub().returns(true)},
-                {hasTriggered: sinon.stub().returns(false)}
+                {hasTriggered: sinon.stub().returns(false)},
             ];
 
             assert.equal(testExperiment.haveTriggersFired(), false);
@@ -209,7 +211,7 @@ describe('Experiment', () => {
         it('should return false when ANY of the triggers have not fires', () => {
             testExperiment.triggers = [
                 {hasTriggered: sinon.stub().returns(true)},
-                {hasTriggered: sinon.stub().returns(true)}
+                {hasTriggered: sinon.stub().returns(true)},
             ];
 
             assert.equal(testExperiment.haveTriggersFired(), true);

@@ -1,3 +1,5 @@
+/* eslint no-new: 0 */
+
 import Registry from '~/src/Registry/Registry';
 import Experiment from '~/src/Toolkit/Experiment';
 import sinon from 'sinon';
@@ -9,7 +11,7 @@ describe('Registry', () => {
 
     beforeEach(() => {
         mockHelper = {
-            triggerExperiment: sinon.spy()
+            triggerExperiment: sinon.spy(),
         };
         testRegistry = new Registry(mockHelper);
     });
@@ -24,7 +26,8 @@ describe('Registry', () => {
         });
 
         it('should error if helper was not provided', () => {
-            assert.throws(() => {new Registry();}, /helper/);
+
+            assert.throws(() => { new Registry(); }, /helper/);
         });
     });
 
@@ -61,13 +64,13 @@ describe('Registry', () => {
             testRegistry.register['1'] = mockExperiment;
 
             let missingExperiment = 'FROG';
-            assert.throws(() => {testRegistry.getExperiment(missingExperiment);}, missingExperiment);
+            assert.throws(() => { testRegistry.getExperiment(missingExperiment); }, missingExperiment);
         });
     });
 
     describe('Observer', () => {
         it('should have a notify method', () => {
-            assert.equal(typeof testRegistry.notify, 'function')
+            assert.equal(typeof testRegistry.notify, 'function');
         });
 
         it('should trigger the experiment if experiment state is triggered', () => {
@@ -109,7 +112,7 @@ describe('Registry', () => {
         });
 
         it('should throw an error if the experiment is not registered', () => {
-            assert.throws(() => {testRegistry.notify('frog');}, /frog/);
+            assert.throws(() => { testRegistry.notify('frog'); }, /frog/);
         });
 
     });

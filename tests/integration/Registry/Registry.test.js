@@ -26,7 +26,7 @@ describe('Registry Integration', () => {
     it('Should trigger the experiment via the helper and update the experiment', () => {
         let testData = [
             {experimentId: 'frog', group: 'toad'},
-            {experimentId: 'badger', group: 'weasel'}
+            {experimentId: 'badger', group: 'weasel'},
         ];
 
         testData.forEach((data) => {
@@ -42,7 +42,7 @@ describe('Registry Integration', () => {
                 subscribe: sinon.spy(),
                 getId: sinon.stub().returns(experimentId),
                 getStatus: sinon.stub().returns(Experiment.Status.TRIGGERED),
-            }
+            };
 
             registry = new Registry(mockHelper);
             registry.addExperiment(mockExperiment);

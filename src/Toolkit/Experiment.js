@@ -3,7 +3,7 @@ class Experiment
     static Status = {
         WAITING: 'WAITING',
         ENROLLED: 'ENROLLED',
-        ACTIVE: 'ACTIVE'
+        ACTIVE: 'ACTIVE',
     };
 
     /**
@@ -120,7 +120,7 @@ class Experiment
      * @param {mixed} observer The listener of the changes
      */
     subscribe(observer) {
-        if (this.observers.indexOf(observer) == -1) {
+        if (this.observers.indexOf(observer) === -1) {
             this.observers.push(observer);
         }
     }
