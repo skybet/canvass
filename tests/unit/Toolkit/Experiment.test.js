@@ -5,72 +5,25 @@ import sinon from 'sinon';
 import assert from 'assert';
 
 describe('Experiment', () => {
-    let testExperiment, testObserver;
+    let testExperiment;
 
     beforeEach(() => {
         testExperiment = new Experiment('1', ['trigger'], []);
     });
 
-    describe('Observable', () => {
-
-        beforeEach(() => {
-            testObserver = {
-                notify: sinon.spy(),
-            };
+    describe('Attempt Enrollment', () => {
+        it('should an attempt enrollment method', () => {
+            assert.equal(typeof testExperiment.enrollIfTriggered, 'function');
         });
 
-        it('should be observable', () => {
-            testExperiment.subscribe(testObserver);
+        it('should check triggers have fired when not ACTIVE', () => {
+            let enrollSpy = sinon.spy(testExperiment, 'enroll');
+            testExperiment.triggers = [
+                {hasTriggered: sinon.stub().returns(true)},
+            ];
 
-            assert.deepEqual(testExperiment.observers, [testObserver]);
-        });
-
-        it('should not add a subscriber that is already in the subscriber list', () => {
-            testExperiment.observers.push(testObserver);
-            testExperiment.subscribe(testObserver);
-
-            assert.deepEqual(testExperiment.observers, [testObserver]);
-        });
-
-        it('should remove subscribers when asked to unsubscribe', () => {
-            testExperiment.observers.push(testObserver);
-            testExperiment.unsubscribe(testObserver);
-
-            assert.deepEqual(testExperiment.observers, []);
-        });
-
-        it('should not attempt to remove subscribers if they are not registered', () => {
-            testExperiment.observers.push(testObserver);
-            testExperiment.unsubscribe('asdf');
-
-            assert.deepEqual(testExperiment.observers, [testObserver]);
-        });
-
-        it('should notify subscribers when property changes', () => {
-            testExperiment.observers.push(testObserver);
-
-            let testPayload = 'TEST PAYLOAD';
-            testExperiment.emit(testPayload);
-
-            sinon.assert.calledOnce(testObserver.notify);
-            sinon.assert.calledWithExactly(testObserver.notify, testPayload);
-        });
-
-        it('should not notify unsubscribed subscribers', () => {
-            testExperiment.observers.push(testObserver);
-            testExperiment.unsubscribe(testObserver);
-
-            let testPayload = 'TEST PAYLOAD';
-            testExperiment.emit(testPayload);
-
-            sinon.assert.notCalled(testObserver.notify);
-
-        });
-    });
-
-    describe('Observer', () => {
-        it('should have a notify method', () => {
-            assert.equal(typeof testExperiment.notify, 'function');
+            testExperiment.enrollIfTriggered();
+            sinon.assert.calledOnce(enrollSpy);
         });
     });
 
@@ -129,7 +82,7 @@ describe('Experiment', () => {
             testExperiment.enroll();
 
             sinon.assert.calledOnce(emitSpy);
-            sinon.assert.calledWith(emitSpy, testExperiment.id);
+            sinon.assert.calledWith(emitSpy, Experiment.Status.ENROLLED);
         });
     });
 
@@ -194,7 +147,7 @@ describe('Experiment', () => {
             testExperiment.setStatus(Experiment.Status.WAITING);
 
             sinon.assert.calledOnce(emitSpy);
-            sinon.assert.calledWith(emitSpy, testExperiment.id);
+            sinon.assert.calledWith(emitSpy, Experiment.Status.WAITING);
         });
     });
 
@@ -218,29 +171,5 @@ describe('Experiment', () => {
         });
 
     });
-
-    describe('Notify', () => {
-        it('should not update the status to ENROLLED if any triggers have not fired', () => {
-            let firedSpy = sinon.stub(testExperiment, 'haveTriggersFired').returns(false);
-            testExperiment.notify();
-
-            assert.notEqual(testExperiment.status, Experiment.Status.ENROLLED);
-            sinon.assert.calledOnce(firedSpy);
-        });
-
-        it('should update the status to ENROLLED when all triggers have fired', () => {
-            let firedSpy = sinon.stub(testExperiment, 'haveTriggersFired').returns(true);
-            testExperiment.notify();
-
-            assert.equal(testExperiment.status, Experiment.Status.ENROLLED);
-            sinon.assert.calledOnce(firedSpy);
-        });
-
-        it('should not change status if already active', () => {
-            testExperiment.status = Experiment.Status.ACTIVE;
-            testExperiment.notify();
-
-            assert.equal(Experiment.Status.ACTIVE, testExperiment.status);
-        });
-    });
 });
+

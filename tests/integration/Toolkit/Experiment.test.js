@@ -3,25 +3,21 @@ import sinon from 'sinon';
 
 describe('Experiment Integration', () => {
     describe('notify', () => {
-        it('should integration with observers and triggers when notified', () => {
+        it('should integrate with observers and triggers when notified', () => {
             let mockTriggers = [
                 {
                     hasTriggered: sinon.stub().returns(true),
                 },
             ];
 
-            let mockObserver = {
-                notify: sinon.spy(),
-            };
+            let mockListener = sinon.spy();
 
             let experiment = new Experiment('1', mockTriggers, []);
-            experiment.subscribe(mockObserver);
-            experiment.notify();
+            experiment.on(Experiment.Status.ENROLLED, mockListener);
+            experiment.enrollIfTriggered();
 
             sinon.assert.calledOnce(mockTriggers[0].hasTriggered);
-
-            sinon.assert.calledOnce(mockObserver.notify);
-            sinon.assert.calledWith(mockObserver.notify, '1');
+            sinon.assert.calledOnce(mockListener);
         });
 
         it('should not emit a change if not all the triggers have fired', () => {
@@ -31,17 +27,14 @@ describe('Experiment Integration', () => {
                 },
             ];
 
-            let mockObserver = {
-                notify: sinon.spy(),
-            };
+            let mockListener = sinon.spy();
 
             let experiment = new Experiment('1', mockTriggers, []);
-            experiment.subscribe(mockObserver);
-            experiment.notify();
+            experiment.on(Experiment.Status.ENROLLED, mockListener);
+            experiment.enrollIfTriggered();
 
             sinon.assert.calledOnce(mockTriggers[0].hasTriggered);
-
-            sinon.assert.notCalled(mockObserver.notify);
+            sinon.assert.notCalled(mockListener);
         });
 
         it('should not make any calls with the experiment is already active', () => {
@@ -51,33 +44,29 @@ describe('Experiment Integration', () => {
                 },
             ];
 
-            let mockObserver = {
-                notify: sinon.spy(),
-            };
+            let mockListener = sinon.spy();
 
             let experiment = new Experiment('1', mockTriggers, []);
             experiment.status = Experiment.Status.ACTIVE;
-            experiment.subscribe(mockObserver);
-            experiment.notify();
+            experiment.on(Experiment.Status.ENROLLED, mockListener);
+            experiment.enrollIfTriggered();
 
             sinon.assert.notCalled(mockTriggers[0].hasTriggered);
-            sinon.assert.notCalled(mockObserver.notify);
+            sinon.assert.notCalled(mockListener);
         });
     });
 
     describe('setGroup', () => {
-        it('should emit to subscribers when the group is updated', () => {
+        it('should emit to listeners when the group is updated', () => {
             let mockTriggers = ['asdf'];
-            let mockObserver = {
-                notify: sinon.spy(),
-            };
+            let mockListener = sinon.spy();
 
             let experiment = new Experiment('1', mockTriggers, []);
             experiment.status = Experiment.Status.TRIGGERED;
-            experiment.subscribe(mockObserver);
+            experiment.on(Experiment.Status.ACTIVE, mockListener);
             experiment.setGroup('TOAD');
 
-            sinon.assert.calledOnce(mockObserver.notify);
+            sinon.assert.calledOnce(mockListener);
         });
     });
 });
