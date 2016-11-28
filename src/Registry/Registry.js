@@ -48,11 +48,8 @@ class Registry
      * @param {string} experimentId ID of the experiment that has changed
      */
     notify(experimentId) {
-        if (!(experimentId in this.register)) {
-            throw new Error('Experiment not in register: ' + experimentId);
-        }
-
-        let experimentStatus = this.register[experimentId].getStatus();
+        let experiment = this.getExperiment(experimentId);
+        let experimentStatus = experiment.getStatus();
         if (experimentStatus === Experiment.Status.TRIGGERED) {
             this.triggerExperiment(experimentId);
         }
