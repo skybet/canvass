@@ -14,12 +14,12 @@ describe('Registry Integration', () => {
         it('Should subscribe to experiments when they are added', () => {
             let mockExperiment = {
                 getId: sinon.stub().returns('1'),
-                subscribe: sinon.spy(),
+                on: sinon.spy(),
             };
 
             registry.addExperiment(mockExperiment);
-            sinon.assert.calledOnce(mockExperiment.subscribe);
-            sinon.assert.calledWith(mockExperiment.subscribe, registry);
+            sinon.assert.calledOnce(mockExperiment.on);
+            sinon.assert.calledWith(mockExperiment.on, Experiment.Status.TRIGGERED);
         });
     });
 
@@ -39,7 +39,7 @@ describe('Registry Integration', () => {
 
             let mockExperiment = {
                 setGroup: sinon.spy(),
-                subscribe: sinon.spy(),
+                on: sinon.spy(),
                 getId: sinon.stub().returns(experimentId),
                 getStatus: sinon.stub().returns(Experiment.Status.TRIGGERED),
             };
