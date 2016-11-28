@@ -174,12 +174,7 @@ class Experiment
      * @return {bool} If all the triggered have fired
      */
     haveTriggersFired() {
-        let fired = true;
-        this.triggers.forEach((trigger) => {
-            fired &= trigger.hasTriggered();
-        });
-
-        return fired;
+        return this.triggers.every((trigger) => trigger.hasTriggered());
     }
 
 }
