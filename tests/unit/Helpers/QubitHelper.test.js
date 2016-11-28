@@ -1,4 +1,4 @@
-import QubitHelper from '../../src/Helpers/QubitHelper';
+import QubitHelper from '~/src/Helpers/QubitHelper';
 import sinon from 'sinon';
 import assert from 'assert';
 
