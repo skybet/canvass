@@ -1,15 +1,22 @@
 import Manager from '~/src/Manager';
 import sinon from 'sinon';
 import assert from 'assert';
+import EventEmitter from 'events';
 
 describe('Manager', () => {
 
-    let testManager, mockHelper, mockRegistry;
+    let testManager, mockHelper, mockRegistry, mockExperiment;
 
     beforeEach(() => {
-        mockHelper = {};
+        mockHelper = {
+            triggerExperiment: sinon.stub().returns(0),
+        };
+        mockExperiment = {
+            setGroup: sinon.spy(),
+        };
         mockRegistry = {
             addExperiment: sinon.spy(),
+            getExperiment: sinon.stub().returns(mockExperiment),
         };
         testManager = new Manager(mockRegistry, mockHelper);
     });
@@ -25,13 +32,10 @@ describe('Manager', () => {
     });
 
     describe('Experiment', () => {
-        let mockExperiment, activateExperimentSpy;
-
         beforeEach(() => {
-            mockExperiment = {
-                on: sinon.spy(),
-            };
-            activateExperimentSpy = sinon.spy(testManager, 'activateExperiment');
+            mockExperiment = new EventEmitter();
+            mockExperiment.on = sinon.spy(mockExperiment, 'on');
+            mockExperiment.getId = sinon.stub().returns('FROG');
 
             testManager.addExperiment(mockExperiment);
         });
@@ -43,14 +47,31 @@ describe('Manager', () => {
 
         it('should listen for experiment emitting enrolled', () => {
             sinon.assert.calledOnce(mockExperiment.on);
-            sinon.assert.calledWith(mockExperiment.on, 'ENROLLED', activateExperimentSpy);
+            sinon.assert.calledWith(mockExperiment.on, 'ENROLLED');
         });
 
-        
+        it('should call activateExperiment when enrolled emitted', () => {
+            let mockActivateExperiment = sinon.spy(testManager, 'activateExperiment');
+
+            mockExperiment.emit('ENROLLED');
+            sinon.assert.calledOnce(mockActivateExperiment);
+            sinon.assert.calledWith(mockActivateExperiment, 'FROG');
+        });
     });
 
     describe('ActiveExperiment', () => {
-        it('sets the group on the experiment');
+        it('sets the group on the experiment', () => {
+            testManager.activateExperiment('FROG');
+
+            sinon.assert.calledOnce(mockRegistry.getExperiment);
+            sinon.assert.calledWith(mockRegistry.getExperiment, 'FROG');
+
+            sinon.assert.calledOnce(mockHelper.triggerExperiment);
+            sinon.assert.calledWith(mockHelper.triggerExperiment, mockExperiment);
+
+            sinon.assert.calledOnce(mockExperiment.setGroup);
+            sinon.assert.calledWith(mockExperiment.setGroup, 0);
+        });
     });
 
 });
