@@ -3,12 +3,14 @@
 import Experiment from '~/src/Experiment';
 import sinon from 'sinon';
 import assert from 'assert';
+import EventEmitter from 'events';
 
 describe('Experiment', () => {
-    let testExperiment;
+    let testExperiment, mockTrigger;
 
     beforeEach(() => {
-        testExperiment = new Experiment('1', ['trigger'], []);
+        mockTrigger = {on: sinon.spy()};
+        testExperiment = new Experiment('1', [mockTrigger], []);
     });
 
     describe('Attempt Enrollment', () => {
@@ -45,17 +47,17 @@ describe('Experiment', () => {
         });
 
         it('populates the triggers', () => {
-            let experiment = new Experiment('1', ['triggers'], []);
+            let experiment = new Experiment('1', [mockTrigger], []);
 
-            assert.deepEqual(['triggers'], experiment.triggers);
+            assert.deepEqual([mockTrigger], experiment.triggers);
         });
 
         it('throws an error if variants is not an argument of constructor', () => {
-            assert.throws(() => { new Experiment('1', ['trigger']); }, /variants/);
+            assert.throws(() => { new Experiment('1', [mockTrigger]); }, /variants/);
         });
 
         it('populates the variants', () => {
-            let experiment = new Experiment('1', ['triggers'], ['variants']);
+            let experiment = new Experiment('1', [mockTrigger], ['variants']);
 
             assert.deepEqual(['variants'], experiment.variants);
         });
@@ -151,6 +153,31 @@ describe('Experiment', () => {
         });
     });
 
+    describe('Listen to triggers', () => {
+        let mockTriggers;
+
+        beforeEach(() => {
+            mockTrigger = new EventEmitter();
+            mockTrigger.on = sinon.spy(mockTrigger, 'on');
+            mockTrigger.hasTriggered = sinon.stub().returns(true);
+            mockTriggers = [mockTrigger];
+
+            testExperiment = new Experiment('FROG', mockTriggers, []);
+        });
+
+        it('should listen for triggers firing', () => {
+            sinon.assert.calledOnce(mockTriggers[0].on);
+            sinon.assert.calledWith(mockTriggers[0].on, 'TRIGGERED');
+        });
+
+        it('should attempt enrollment if a trigger fires', () => {
+            let spyEnrollIfTriggered = sinon.spy(testExperiment, 'enrollIfTriggered');
+            mockTriggers[0].emit('TRIGGERED');
+
+            sinon.assert.calledOnce(spyEnrollIfTriggered);
+        });
+    });
+
     describe('Check Fired', () => {
         it('should return false when ANY of the triggers have not fired', () => {
             testExperiment.triggers = [
@@ -169,7 +196,6 @@ describe('Experiment', () => {
 
             assert.equal(testExperiment.haveTriggersFired(), true);
         });
-
     });
 });
 

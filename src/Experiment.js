@@ -36,6 +36,8 @@ class Experiment extends EventEmitter
         this.group = null;
         this.triggers = triggers;
         this.variants = variants;
+
+        triggers.forEach((trigger) => trigger.on('TRIGGERED', () => this.enrollIfTriggered()));
     }
 
     /**
