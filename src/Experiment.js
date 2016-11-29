@@ -1,9 +1,11 @@
-class Experiment
+import EventEmitter from 'events';
+
+class Experiment extends EventEmitter
 {
     static Status = {
         WAITING: 'WAITING',
         ENROLLED: 'ENROLLED',
-        ACTIVE: 'ACTIVE'
+        ACTIVE: 'ACTIVE',
     };
 
     /**
@@ -12,6 +14,7 @@ class Experiment
      * @param {Trigger[]} triggers Array of experiment triggers
      */
     constructor(id, triggers, variants) {
+        super();
         if (!id) {
             throw new Error('Missing argument: id');
         }
@@ -33,7 +36,8 @@ class Experiment
         this.group = null;
         this.triggers = triggers;
         this.variants = variants;
-        this.observers = [];
+
+        triggers.forEach((trigger) => trigger.on('TRIGGERED', () => this.enrollIfTriggered()));
     }
 
     /**
@@ -79,7 +83,7 @@ class Experiment
             throw new Error('Tried to set invalid status: ' + status);
         }
         this.status = status;
-        this.emit(this.getId());
+        this.emit(this.status);
     }
 
     /**
@@ -114,50 +118,11 @@ class Experiment
     }
 
     /**
-     * Subscribe to listen to changes
-     *
-     * @public
-     * @param {mixed} observer The listener of the changes
-     */
-    subscribe(observer) {
-        if (this.observers.indexOf(observer) == -1) {
-            this.observers.push(observer);
-        }
-    }
-
-    /**
-     * Unsubscribe to stop listening for changes
-     *
-     * @public
-     * @param {mixed} observer The listener to remove
-     */
-    unsubscribe(observer) {
-        let position = this.observers.indexOf(observer);
-
-        if (position > -1) {
-            this.observers.splice(position, 1);
-        }
-    }
-
-    /**
-     * Notify all observers of a change
-     *
-     * @public
-     * @param {mixed} payload The payload to pass to the observers
-     */
-    emit(payload) {
-        this.observers.forEach((observer) => {
-            observer.notify(payload);
-        });
-    }
-
-    /**
-     * Called when observed objects change. Checks if all triggers have been fired
-     * and enroll into the experiment if necessary.
+     * Checks if all triggers have been fired and enroll into the experiment if necessary.
      *
      * @public
      */
-    notify() {
+    enrollIfTriggered() {
         if (this.status === Experiment.Status.ACTIVE) {
             return;
         }

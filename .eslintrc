@@ -1,0 +1,180 @@
+{
+    "parser" : "babel-eslint",
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true
+    },
+    "globals": {
+        "describe"   : true,
+        "it"         : true,
+        "before"     : true,
+        "beforeEach" : true,
+        "after"      : true,
+        "afterEach"  : true,
+        "sinon"      : true,
+        "assert"     : true,
+        "expect"     : true,
+        "context"    : true
+    },
+    "plugins": [
+        "react"
+    ],
+    "ecmaFeatures": {
+        "modules": true,
+        "jsx": true
+    },
+    "parserOptions": {
+        "ecmaFeatures": {
+            "modules": true,
+            "jsx": true
+        },
+    },
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "rules": {
+        // Rules are organised in sections according to the ESLint Rules page http://eslint.org/docs/rules/
+
+        // Possible Errors
+        "comma-dangle": [1, "always-multiline"], // multi-line array definitions should have a trailing comma, for better git diffs
+        "no-cond-assign": 1, // disallow variable assignment in conditional statements e.g. inside if (...)
+        "no-console": 1, // disallow console.{log,error,warn} etc. This rule should be disabled inside our log module
+        "no-constant-condition": 2, // disallow constants inside if conditions, e.g. "if (true)"
+        "no-control-regex": 2, // disallow invisible control chars inside regexes
+        "no-debugger": 2, // disallow the "debugger" keyword
+        "no-dupe-args": 2, // disallow duplicate function args e.g. function (a, b, a) {
+        "no-dupe-keys": 2, // disallow duplicate keys in objects e.g. {a: 1, b: 1, a: 1}
+        "no-duplicate-case": 2, // disallow two "case" statements inside a switch with the same condition
+        "no-empty-character-class": 2, // disallow regexes containing empty character class (i.e. /abc[]/)
+        "no-empty": 2, // disallow empty block statements e.g. if (something) {}
+        "no-ex-assign": 2, // disallow assigning to the exception variable inside a catch block
+        "no-extra-boolean-cast": 2, // disallow using !! to coerce to boolean when you're already in a boolean context
+        "no-extra-semi": 2, // disallow unnecessary semicolons e.g. after the close curly brace in an if statement
+        "no-func-assign": 2, // disallow overwriting a declared function using a variable declaration
+        "no-inner-declarations": 2, // disallow declaring functions inside block statements such as an if statement
+        "no-invalid-regexp": 2, // disallow invalid regexes
+        "no-irregular-whitespace": 2, // disallow weird whitespace chars where you should use a standard space char
+        "no-negated-in-lhs": 2, // disallow this common error: if (!a in b) when what was intended was if (!(a in b))
+        "no-obj-calls": 2, // disallow use of Math and JSON as constructors, because they're not
+        "no-regex-spaces": 1, // warn when using multiple contiguous spaces in a regex, as it can look unclear. Use " {2}" instead
+        "no-sparse-arrays": 2, // disallow arrays with missing items e.g. ["a",, "b"]
+        "no-unreachable": 2, // disallow unreachable code, e.g. after a return statement
+        "use-isnan": 2, // disallow comparisons to NaN, because they'll always be false
+        "valid-typeof": 2, // limit comparisons against the output of the "typeof" operator to undefined, object, boolean, number, string, function
+        "no-unexpected-multiline": 2, // disallow statements that look like they should be separate lines, but are treated as one due to missing semicolon
+
+        // Best Practices
+        "block-scoped-var": 2, // disallow using a variable defined inside a block, outside the block
+        "consistent-return": 2, // enforce either all return statements returning a value, or all return statements not returning a value
+        "curly": [2, "multi-line"], // require curly braces for all block statements, except single line ones
+        "default-case": 1, // require a "default" case in switch statements, even if it's empty. Makes the behaviour explicit
+        "dot-notation": [1, {"allowPattern": "_"}], // prefer using someObj.property over someObj['property'], except where prop contains an underscore
+        "dot-location": [1, "property"], // when splitting code over multiple lines, format like this: object\n.property() rather than object.\nproperty
+        "eqeqeq": [2, "smart"], // require === and !== rather than == and != in most cases
+        "guard-for-in": 1, // require .hasOwnProperty check inside for..in loop
+        "no-alert": 2, // disallow alert, confirm, prompt
+        "no-caller": 2, // disallow arguments.caller and arguments.callee. Banned in ES5 strict mode anyway, but let's keep it strict
+        "no-else-return": 1, // disallow return statements in else blocks, when they could just go after the if statement
+        "no-eq-null": 2, // disallow comparisons against null using == and != operators
+        "no-eval": 2, // ban eval. there's no good reason to use it
+        "no-extend-native": 2, // don't add functionality to native objects such as Object or Array
+        "no-extra-bind": 2, // don't use .bind for functions that don't reference "this"
+        "no-fallthrough": 1, // disallow case statement fallthrough in certain cases (see docs)
+        "no-floating-decimal": 2, // disallow .6 instead of 0.6, it looks bad
+        "no-implicit-coercion": 1, // disallow coercion using "tricks" when you could just use Boolean(someVar) or Number(someVar) instead
+        "no-implied-eval": 2, // disallow eval-like statements such as putting code as a string in the first param of setTimeout
+        "no-invalid-this": 2, // disallow using "this" outside of contexts when it makes sense. Banned most of the time when using strict mode anyway
+        "no-iterator": 2, // disallow the "__iterator__" property, which is a SpiderMonkey proprietary extension to JS and is now obsolete
+        "no-labels": 1, // we should probably avoid all usages of labels
+        "no-lone-blocks": 2, // disallow unnecessary blocks created using { and }. If we switch ES6 features on we could potentially disable this rule
+        "no-loop-func": 1, // disallow creating functions in loops as they are often problematic (see docs)
+        "no-multi-spaces": [2, {"exceptions": {"Property": false}}], // disallow multiple contiguous spaces, which don't improve readability
+        "no-multi-str": 2, // disallow multiline strings created using a \ char at the end of the line
+        "no-native-reassign": 2, // disallow assigning stuff to native objects e.g. String = 6;
+        "no-new-func": 2, // disallow using "new Function" to create functions - hard to read and debug
+        "no-new-wrappers": 2, // just read the docs on this one... too hard to summarise in one line
+        "no-new": 2, // disallow using "new Something()" when not storing it in a variable
+        "no-octal-escape": 2, // disallow using octal escape codes. use Unicode instead
+        "no-octal": 2, // disallow numbers with a leading 0 which are interpreted as octal. Deprecated in ES5
+        "no-param-reassign": 2, // don't allow reassigning function params
+        "no-proto": 2, // disallow __proto__ property - deprecated as of ES3.1
+        "no-redeclare": [1, {"builtinGlobals": true}], // disallow redeclaring a variable with the same name
+        "no-return-assign": 2, // disallow assigning a variable inside a return statement, which is just confusing
+        "no-script-url": 2, // disallow URLs that execute JS by starting with "javascript:"
+        "no-self-compare": 1, // disallow self compare i.e. if (x === x)
+        "no-sequences": 1, // disallow using comma to execute multiple statements on one line
+        "no-throw-literal": 2, // disallow throwing anything except objects inheriting from Error
+        "no-unused-expressions": 2, // disallow expressions that evaluate, but aren't used
+        "no-useless-call": 1, // disallow unnecessary ".call" and ".apply" calls
+        "no-void": 2, // disallow usage of the "void" operator
+        "no-with": 2, // disallow the "with" operator. It can't be used in strict mode anyway
+        "radix": 2, // ensure radix is used in parseInt
+        "wrap-iife": [2, "inside"], // ensure IIFEs are wrapped in parentheses to make them clear
+        "yoda": 2, // disallow yoda conditions (e.g. "if (5 === someVar)") - they're not needed since we lint for = symbols inside if statements
+
+        // Strict mode
+        "strict": [2, "global"], // force strict mode
+
+        // Variables
+        "no-catch-shadow": 2, // disallow overwriting err in outer block scope in this situation: "catch (err)"
+        "no-delete-var": 2, // disallow deleting variables, which you can't actually do. Doesn't ban deleting object properties
+        "no-label-var": 2, // disallow labels with the same name as variables
+        "no-shadow-restricted-names": 2, // disallow shadowing reserved variable names such as undefined and Infinity
+        "no-shadow": 2, // disallow shadowing a variable already defined in its containing scope
+        "no-undef-init": 2, // disallow initialising a variable to "undefined", because uninitialised variables are "undefined" anyway
+        "no-undef": 2, // require declaring variables before using them
+        "no-unused-vars": 2, // disallow unused variables
+        "no-use-before-define": 2, // disallow using a variable before it's defined (it'll work because of hoisting, but it's bad style)
+
+        // Node.js
+        "callback-return": [1, ["callback", "cb", "next", "done"]], // require a return immediately after calling a callback
+        "handle-callback-err": 1, // warn if you ignore an "err" parameter passed into a function
+        "no-mixed-requires": 1, // warn if you include variable "require" declarations in the same statement as non-require declarations
+        "no-new-require": 1, // avoid confusing usage of "new" with "require"
+
+        // Stylistic Issues
+        "array-bracket-spacing": 1, // brackets should look like [1, 2, 3] rather than [ 1, 2 ]
+        "block-spacing": 1, // single-line blocks should have spaces inside their braces
+        "brace-style": [1, "1tbs", {"allowSingleLine": true}], // open brace should be on same line, close brace on its own line
+        "camelcase": [1, {"properties": "always"}], // all vars should be named camelcase, and object properties should also be camelcase
+        "comma-spacing": 1, // spaces around commas should look like this: [abc, def, efg]
+        "comma-style": 1, // when listing items on multiple lines, commas should be at the end of the line, not at the start of the next line
+        "computed-property-spacing": [1, "never"], // no spaces inside array/object property access e.g. obj[foo] rather than obj[ foo ]
+        "consistent-this": [1, "self"], // when capturing "this" outside a block, the variable should be named "self"
+        "eol-last": 1, // files should have a newline char at the end
+        // "func-names": 1, // anonymous functions should have names to aid debugging stack traces
+        "indent": [2, 4, {"SwitchCase": 1}], // indentation should be 4 spaces. case statements inside a switch should be indented
+        "key-spacing": 1, // object properties should have no spaces before the colon, and one after, i.e. {prop: value}
+        "max-nested-callbacks": [1, 5], // limit callback nesting to 5 deep
+        "new-cap": 1, // constructors should have a capital first letter
+        "new-parens": 2, // constructors with no params must be called with empty parens () even though they can technically be omitted
+        "no-array-constructor": 2, // don't use the array constructor, just use the array literal i.e. []
+        "no-lonely-if": 1, // an "if" statement may not be the only statement inside an else block
+        "no-mixed-spaces-and-tabs": 2, // mixing spaces and tabs is heresy
+        "no-multiple-empty-lines": [1, {"max": 2}], // maximum of 2 consecutive empty lines
+        "no-nested-ternary": 1, // nested ternaries are confusing to read
+        "no-new-object": 1, // don't use new Object(), just use {}
+        "no-spaced-func": 2, // don't include spaces between function names and parens
+        "no-trailing-spaces": [2, {"skipBlankLines": true}], // lines should not have any trailing spaces, apart from blank lines
+        "no-underscore-dangle": 1, // don't allow dangling underscores in variable names. private object members should be defined another way
+        "no-unneeded-ternary": 1, // don't allow (someCondition) ? true : false
+        "object-curly-spacing": [1, "never"], // no spaces inside object literal curly braces e.g. {prop: "value"} rather than { prop: "value" }
+        "one-var": [1, {"initialized": "never"}], // only one initialized variable per declaration. improves git diffs when adding new declarations
+        "operator-linebreak": 1, // if splitting an expression over multiple lines, the operator should be at the end of the line, not the start
+        "quote-props": [1, "consistent-as-needed"], // it's easiest to read the docs about this one
+        "quotes": [1, "single", "avoid-escape"], // strings should use single quotes unless using double quotes avoids the need to escape single quotes
+        "semi-spacing": 1, // semicolons should have no space before, and one space after
+        "semi": [2, "always"], // lines should always have a semicolon at the end where valid
+        "space-before-blocks": 1, // require a space before opening curly brace in a block, e.g. "if (true) {"
+        "space-before-function-paren": [1, {"anonymous": "always", "named": "never"}], // there must be no space between a function name and the parens e.g. "function what(p1, p2)"
+        "space-in-parens": 1, // parens shouldn't have spaces inside, i.e. (1 + 2) not like ( 1 + 2 )
+        "space-unary-ops": 1, // require spaces after "typeof", "new", "delete", and unary operators (++) shouldn't be followed by whitespace
+        "spaced-comment": [1, "always", {"markers": ["*"]}], // require a space char after // or /*
+
+        // React stuff
+        "react/prop-types": 2, // must not use a prop if it's not defined in propTypes
+        "react/jsx-no-duplicate-props": 1, // jsx components must not use the same prop name twice e.g. <App prop="first" prop="second">
+        "react/jsx-no-undef": 2, // ensure all React components are required before being used
+        "react/no-multi-comp": 1, // only one React component per file
+        "react/jsx-wrap-multilines": 1, // multiline JSX must be wrapped in parentheses for readability
+    }
+}
