@@ -15,7 +15,7 @@ describe('State Engine (Experiment, Registry, Manager)', () => {
         };
 
         let mockTrigger = new EventEmitter();
-        mockTrigger.hasTriggered = sinon.stub().returns(true);
+        mockTrigger.isTriggered = sinon.stub().returns(true);
         mockTriggers = [mockTrigger];
 
         mockHelper = {
