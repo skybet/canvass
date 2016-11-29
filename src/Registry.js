@@ -14,7 +14,6 @@ class Registry
      * @param {Experiment} experiment The experiment to add to the registry
      */
     addExperiment(experiment) {
-        // experiment.on(Experiment.Status.TRIGGERED, () => this.notify(experiment.getId()));
         this.register[experiment.getId()] = experiment;
     }
 
