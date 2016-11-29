@@ -1,4 +1,4 @@
-import Experiment from './Toolkit/Experiment';
+import Experiment from './Experiment';
 
 class Manager
 {

@@ -1,4 +1,4 @@
-import Experiment from '../../../src/Toolkit/Experiment';
+import Experiment from '~/src/Experiment';
 import sinon from 'sinon';
 
 describe('Experiment Integration', () => {

@@ -1,6 +1,6 @@
 /* eslint no-new: 0 */
 
-import Experiment from '~/src/Toolkit/Experiment';
+import Experiment from '~/src/Experiment';
 import sinon from 'sinon';
 import assert from 'assert';
 
