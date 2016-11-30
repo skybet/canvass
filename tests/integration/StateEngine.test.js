@@ -39,10 +39,15 @@ describe('State Engine (Experiment, Registry, Manager)', () => {
     });
 
     it('should return the correct variant when activated', () => {
+        let mockActiveListener = sinon.spy();
+        experiment.on('ACTIVE', mockActiveListener);
+
         mockTriggers[0].emit('TRIGGERED');
         assert.equal(experiment.status, Experiment.Status.ACTIVE);
         assert.equal(experiment.group, 'tadpole');
         assert.equal(experiment.getVariant(), mockVariants.tadpole);
+
+        sinon.assert.calledOnce(mockActiveListener);
     });
 });
 
