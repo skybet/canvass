@@ -2,11 +2,10 @@ import EventEmitter from 'events';
 import sinon from 'sinon';
 import assert from 'assert';
 import Experiment from '~/src/Experiment';
-import Registry from '~/src/Registry';
 import Manager from '~/src/Manager';
 
 describe('State Engine (Experiment, Registry, Manager)', () => {
-    let registry, manager, experiment, mockHelper, mockTriggers, mockVariants;
+    let manager, experiment, mockHelper, mockTriggers, mockVariants;
 
     beforeEach(() => {
         mockVariants = {
@@ -23,14 +22,18 @@ describe('State Engine (Experiment, Registry, Manager)', () => {
         };
 
         experiment = new Experiment('POTATO', mockTriggers, mockVariants);
-        registry = new Registry();
-        manager = new Manager(registry, mockHelper);
+        manager = Manager;
+        manager.setHelper(mockHelper);
 
         manager.addExperiment(experiment);
     });
 
+    afterEach(() => {
+        manager.removeExperiment('POTATO');
+    });
+
     it('should initialise with the correct state', () => {
-        assert.deepEqual(registry.register, {POTATO: experiment});
+        assert.deepEqual(manager.register, {POTATO: experiment});
         assert.equal(experiment.status, Experiment.Status.WAITING);
         assert.equal(experiment.group, undefined);
     });

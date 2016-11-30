@@ -4,12 +4,21 @@ class Manager
 {
     /**
      * @public
-     * @param {Registry} registry The experiment registry to use
-     * @param {Helper} helper The helper to use to communicate with the experiment reporting system
      */
-    constructor(registry, helper) {
-        this.registry = registry;
+    constructor() {
+        this.register = {};
+    }
+
+    /**
+     * Sets the helper to use to communicate with the external experiment reporting tool
+     *
+     * @public
+     * @param {Helper} helper The helper to use to communicate with the experiment reporting system
+     * @return {Manager}
+     */
+    setHelper(helper) {
         this.helper = helper;
+        return this;
     }
 
     /**
@@ -19,7 +28,7 @@ class Manager
      * @param {Experiment} experiment The experiment to be added
      */
     addExperiment(experiment) {
-        this.registry.addExperiment(experiment);
+        this.register[experiment.getId()] = experiment;
         experiment.on(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
     }
 
@@ -31,12 +40,39 @@ class Manager
      * @param {string} experimentId The unique ID for the experiment being activated
      */
     activateExperiment(experimentId) {
-        let experiment = this.registry.getExperiment(experimentId);
+        let experiment = this.getExperiment(experimentId);
         let group = this.helper.triggerExperiment(experiment);
 
         experiment.setGroup(group);
     }
 
+    /**
+     * Get an experiment from the register
+     *
+     * @public
+     * @param {string} id ID of the experiment to retrieve
+     * @return {Experiment} The requested experiment
+     * @throws When an experiment can not be found in the registry with the id supplied
+     */
+    getExperiment(id) {
+        if (!(id in this.register)) {
+            throw new Error('Experiment not in register: ' + id);
+        }
+        return this.register[id];
+    }
+
+    /**
+     * Removes an experiment from the register
+     *
+     * @public
+     * @param {string} id ID of the experiment to remove
+     */
+    removeExperiment(id) {
+        let experiment = this.getExperiment(id);
+        experiment.removeListener(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
+        delete this.register[experiment.getId()];
+    }
+
 }
 
-export default Manager;
+export default new Manager();
