@@ -21,7 +21,7 @@ describe('Experiment', () => {
         it('should check triggers have fired when not ACTIVE', () => {
             let enrollSpy = sinon.spy(testExperiment, 'enroll');
             testExperiment.triggers = [
-                {hasTriggered: sinon.stub().returns(true)},
+                {isTriggered: sinon.stub().returns(true)},
             ];
 
             testExperiment.enrollIfTriggered();
@@ -159,7 +159,7 @@ describe('Experiment', () => {
         beforeEach(() => {
             mockTrigger = new EventEmitter();
             mockTrigger.on = sinon.spy(mockTrigger, 'on');
-            mockTrigger.hasTriggered = sinon.stub().returns(true);
+            mockTrigger.isTriggered = sinon.stub().returns(true);
             mockTriggers = [mockTrigger];
 
             testExperiment = new Experiment('FROG', mockTriggers, []);
@@ -181,8 +181,8 @@ describe('Experiment', () => {
     describe('Check Fired', () => {
         it('should return false when ANY of the triggers have not fired', () => {
             testExperiment.triggers = [
-                {hasTriggered: sinon.stub().returns(true)},
-                {hasTriggered: sinon.stub().returns(false)},
+                {isTriggered: sinon.stub().returns(true)},
+                {isTriggered: sinon.stub().returns(false)},
             ];
 
             assert.equal(testExperiment.haveTriggersFired(), false);
@@ -190,8 +190,8 @@ describe('Experiment', () => {
 
         it('should return false when ANY of the triggers have not fires', () => {
             testExperiment.triggers = [
-                {hasTriggered: sinon.stub().returns(true)},
-                {hasTriggered: sinon.stub().returns(true)},
+                {isTriggered: sinon.stub().returns(true)},
+                {isTriggered: sinon.stub().returns(true)},
             ];
 
             assert.equal(testExperiment.haveTriggersFired(), true);

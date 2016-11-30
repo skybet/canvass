@@ -139,7 +139,7 @@ class Experiment extends EventEmitter
      * @return {bool} If all the triggered have fired
      */
     haveTriggersFired() {
-        return this.triggers.every((trigger) => trigger.hasTriggered());
+        return this.triggers.every((trigger) => trigger.isTriggered());
     }
 
 }
