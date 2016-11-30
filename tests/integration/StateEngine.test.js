@@ -5,7 +5,7 @@ import Experiment from '~/src/Experiment';
 import Manager from '~/src/Manager';
 
 describe('State Engine (Experiment, Registry, Manager)', () => {
-    let manager, experiment, mockHelper, mockTriggers, mockVariants;
+    let experiment, mockHelper, mockTriggers, mockVariants;
 
     beforeEach(() => {
         mockVariants = {
@@ -22,18 +22,17 @@ describe('State Engine (Experiment, Registry, Manager)', () => {
         };
 
         experiment = new Experiment('POTATO', mockTriggers, mockVariants);
-        manager = Manager;
-        manager.setHelper(mockHelper);
+        Manager.setHelper(mockHelper);
 
-        manager.addExperiment(experiment);
+        Manager.addExperiment(experiment);
     });
 
     afterEach(() => {
-        manager.removeExperiment('POTATO');
+        Manager.removeExperiment('POTATO');
     });
 
     it('should initialise with the correct state', () => {
-        assert.deepEqual(manager.register, {POTATO: experiment});
+        assert.deepEqual(Manager.register, {POTATO: experiment});
         assert.equal(experiment.status, Experiment.Status.WAITING);
         assert.equal(experiment.group, undefined);
     });
