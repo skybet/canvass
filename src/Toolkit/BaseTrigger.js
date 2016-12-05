@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import EventEmitter from '~/src/Helpers/EventEmitter';
 
 class BaseTrigger extends EventEmitter
 {
