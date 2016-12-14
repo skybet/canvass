@@ -1,11 +1,13 @@
 import Experiment from './Experiment';
+import EventEmitter from './Helpers/EventEmitter';
 
-class Manager
+class Manager extends EventEmitter
 {
     /**
      * @public
      */
     constructor() {
+        super();
         this.register = {};
     }
 
@@ -30,6 +32,8 @@ class Manager
     addExperiment(experiment) {
         this.register[experiment.getId()] = experiment;
         experiment.on(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
+        experiment.on(Experiment.Status.ACTIVE, () => this.emit(experiment.getId() + '.ACTIVE'));
+        experiment.start();
     }
 
     /**
