@@ -33,7 +33,7 @@ class Manager extends EventEmitter
         this.register[experiment.getId()] = experiment;
         experiment.on(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
         experiment.on(Experiment.Status.ACTIVE, () => this.emit(experiment.getId() + '.ACTIVE'));
-        experiment.start();
+        experiment.setupTriggers();
     }
 
     /**

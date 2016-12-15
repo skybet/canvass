@@ -17,6 +17,7 @@ describe('Manager', () => {
             setGroup: sinon.spy(),
             getId: sinon.stub().returns('FROG'),
             removeListener: sinon.spy(),
+            setupTriggers: sinon.spy(),
         };
         testManager = Manager;
         testManager.setHelper(mockHelper);
@@ -35,6 +36,7 @@ describe('Manager', () => {
             mockExperiment.removeListener = sinon.spy(mockExperiment, 'removeListener');
             mockExperiment.setGroup = sinon.spy();
             mockExperiment.getId = sinon.stub().returns('FROG');
+            mockExperiment.setupTriggers = sinon.spy();
 
             testManager.addExperiment(mockExperiment);
         });
@@ -57,7 +59,7 @@ describe('Manager', () => {
         });
 
         it('should listen for experiment emitting enrolled', () => {
-            sinon.assert.calledOnce(mockExperiment.on);
+            sinon.assert.called(mockExperiment.on);
             sinon.assert.calledWith(mockExperiment.on, 'ENROLLED');
         });
 

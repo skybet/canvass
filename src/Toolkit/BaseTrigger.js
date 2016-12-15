@@ -2,10 +2,17 @@ import EventEmitter from '~/src/Helpers/EventEmitter';
 
 class BaseTrigger extends EventEmitter
 {
-    checkTrigger() {
+    check() {
         if (this.isTriggered()) {
             this.emit('TRIGGERED');
+            return true;
         }
+
+        return false;
+    }
+
+    setup() {
+        throw new Error('This method must be overridden: BaseTrigger.setup');
     }
 
     isTriggered() {
@@ -14,4 +21,3 @@ class BaseTrigger extends EventEmitter
 }
 
 export default BaseTrigger;
-

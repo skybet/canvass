@@ -38,10 +38,10 @@ class Experiment extends EventEmitter
         this.variants = variants;
     }
 
-    start() {
+    setupTriggers() {
         this.triggers.forEach((trigger) => {
-            trigger.on('TRIGGERED', () => {this.enrollIfTriggered(); console.debug('TRIGGERED');});
-            trigger.start();
+            trigger.on('TRIGGERED', () => this.enrollIfTriggered());
+            trigger.setup();
         });
     }
 

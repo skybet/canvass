@@ -159,10 +159,12 @@ describe('Experiment', () => {
         beforeEach(() => {
             mockTrigger = new EventEmitter();
             mockTrigger.on = sinon.spy(mockTrigger, 'on');
+            mockTrigger.setup = sinon.spy();
             mockTrigger.isTriggered = sinon.stub().returns(true);
             mockTriggers = [mockTrigger];
 
             testExperiment = new Experiment('FROG', mockTriggers, []);
+            testExperiment.setupTriggers();
         });
 
         it('should listen for triggers firing', () => {
@@ -198,4 +200,3 @@ describe('Experiment', () => {
         });
     });
 });
-
