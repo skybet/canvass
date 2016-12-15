@@ -10,6 +10,7 @@ describe('Manager', () => {
     beforeEach(() => {
         mockHelper = {
             triggerExperiment: sinon.stub().returns(0),
+            trackAction: sinon.spy(),
         };
         mockExperiment = {
             on: sinon.spy(),
@@ -85,6 +86,15 @@ describe('Manager', () => {
             sinon.assert.calledWith(mockExperiment.setGroup, 0);
 
             testManager.removeExperiment('FROG');
+        });
+    });
+
+    describe('TrackAction', () => {
+        it('should call trackAction on the helper', () => {
+            testManager.trackAction('1', 'click');
+
+            sinon.assert.calledOnce(mockHelper.trackAction);
+            sinon.assert.calledWith(mockHelper.trackAction, '1:click');
         });
     });
 

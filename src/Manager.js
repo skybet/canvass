@@ -73,6 +73,17 @@ class Manager
         delete this.register[experiment.getId()];
     }
 
+    /**
+     * Track an action for an experiment
+     *
+     * @public
+     * @param {string} experimentId ID of the experiment to track an action for
+     * @param {string} actionName Name of the action to track
+     */
+    trackAction(experimentId, actionName) {
+        this.helper.trackAction(experimentId + ':' + actionName);
+    }
+
 }
 
 export default new Manager();
