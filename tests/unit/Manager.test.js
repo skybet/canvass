@@ -10,12 +10,14 @@ describe('Manager', () => {
     beforeEach(() => {
         mockHelper = {
             triggerExperiment: sinon.stub().returns(0),
+            trackAction: sinon.spy(),
         };
         mockExperiment = {
             on: sinon.spy(),
             setGroup: sinon.spy(),
             getId: sinon.stub().returns('FROG'),
             removeListener: sinon.spy(),
+            setupTriggers: sinon.spy(),
         };
         testManager = Manager;
         testManager.setHelper(mockHelper);
@@ -34,6 +36,7 @@ describe('Manager', () => {
             mockExperiment.removeListener = sinon.spy(mockExperiment, 'removeListener');
             mockExperiment.setGroup = sinon.spy();
             mockExperiment.getId = sinon.stub().returns('FROG');
+            mockExperiment.setupTriggers = sinon.spy();
 
             testManager.addExperiment(mockExperiment);
         });
@@ -56,7 +59,7 @@ describe('Manager', () => {
         });
 
         it('should listen for experiment emitting enrolled', () => {
-            sinon.assert.calledOnce(mockExperiment.on);
+            sinon.assert.called(mockExperiment.on);
             sinon.assert.calledWith(mockExperiment.on, 'ENROLLED');
         });
 
@@ -85,6 +88,15 @@ describe('Manager', () => {
             sinon.assert.calledWith(mockExperiment.setGroup, 0);
 
             testManager.removeExperiment('FROG');
+        });
+    });
+
+    describe('TrackAction', () => {
+        it('should call trackAction on the helper', () => {
+            testManager.trackAction('1', 'click');
+
+            sinon.assert.calledOnce(mockHelper.trackAction);
+            sinon.assert.calledWith(mockHelper.trackAction, '1:click');
         });
     });
 

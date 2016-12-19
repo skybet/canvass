@@ -2,11 +2,12 @@
   "name": "canvass",
   "version": "0.0.1",
   "description": "Canvass is a framework for implementing A/B/n and multi-variant testing",
-  "main": "index.js",
+  "main": "distribution/Manager.js",
   "repository": "ssh://git@stash.skybet.net:7999/vegas/canvass.git",
   "author": "Adam Blanchard, Steve Goode",
   "license": "UNLICENSED",
   "devDependencies": {
+    "babel-cli": "^6.18.0",
     "babel-eslint": "^7.1.1",
     "babel-plugin-transform-class-properties": "^6.19.0",
     "babel-preset-es2015": "^6.18.0",
@@ -26,6 +27,8 @@
     "watch": "node_modules/mocha/bin/mocha --recursive --watch --compilers js:babel-register tests",
     "watch:unit": "node_modules/mocha/bin/mocha --recursive --watch --compilers js:babel-register tests/unit",
     "watch:integration": "node_modules/mocha/bin/mocha --recursive --watch --compilers js:babel-register tests/integration",
-    "lint": "node_modules/eslint/bin/eslint.js ./src/ ./tests/"
+    "lint": "node_modules/eslint/bin/eslint.js ./src/ ./tests/",
+    "build": "babel src --out-dir distribution",
+    "prepublish": "npm test && npm run build"
   }
 }

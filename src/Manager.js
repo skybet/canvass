@@ -1,24 +1,14 @@
 import Experiment from './Experiment';
+import EventEmitter from './Helpers/EventEmitter';
 
-class Manager
+class Manager extends EventEmitter
 {
     /**
      * @public
      */
     constructor() {
+        super();
         this.register = {};
-    }
-
-    /**
-     * Sets the helper to use to communicate with the external experiment reporting tool
-     *
-     * @public
-     * @param {Helper} helper The helper to use to communicate with the experiment reporting system
-     * @return {Manager}
-     */
-    setHelper(helper) {
-        this.helper = helper;
-        return this;
     }
 
     /**
@@ -30,6 +20,8 @@ class Manager
     addExperiment(experiment) {
         this.register[experiment.getId()] = experiment;
         experiment.on(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
+        experiment.on(Experiment.Status.ACTIVE, () => this.emit(experiment.getId() + '.ACTIVE'));
+        experiment.setupTriggers();
     }
 
     /**
@@ -73,6 +65,28 @@ class Manager
         delete this.register[experiment.getId()];
     }
 
+    /**
+     * Track an action for an experiment
+     *
+     * @public
+     * @param {string} experimentId ID of the experiment to track an action for
+     * @param {string} actionName Name of the action to track
+     */
+    trackAction(experimentId, actionName) {
+        this.helper.trackAction(experimentId + ':' + actionName);
+    }
+
+    /**
+     * Sets the helper to use to communicate with the external experiment reporting tool
+     *
+     * @public
+     * @param {Helper} helper The helper to use to communicate with the experiment reporting system
+     * @return {Manager}
+     */
+    setHelper(helper) {
+        this.helper = helper;
+        return this;
+    }
 }
 
 export default new Manager();

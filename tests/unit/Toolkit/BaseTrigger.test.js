@@ -12,7 +12,7 @@ describe('Base Trigger', () => {
         let mockListener = sinon.spy();
         testTrigger.isTriggered = sinon.stub().returns(true);
         testTrigger.on('TRIGGERED', mockListener);
-        testTrigger.checkTrigger();
+        testTrigger.check();
 
         sinon.assert.calledOnce(mockListener);
     });
@@ -21,4 +21,3 @@ describe('Base Trigger', () => {
         assert.throws(testTrigger.isTriggered, /overridden/);
     });
 });
-
