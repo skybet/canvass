@@ -38,6 +38,11 @@ class Experiment extends EventEmitter
         this.variants = variants;
     }
 
+    /**
+     * Sets up triggers for the experiment including event listeners
+     *
+     * @public
+     */
     setupTriggers() {
         this.triggers.forEach((trigger) => {
             trigger.on('TRIGGERED', () => this.enrollIfTriggered());
@@ -46,7 +51,22 @@ class Experiment extends EventEmitter
     }
 
     /**
-     * Enroll into the experiment
+     * Checks if all triggers have been fired and enroll into the experiment if necessary.
+     *
+     * @public
+     */
+    enrollIfTriggered() {
+        if (this.status === Experiment.Status.ACTIVE) {
+            return;
+        }
+
+        if (this.haveTriggersFired()) {
+            this.enroll();
+        }
+    }
+
+    /**
+     * Enroll into the experiment regardless of trigger status (useful for debugging)
      *
      * @public
      */
@@ -78,6 +98,16 @@ class Experiment extends EventEmitter
     }
 
     /**
+     * Get the status of the experiment
+     *
+     * @public
+     * @returns {string} The status of the experiment
+     */
+    getStatus() {
+        return this.status;
+    }
+
+    /**
      * Sets the status of the experiment
      *
      * @public
@@ -92,13 +122,13 @@ class Experiment extends EventEmitter
     }
 
     /**
-     * Get the status of the experiment
+     * Gets the group of the experiment
      *
      * @public
-     * @returns {string} The status of the experiment
+     * @returns {string} Group of experiment
      */
-    getStatus() {
-        return this.status;
+    getGroup() {
+        return this.group;
     }
 
     /**
@@ -110,31 +140,6 @@ class Experiment extends EventEmitter
     setGroup(group) {
         this.group = group;
         this.setStatus(Experiment.Status.ACTIVE);
-    }
-
-    /**
-     * Gets the group of the experiment
-     *
-     * @public
-     * @returns {string} Group of experiment
-     */
-    getGroup() {
-        return this.group;
-    }
-
-    /**
-     * Checks if all triggers have been fired and enroll into the experiment if necessary.
-     *
-     * @public
-     */
-    enrollIfTriggered() {
-        if (this.status === Experiment.Status.ACTIVE) {
-            return;
-        }
-
-        if (this.haveTriggersFired()) {
-            this.enroll();
-        }
     }
 
     /**

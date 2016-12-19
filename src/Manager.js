@@ -12,18 +12,6 @@ class Manager extends EventEmitter
     }
 
     /**
-     * Sets the helper to use to communicate with the external experiment reporting tool
-     *
-     * @public
-     * @param {Helper} helper The helper to use to communicate with the experiment reporting system
-     * @return {Manager}
-     */
-    setHelper(helper) {
-        this.helper = helper;
-        return this;
-    }
-
-    /**
      * Adds an experiment to the registry and wires it up
      *
      * @public
@@ -88,6 +76,17 @@ class Manager extends EventEmitter
         this.helper.trackAction(experimentId + ':' + actionName);
     }
 
+    /**
+     * Sets the helper to use to communicate with the external experiment reporting tool
+     *
+     * @public
+     * @param {Helper} helper The helper to use to communicate with the experiment reporting system
+     * @return {Manager}
+     */
+    setHelper(helper) {
+        this.helper = helper;
+        return this;
+    }
 }
 
 export default new Manager();
