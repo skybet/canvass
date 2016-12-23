@@ -13,6 +13,9 @@ class QubitHelper
             throw new Error('Missing argument: experiment');
         }
 
+        // Call to qubit to trigger experience
+        // window.__qubit.experience[experiment].trigger();
+
         if (callback) {
             return callback(0);
         }
