@@ -33,7 +33,7 @@ class Manager extends EventEmitter
      */
     activateExperiment(experimentId) {
         let experiment = this.getExperiment(experimentId);
-        this.helper.triggerExperiment(experiment, experiment.setGroup);
+        this.helper.triggerExperiment(experimentId, experiment.setGroup.bind(experiment));
     }
 
     /**
