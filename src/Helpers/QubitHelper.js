@@ -7,9 +7,9 @@ class QubitHelper
      * @param {string} experiment The name of the experiment in Qubit
      * @param {function} callback The method that qubit calls once it has triggered the experience
      */
-    triggerExperiment(experiment, callback) {
-        if (!experiment) {
-            throw new Error('Missing argument: experiment');
+    triggerExperiment(experimentId, callback) {
+        if (!experimentId) {
+            throw new Error('Missing argument: experimentId');
         }
 
         if (!callback) {
@@ -17,7 +17,7 @@ class QubitHelper
         }
 
         // Call to qubit to trigger experience
-         window.__qubit.experiences[experiment].trigger(callback);
+         window.__qubit.experiences[experimentId].trigger(callback);
     }
 
     /**
