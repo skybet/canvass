@@ -14,7 +14,7 @@ class QubitHelper
         }
 
         // Call to qubit to trigger experience
-        // window.__qubit.experience[experiment].trigger();
+         window.__qubit.experiences[experiment].trigger();
 
         if (callback) {
             return callback(0);
@@ -33,6 +33,8 @@ class QubitHelper
         if (!action) {
             throw new Error('Missing argument: action');
         }
+
+        console.log('[Canvass] Tracking action: ' + action);
 
         if (callback) {
             return callback();
