@@ -82,7 +82,7 @@ describe('Manager', () => {
             sinon.assert.calledWith(mockGetExperiment, 'FROG');
 
             sinon.assert.calledOnce(mockHelper.triggerExperiment);
-            sinon.assert.calledWith(mockHelper.triggerExperiment, mockExperiment, mockExperiment.setGroup);
+            sinon.assert.calledWith(mockHelper.triggerExperiment, mockExperiment.getId(), sinon.match((value) => typeof value === 'function'));
 
             testManager.removeExperiment('FROG');
         });
