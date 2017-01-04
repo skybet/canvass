@@ -14,13 +14,7 @@ class QubitHelper
         }
 
         // Call to qubit to trigger experience
-         window.__qubit.experiences[experiment].trigger();
-
-        if (callback) {
-            return callback(0);
-        }
-
-        return 0;
+         window.__qubit.experiences[experiment].trigger(callback);
     }
 
     /**
