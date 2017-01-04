@@ -30,5 +30,6 @@
     "lint": "node_modules/eslint/bin/eslint.js ./src/ ./tests/",
     "build": "babel src --out-dir distribution",
     "prepublish": "npm test && npm run build"
-  }
+  },
+  "dependencies": {}
 }

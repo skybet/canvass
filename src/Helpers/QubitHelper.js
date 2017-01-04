@@ -1,16 +1,19 @@
 class QubitHelper
 {
     /**
-     * Informs Qubit an experiment has been triggered, and returns the group
-     * that the user belongs to.
+     * Informs Qubit an experiment has been triggered and calls a callback with an arguement of the
+     * group that the user has been assigned to.
      *
      * @param {string} experiment The name of the experiment in Qubit
-     * @param {function} [callback] A method to call after triggering the experiment
-     * @returns {number} Group
+     * @param {function} callback The method that qubit calls once it has triggered the experience
      */
     triggerExperiment(experiment, callback) {
         if (!experiment) {
             throw new Error('Missing argument: experiment');
+        }
+
+        if (!callback) {
+            throw new Error('Missing argument: callback');
         }
 
         // Call to qubit to trigger experience
