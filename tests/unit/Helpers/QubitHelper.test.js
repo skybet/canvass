@@ -33,7 +33,7 @@ describe('QubitHelper', () => {
         });
 
         it('throws an error if action is not an argument', () => {
-            assert.throws(QubitHelper.trackAction, /action/);
+            assert.throws(() => QubitHelper.trackAction(), /action/);
         });
     });
 
@@ -46,13 +46,24 @@ describe('QubitHelper', () => {
         });
 
         it('throws an error if experiment is not an argument', () => {
-            assert.throws(QubitHelper.triggerExperiment, /experiment/);
+            assert.throws(() => QubitHelper.triggerExperiment(), /experiment/);
         });
 
         it('throws an error if callback is not an argument', () => {
-            assert.throws(() => { QubitHelper.triggerExperiment('testExperiment'); }, /callback/);
+            assert.throws(() => QubitHelper.triggerExperiment('testExperiment'), /callback/);
         });
 
+    });
+
+    describe('checkForQubit', () => {
+        it('returns true if qubit is available on the window', () => {
+            assert.equal(QubitHelper.checkForQubit(), true);
+        });
+
+        it('returns false if qubit is available on the window', () => {
+            global.window = {};
+            assert.equal(QubitHelper.checkForQubit(), false);
+        });
     });
 
 });
