@@ -6,7 +6,7 @@ class QubitHelper
      * Informs Qubit an experiment has been triggered and calls a callback with an arguement of the
      * group that the user has been assigned to.
      *
-     * @param {string} experiment The name of the experiment in Qubit
+     * @param {string} experimentId The name of the experiment in Qubit
      * @param {function} callback The method that qubit calls once it has triggered the experience
      */
     triggerExperiment(experimentId, callback) {
@@ -23,7 +23,7 @@ class QubitHelper
         }
 
         // Call to qubit to trigger experience
-        window.__qubit.experiences[experimentId].trigger(callback); // eslint-disable-line no-underscore-dangle
+        window.__qubit.experiences[experimentId].trigger(callback);
 
         return null;
     }
