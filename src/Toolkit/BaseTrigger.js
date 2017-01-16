@@ -8,13 +8,10 @@ class BaseTrigger extends EventEmitter
      * @public
      * @return {boolean} Whether or not the trigger was satisfied
      */
-    check() {
+    checkTrigger() {
         if (this.isTriggered()) {
             this.emit('TRIGGERED');
-            return true;
         }
-
-        return false;
     }
 
     /**
