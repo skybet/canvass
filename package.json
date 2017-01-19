@@ -6,6 +6,9 @@
   "repository": "ssh://git@stash.skybet.net:7999/vegas/canvass.git",
   "author": "Adam Blanchard, Steve Goode",
   "license": "UNLICENSED",
+  "publishConfig": {
+    "registry": "http://npm.skybet.net:5984"
+  },
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-eslint": "^7.1.1",
