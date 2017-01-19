@@ -1,23 +1,31 @@
+/* eslint no-underscore-dangle: 0 */
+
 class QubitHelper
 {
     /**
-     * Informs Qubit an experiment has been triggered, and returns the group
-     * that the user belongs to.
+     * Informs Qubit an experiment has been triggered and calls a callback with an arguement of the
+     * group that the user has been assigned to.
      *
-     * @param {string} experiment The name of the experiment in Qubit
-     * @param {function} [callback] A method to call after triggering the experiment
-     * @returns {number} Group
+     * @param {string} experimentId The name of the experiment in Qubit
+     * @param {function} callback The method that qubit calls once it has triggered the experience
      */
-    triggerExperiment(experiment, callback) {
-        if (!experiment) {
-            throw new Error('Missing argument: experiment');
+    triggerExperiment(experimentId, callback) {
+        if (!this.checkForQubit()) {
+            return null;
         }
 
-        if (callback) {
-            return callback(0);
+        if (!experimentId) {
+            throw new Error('Missing argument: experimentId');
         }
 
-        return 0;
+        if (!callback) {
+            throw new Error('Missing argument: callback');
+        }
+
+        // Call to qubit to trigger experience
+        window.__qubit.experiences[experimentId].trigger(callback);
+
+        return null;
     }
 
     /**
@@ -27,9 +35,15 @@ class QubitHelper
      * @param {function} [callback] A method to call after sending the action
      */
     trackAction(action, callback) {
+        if (!this.checkForQubit()) {
+            return null;
+        }
+
         if (!action) {
             throw new Error('Missing argument: action');
         }
+
+        console.info('[Canvass] Tracking action: ' + action);
 
         if (callback) {
             return callback();
@@ -37,6 +51,23 @@ class QubitHelper
 
         return null;
     }
+
+    /**
+     * Checks whether the qubit object is available on the window to use. If not, we
+     * won't be able to communicate with qubit via the helper.
+     *
+     * @private
+     * @returns {boolean} Whether or not qubit is available
+     */
+    checkForQubit() {
+        if (!window.__qubit) {
+            console.warn('[Canvass] Qubit window object not available. Unable to continue.');
+            return false;
+        }
+
+        return true;
+    }
+
 }
 
 export default new QubitHelper();

@@ -43,6 +43,10 @@ describe('State Engine (Experiment, Registry, Manager)', () => {
         experiment.on('ACTIVE', mockActiveListener);
 
         mockTriggers[0].emit('TRIGGERED');
+
+        // Mock the execution of the callback that is passed to qubit
+        experiment.setGroup('tadpole');
+
         assert.equal(experiment.status, Experiment.Status.ACTIVE);
         assert.equal(experiment.group, 'tadpole');
         assert.equal(experiment.getVariant(), mockVariants.tadpole);

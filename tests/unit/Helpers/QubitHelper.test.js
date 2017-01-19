@@ -1,8 +1,24 @@
-import QubitHelper from '~/src/Helpers/QubitHelper';
 import sinon from 'sinon';
 import assert from 'assert';
+import QubitHelper from '~/src/Helpers/QubitHelper';
 
 describe('QubitHelper', () => {
+
+    let mockWindow;
+
+    beforeEach(() => {
+        global.window = {
+            __qubit: {
+                experiences: [],
+            },
+        }; // TODO this feels bad, is it?
+
+        mockWindow = global.window;
+    });
+
+    afterEach(() => {
+        delete global.window;
+    });
 
     describe('trackAction', () => {
         it('calls callback', () => {
@@ -17,36 +33,36 @@ describe('QubitHelper', () => {
         });
 
         it('throws an error if action is not an argument', () => {
-            assert.throws(QubitHelper.trackAction, /action/);
+            assert.throws(() => QubitHelper.trackAction(), /action/);
         });
     });
 
     describe('triggerExperiment', () => {
-        it('calls callback', () => {
-            let callback = sinon.spy();
-            QubitHelper.triggerExperiment('experiment', callback);
 
-            sinon.assert.calledOnce(callback);
-        });
-
-        it('does not break when there is no callback', () => {
-            QubitHelper.triggerExperiment('experiment');
-        });
-
-        it('calls callback with variant id', () => {
-            let callback = sinon.spy();
-            QubitHelper.triggerExperiment('experiment', callback);
-
-            sinon.assert.calledWith(callback, 0);
-        });
-
-        it('should return the variant id', () => {
-            let variant = QubitHelper.triggerExperiment('experiment');
-            assert.equal(0, variant);
+        beforeEach(() => {
+            mockWindow.__qubit.experiences.testExperiment = {
+                trigger: sinon.stub(),
+            };
         });
 
         it('throws an error if experiment is not an argument', () => {
-            assert.throws(QubitHelper.triggerExperiment, /experiment/);
+            assert.throws(() => QubitHelper.triggerExperiment(), /experiment/);
+        });
+
+        it('throws an error if callback is not an argument', () => {
+            assert.throws(() => QubitHelper.triggerExperiment('testExperiment'), /callback/);
+        });
+
+    });
+
+    describe('checkForQubit', () => {
+        it('returns true if qubit is available on the window', () => {
+            assert.equal(QubitHelper.checkForQubit(), true);
+        });
+
+        it('returns false if qubit is available on the window', () => {
+            global.window = {};
+            assert.equal(QubitHelper.checkForQubit(), false);
         });
     });
 
