@@ -23,7 +23,15 @@ class QubitHelper
         }
 
         // Call to qubit to trigger experience
-        window.__qubit.experiences[experimentId].trigger(callback);
+        if (window.__qubit.experiences &&
+            window.__qubit.experiences[experimentId] &&
+            window.__qubit.experiences[experimentId].trigger) {
+
+            window.__qubit.experiences[experimentId].trigger(callback);
+        } else {
+            console.warn('Experiment "' + experimentId + '" could not be triggered on the qubit window object.');
+        }
+
 
         return null;
     }
