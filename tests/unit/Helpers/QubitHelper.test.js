@@ -54,14 +54,6 @@ describe('QubitHelper', () => {
         });
 
         it('fails gracefully if there is no matching experience in qubit', () => {
-            delete global.window;
-
-            global.window = {
-                __qubit: {
-                    experiences: [],
-                },
-            };
-
             assert.doesNotThrow(() => QubitHelper.triggerExperiment('DoesNotExistInQubit', () => {}));
         });
 
