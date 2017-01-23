@@ -11,7 +11,7 @@ describe('QubitHelper', () => {
             __qubit: {
                 experiences: [],
             },
-        }; // TODO this feels bad, is it?
+        };
 
         mockWindow = global.window;
     });
@@ -51,6 +51,10 @@ describe('QubitHelper', () => {
 
         it('throws an error if callback is not an argument', () => {
             assert.throws(() => QubitHelper.triggerExperiment('testExperiment'), /callback/);
+        });
+
+        it('fails gracefully if there is no matching experience in qubit', () => {
+            assert.doesNotThrow(() => QubitHelper.triggerExperiment('DoesNotExistInQubit', () => {}));
         });
 
     });
