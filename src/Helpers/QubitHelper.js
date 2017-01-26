@@ -70,7 +70,7 @@ class QubitHelper
      */
     checkForQubit() {
         if (!window.__qubit) {
-            Logger.warning('[Canvass] Qubit window object not available. Unable to continue.');
+            Logger.warn('[Canvass] Qubit window object not available. Unable to continue.');
             return false;
         }
 

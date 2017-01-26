@@ -10,8 +10,8 @@ class Logger
         this.logger.error(this.prefixMessage(message), e);
     }
 
-    warning(message) {
-        this.logger.warning(message);
+    warn(message) {
+        this.logger.warn(message);
     }
 
     info(message) {
