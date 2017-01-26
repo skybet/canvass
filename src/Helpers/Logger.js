@@ -19,6 +19,10 @@ class Logger
     }
 
     debug(message) {
+        if (!this.logger.debug) {
+            this.logger.log(message);
+            return;
+        }
         this.logger.debug(message);
     }
 
