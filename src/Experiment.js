@@ -1,5 +1,7 @@
 import EventEmitter from '~/src/Helpers/EventEmitter';
 
+import Logger from '~/src/Helpers/Logger';
+
 class Experiment extends EventEmitter
 {
     static Status = {
@@ -119,6 +121,8 @@ class Experiment extends EventEmitter
         }
         this.status = status;
         this.emit(this.status);
+
+        Logger.debug('Experiment "' + this.id + '" status updated to: ' + status);
     }
 
     /**
