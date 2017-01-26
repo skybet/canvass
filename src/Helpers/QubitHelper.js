@@ -1,5 +1,7 @@
 /* eslint no-underscore-dangle: 0 */
 
+import Logger from '~/src/Helpers/Logger';
+
 class QubitHelper
 {
     /**
@@ -29,9 +31,8 @@ class QubitHelper
 
             window.__qubit.experiences[experimentId].trigger(callback);
         } else {
-            console.warn('Experiment "' + experimentId + '" could not be triggered on the qubit window object.');
+            Logger.warn('Experiment "' + experimentId + '" could not be triggered on the qubit window object.');
         }
-
 
         return null;
     }
@@ -51,7 +52,7 @@ class QubitHelper
             throw new Error('Missing argument: action');
         }
 
-        console.info('[Canvass] Tracking action: ' + action);
+        Logger.info('[Canvass] Tracking action: ' + action);
 
         if (callback) {
             return callback();
@@ -69,7 +70,7 @@ class QubitHelper
      */
     checkForQubit() {
         if (!window.__qubit) {
-            console.warn('[Canvass] Qubit window object not available. Unable to continue.');
+            Logger.warning('[Canvass] Qubit window object not available. Unable to continue.');
             return false;
         }
 
