@@ -27,6 +27,11 @@ export class Logger
         useMethod(this.prefixMessage(message));
     }
 
+    table(data) {
+        let useMethod = this.logger.table || this.logger.log;
+        useMethod(data);
+    }
+
     prefixMessage(message) {
         return `${Logger.PREFIX} ${message}`;
     }

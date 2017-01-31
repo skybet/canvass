@@ -13,6 +13,7 @@ describe('Logger', () => {
             info: sinon.spy(),
             log: sinon.spy(),
             debug: sinon.spy(),
+            table: sinon.spy(),
         };
 
         testingLogger = new Logger(mockLogger);
@@ -72,6 +73,30 @@ describe('Logger', () => {
 
         sinon.assert.calledOnce(mockLogger.log);
         sinon.assert.calledWith(mockLogger.log, '[canvass] ' + testMessage);
+    });
+
+    it('should call the loggers table method when calling table', () => {
+        let testData = {message: 'test table message'};
+        testingLogger.table(testData);
+
+        sinon.assert.calledOnce(mockLogger.table);
+        sinon.assert.calledWith(mockLogger.table, testData);
+    });
+
+    it('should call the log method if a table method does not exist', () => {
+        mockLogger = {
+            error: sinon.spy(),
+            warn: sinon.spy(),
+            info: sinon.spy(),
+            log: sinon.spy(),
+        };
+        testingLogger = new Logger(mockLogger);
+
+        let testData = {message: 'test table message'};
+        testingLogger.table(testData);
+
+        sinon.assert.calledOnce(mockLogger.log);
+        sinon.assert.calledWith(mockLogger.log, testData);
     });
 
     it('should use the logger passed in using setLogger', () => {

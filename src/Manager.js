@@ -8,6 +8,7 @@ class Manager extends EventEmitter
      */
     constructor() {
         super();
+        this.logger = require('./Helpers/Logger').default;
         this.register = {};
     }
 
@@ -84,6 +85,19 @@ class Manager extends EventEmitter
     setHelper(helper) {
         this.helper = helper;
         return this;
+    }
+
+    /**
+     * Shows the status of each experiment in the console
+     */
+    displayStatus() {
+        let status = [];
+        let experiments = Object.keys(this.register);
+        experiments.forEach((entry) => {
+            let experiment = this.getExperiment(entry);
+            status.push({Experiment: experiment.id, Status: experiment.status});
+        });
+        this.logger.table(status);
     }
 }
 

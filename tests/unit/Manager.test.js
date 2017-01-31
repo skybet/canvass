@@ -97,4 +97,29 @@ describe('Manager', () => {
         });
     });
 
+    describe('DisplayStatus', () => {
+        it('should call table on the logger with the correct data', () => {
+            let mockLogger = {
+                table: sinon.spy(),
+            };
+            mockExperiment.id = 'test id';
+            mockExperiment.status = 'test status';
+            testManager.addExperiment(mockExperiment);
+            
+            testManager.logger = mockLogger;
+
+            testManager.displayStatus();
+
+            let expectedData = [
+                {
+                    Experiment: mockExperiment.id,
+                    Status: mockExperiment.status,
+                },
+            ];
+
+            sinon.assert.calledOnce(mockLogger.table);
+            sinon.assert.calledWith(mockLogger.table, expectedData);
+        });
+    });
+
 });
