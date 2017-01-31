@@ -6,6 +6,10 @@ export class Logger
         this.logger = logger || console;
     }
 
+    setLogger(logger) {
+        this.logger = logger;
+    }
+
     error(message, e) {
         this.logger.error(this.prefixMessage(message), e);
     }

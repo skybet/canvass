@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import assert from 'assert';
-import {Logger} from '~/src/Helpers/Logger';
+import singleLogger, {Logger} from '~/src/Helpers/Logger';
 
 describe('Logger', () => {
 
@@ -72,6 +72,12 @@ describe('Logger', () => {
 
         sinon.assert.calledOnce(mockLogger.log);
         sinon.assert.calledWith(mockLogger.log, '[canvass] ' + testMessage);
+    });
+
+    it('should use the logger passed in using setLogger', () => {
+        assert.notEqual(singleLogger.logger, mockLogger);
+        singleLogger.setLogger(mockLogger);
+        assert.equal(singleLogger.logger, mockLogger);
     });
 
 });
