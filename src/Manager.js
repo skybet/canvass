@@ -94,6 +94,7 @@ class Manager extends EventEmitter
      * @param {string} actionName Name of the action to track
      */
     trackAction(experimentId, actionName) {
+        this.logger.debug('Tracking action ' + actionName + ' for experiment ' + experimentId);
         this.helper.trackAction(experimentId + ':' + actionName);
     }
 
