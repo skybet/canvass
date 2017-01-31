@@ -50,9 +50,12 @@ class Manager extends EventEmitter
             return;
         }
 
-        this.logger.info('Activating ' + experimentId);
+        this.logger.info('Triggering ' + experimentId + ' with the helper');
         let experiment = this.getExperiment(experimentId);
-        this.helper.triggerExperiment(experimentId, (group) => experiment.setGroup(group));
+        this.helper.triggerExperiment(experimentId, (group) => {
+            this.logger.info('Setting group ' + group + ' for experiment ' + experimentId);
+            experiment.setGroup(group);
+        });
     }
 
     /**
