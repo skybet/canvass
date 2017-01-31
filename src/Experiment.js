@@ -34,7 +34,7 @@ class Experiment extends EventEmitter
         }
 
         this.id = id;
-        this.status = Experiment.Status.WAITING;
+        this.setStatus(Experiment.Status.WAITING);
         this.group = null;
         this.triggers = triggers;
         this.variants = variants;

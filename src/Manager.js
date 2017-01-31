@@ -1,5 +1,6 @@
 import Experiment from './Experiment';
 import EventEmitter from './Helpers/EventEmitter';
+import cookie from 'cookie';
 
 class Manager extends EventEmitter
 {
@@ -10,6 +11,16 @@ class Manager extends EventEmitter
         super();
         this.logger = require('./Helpers/Logger').default;
         this.register = {};
+
+        // Check if we have a cookie to disable activation
+        this.disableActivation = false;
+        if (typeof document != 'undefined') {
+            let cookies = cookie.parse(document.cookie);
+            if (cookies.disableExperiments) {
+                this.disableActivation = true;
+                this.logger.info('Detected cookie. Disabling activation of experiments');
+            }
+        }
     }
 
     /**
@@ -19,6 +30,7 @@ class Manager extends EventEmitter
      * @param {Experiment} experiment The experiment to be added
      */
     addExperiment(experiment) {
+        this.logger.debug('Adding experiment ' + experiment.getId());
         this.register[experiment.getId()] = experiment;
         experiment.on(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
         experiment.on(Experiment.Status.ACTIVE, () => this.emit(experiment.getId() + '.ACTIVE'));
@@ -33,6 +45,12 @@ class Manager extends EventEmitter
      * @param {string} experimentId The unique ID for the experiment being activated
      */
     activateExperiment(experimentId) {
+        if (this.disableActivation) {
+            this.logger.info('Would have activated ' + experimentId + ' but experiments are disabled');
+            return;
+        }
+
+        this.logger.info('Activating ' + experimentId);
         let experiment = this.getExperiment(experimentId);
         this.helper.triggerExperiment(experimentId, (group) => experiment.setGroup(group));
     }
@@ -59,6 +77,7 @@ class Manager extends EventEmitter
      * @param {string} id ID of the experiment to remove
      */
     removeExperiment(id) {
+        this.logger.debug('Removing experiment ' + id);
         let experiment = this.getExperiment(id);
         experiment.removeListener(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
         delete this.register[experiment.getId()];
@@ -83,6 +102,7 @@ class Manager extends EventEmitter
      * @return {Manager}
      */
     setHelper(helper) {
+        this.logger.debug('Changing helper');
         this.helper = helper;
         return this;
     }
