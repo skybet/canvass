@@ -40,7 +40,7 @@ describe('QubitHelper', () => {
     describe('triggerExperiment', () => {
 
         beforeEach(() => {
-            mockWindow.__qubit.experiences.testExperiment = {
+            mockWindow['__qubit'].experiences.testExperiment = {
                 trigger: sinon.stub(),
             };
         });
@@ -54,8 +54,7 @@ describe('QubitHelper', () => {
         });
 
         it('fails gracefully if there is no matching experience in qubit', () => {
-            QubitHelper.triggerExperiment('DoesNotExistInQubit', () => {});
-            //assert.doesNotThrow(() => QubitHelper.triggerExperiment('DoesNotExistInQubit', () => {}));
+            assert.doesNotThrow(() => QubitHelper.triggerExperiment('DoesNotExistInQubit', () => {}));
         });
 
     });

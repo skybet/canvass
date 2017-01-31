@@ -1,4 +1,4 @@
-class Logger
+export class Logger
 {
     static PREFIX = '[canvass]';
 
@@ -11,19 +11,16 @@ class Logger
     }
 
     warn(message) {
-        this.logger.warn(message);
+        this.logger.warn(this.prefixMessage(message));
     }
 
     info(message) {
-        this.logger.info(message);
+        this.logger.info(this.prefixMessage(message));
     }
 
     debug(message) {
-        if (!this.logger.debug) {
-            this.logger.log(message);
-            return;
-        }
-        this.logger.debug(message);
+        let useMethod = this.logger.debug || this.logger.log;
+        useMethod(this.prefixMessage(message));
     }
 
     prefixMessage(message) {
