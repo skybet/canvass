@@ -30,7 +30,7 @@ class Manager extends EventEmitter
      * @param {Experiment} experiment The experiment to be added
      */
     addExperiment(experiment) {
-        this.logger.debug('Adding experiment ' + experiment.getId());
+        this.logger.debug('Adding experiment "' + experiment.getId() + '" to the Manager');
         this.register[experiment.getId()] = experiment;
         experiment.on(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
         experiment.on(Experiment.Status.ACTIVE, () => this.emit(experiment.getId() + '.ACTIVE'));
@@ -50,10 +50,10 @@ class Manager extends EventEmitter
             return;
         }
 
-        this.logger.info('Triggering ' + experimentId + ' with the helper');
+        this.logger.info('"' + experimentId + '" experiment is being triggered');
         let experiment = this.getExperiment(experimentId);
         this.helper.triggerExperiment(experimentId, (group) => {
-            this.logger.info('Setting group ' + group + ' for experiment ' + experimentId);
+            this.logger.info('"' + experimentId + '" experiment group set to: ' + group);
             experiment.setGroup(group);
         });
     }
@@ -106,7 +106,7 @@ class Manager extends EventEmitter
      * @return {Manager}
      */
     setHelper(helper) {
-        this.logger.debug('Changing helper');
+        this.logger.debug('Setting helper to "' + helper.constructor.name + '"');
         this.helper = helper;
         return this;
     }

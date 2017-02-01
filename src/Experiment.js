@@ -122,7 +122,7 @@ class Experiment extends EventEmitter
         this.status = status;
         this.emit(this.status);
 
-        Logger.debug('Experiment "' + this.id + '" status updated to: ' + status);
+        Logger.debug('"' + this.id + '" experiment status updated to: ' + status);
     }
 
     /**

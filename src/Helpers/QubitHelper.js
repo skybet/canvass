@@ -31,7 +31,7 @@ class QubitHelper
 
             window.__qubit.experiences[experimentId].trigger(callback);
         } else {
-            Logger.warn('Experiment "' + experimentId + '" could not be triggered on the qubit window object.');
+            Logger.warn('"' + experimentId + '" experiment could not be triggered on the qubit window object.');
         }
 
         return null;
