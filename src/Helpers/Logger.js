@@ -1,3 +1,5 @@
+import Config from '~/src/Config';
+
 export class Logger
 {
     static PREFIX = '[canvass]';
@@ -23,8 +25,10 @@ export class Logger
     }
 
     debug(message) {
-        let useMethod = this.logger.debug || this.logger.log;
-        useMethod(this.prefixMessage(message));
+        if (Config.get('debug')) {
+            let useMethod = this.logger.debug || this.logger.log;
+            useMethod(this.prefixMessage(message));
+        }
     }
 
     table(data) {

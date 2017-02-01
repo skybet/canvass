@@ -1,6 +1,8 @@
 import Experiment from './Experiment';
 import EventEmitter from './Helpers/EventEmitter';
-import cookie from 'cookie';
+
+import Logger from '~/src/Helpers/Logger'; // TODO is it better to do this here, or in constructor as below?
+import Config from '~/src/Config';
 
 class Manager extends EventEmitter
 {
@@ -11,16 +13,6 @@ class Manager extends EventEmitter
         super();
         this.logger = require('./Helpers/Logger').default;
         this.register = {};
-
-        // Check if we have a cookie to disable activation
-        this.disableActivation = false;
-        if (typeof document != 'undefined') {
-            let cookies = cookie.parse(document.cookie);
-            if (cookies.disableExperiments) {
-                this.disableActivation = true;
-                this.logger.info('Detected cookie. Disabling activation of experiments');
-            }
-        }
     }
 
     /**
@@ -46,7 +38,7 @@ class Manager extends EventEmitter
      * @param {string} experimentId The unique ID for the experiment being activated
      */
     activateExperiment(experimentId) {
-        if (this.disableActivation) {
+        if (Config.get('disableActivation')) {
             this.logger.info('"' + experimentId + '" should have triggered, but experiments are disabled');
             return;
         }
@@ -113,7 +105,9 @@ class Manager extends EventEmitter
     }
 
     /**
-     * Shows the status of each experiment in the console
+     * Prints the state of experiments to the console in a human readable way
+     *
+     * @public
      */
     printState() {
         let status = [];
