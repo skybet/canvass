@@ -30,11 +30,11 @@ class Manager extends EventEmitter
      * @param {Experiment} experiment The experiment to be added
      */
     addExperiment(experiment) {
-        this.logger.debug('Adding experiment "' + experiment.getId() + '" to the Manager');
         this.register[experiment.getId()] = experiment;
         experiment.on(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
         experiment.on(Experiment.Status.ACTIVE, () => this.emit(experiment.getId() + '.ACTIVE'));
         experiment.setupTriggers();
+        this.logger.debug('"' + experiment.getId() + '" experiment added to the Manager');
     }
 
     /**
