@@ -1,5 +1,4 @@
 import cookie from 'cookie';
-import Logger from './Helpers/Logger';
 
 export class Config
 {
@@ -9,18 +8,20 @@ export class Config
     };
 
     constructor(config) {
+        this.logger = require('~/src/Helpers/Logger').default;
+
         this.config = Object.assign({}, this.defaults, config);
 
         if (typeof document !== 'undefined') {
             let cookies = cookie.parse(document.cookie);
             if (cookies.canvassDisableActivation) {
                 this.set('disableActivation', true);
-                Logger.info('Detected "disableActivation" cookie. Disabling activation of experiments.');
+                this.logger.info('Detected "disableActivation" cookie. Disabling activation of experiments.');
             }
 
             if (cookies.canvassDebug) {
                 this.set('debug', true);
-                Logger.info('Detected "debug" cookie. Enabling debug logging.');
+                this.logger.info('Detected "debug" cookie. Enabling debug logging.');
             }
         }
     }

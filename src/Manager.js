@@ -1,7 +1,6 @@
 import Experiment from './Experiment';
 import EventEmitter from './Helpers/EventEmitter';
 
-import Logger from '~/src/Helpers/Logger'; // TODO is it better to do this here, or in constructor as below?
 import Config from '~/src/Config';
 
 class Manager extends EventEmitter
