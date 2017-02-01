@@ -97,23 +97,27 @@ describe('Manager', () => {
         });
     });
 
-    describe('DisplayStatus', () => {
+    describe('PrintState', () => {
         it('should call table on the logger with the correct data', () => {
             let mockLogger = {
                 table: sinon.spy(),
             };
             mockExperiment.id = 'test id';
             mockExperiment.status = 'test status';
+            mockExperiment.triggers = [{}];
+            mockExperiment.group = '0';
             testManager.addExperiment(mockExperiment);
-            
+
             testManager.logger = mockLogger;
 
-            testManager.displayStatus();
+            testManager.printState();
 
             let expectedData = [
                 {
                     Experiment: mockExperiment.id,
                     Status: mockExperiment.status,
+                    Triggers: 'Object',
+                    Group: mockExperiment.group,
                 },
             ];
 

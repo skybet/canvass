@@ -47,7 +47,7 @@ class Manager extends EventEmitter
      */
     activateExperiment(experimentId) {
         if (this.disableActivation) {
-            this.logger.info('Would have activated ' + experimentId + ' but experiments are disabled');
+            this.logger.info('"' + experimentId + '" should have triggered, but experiments are disabled');
             return;
         }
 
@@ -115,12 +115,15 @@ class Manager extends EventEmitter
     /**
      * Shows the status of each experiment in the console
      */
-    displayStatus() {
+    printState() {
         let status = [];
         let experiments = Object.keys(this.register);
         experiments.forEach((entry) => {
             let experiment = this.getExperiment(entry);
-            status.push({Experiment: experiment.id, Status: experiment.status});
+
+            let triggers = experiment.triggers.map((t) => { return t.constructor.name || "trigger"; }).toString();
+
+            status.push({Experiment: experiment.id, Status: experiment.status, Triggers: triggers, Group: experiment.group});
         });
         this.logger.table(status);
     }
