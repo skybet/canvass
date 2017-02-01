@@ -31,10 +31,11 @@ class Manager extends EventEmitter
      */
     addExperiment(experiment) {
         this.register[experiment.getId()] = experiment;
+        this.logger.debug('"' + experiment.getId() + '" experiment added to the Manager');
+
         experiment.on(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
         experiment.on(Experiment.Status.ACTIVE, () => this.emit(experiment.getId() + '.ACTIVE'));
         experiment.setupTriggers();
-        this.logger.debug('"' + experiment.getId() + '" experiment added to the Manager');
     }
 
     /**
