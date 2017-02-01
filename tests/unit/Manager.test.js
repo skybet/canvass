@@ -11,6 +11,7 @@ describe('Manager', () => {
         mockHelper = {
             triggerExperiment: sinon.stub().returns(0),
             trackAction: sinon.spy(),
+            experimentExists: sinon.stub().returns(true),
         };
         mockExperiment = {
             on: sinon.spy(),
@@ -120,6 +121,7 @@ describe('Manager', () => {
                     Triggers: 'Object',
                     Variants: '0,1',
                     Group: mockExperiment.group,
+                    ExistsOnHelper: true,
                 },
             ];
 

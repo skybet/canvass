@@ -120,9 +120,9 @@ class Manager extends EventEmitter
         let experiments = Object.keys(this.register);
         experiments.forEach((entry) => {
             let experiment = this.getExperiment(entry);
-
             let triggers = experiment.triggers.map((t, i) => { return t.constructor.name || i; }).toString();
             let variants = Object.keys(experiment.variants).toString();
+            let existsOnHelper = this.helper.experimentExists(experiment);
 
             status.push({
                 Experiment: experiment.id,
@@ -130,6 +130,7 @@ class Manager extends EventEmitter
                 Triggers: triggers,
                 Variants: variants,
                 Group: experiment.group,
+                ExistsOnHelper: existsOnHelper,
             });
         });
         this.logger.table(status);

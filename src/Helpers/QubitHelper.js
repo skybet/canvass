@@ -12,7 +12,7 @@ class QubitHelper
      * @param {function} callback The method that qubit calls once it has triggered the experience
      */
     triggerExperiment(experimentId, callback) {
-        if (!this.checkForQubit()) {
+        if (!this.qubitExists()) {
             return null;
         }
 
@@ -25,10 +25,7 @@ class QubitHelper
         }
 
         // Call to qubit to trigger experience
-        if (window.__qubit.experiences &&
-            window.__qubit.experiences[experimentId] &&
-            window.__qubit.experiences[experimentId].trigger) {
-
+        if (this.experimentExists(experimentId)) {
             window.__qubit.experiences[experimentId].trigger(callback);
         } else {
             Logger.warn('"' + experimentId + '" experiment could not be triggered on the qubit window object.');
@@ -44,7 +41,7 @@ class QubitHelper
      * @param {function} [callback] A method to call after sending the action
      */
     trackAction(action, callback) {
-        if (!this.checkForQubit()) {
+        if (!this.qubitExists()) {
             return null;
         }
 
@@ -68,13 +65,31 @@ class QubitHelper
      * @private
      * @returns {boolean} Whether or not qubit is available
      */
-    checkForQubit() {
+    qubitExists() {
         if (!window.__qubit) {
             Logger.warn('[Canvass] Qubit window object not available. Unable to continue.');
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Checks whether the experiment and it's trigger is available on the window. If not,
+     * we won't be able to communicate with qubit and successfully enter the experiment.
+     *
+     * @private
+     * @returns {boolean} Whether or not the experiment is initialized in qubit
+     */
+    experimentExists(experimentId) {
+        if (this.qubitExists() &&
+            window.__qubit.experiences &&
+            window.__qubit.experiences[experimentId] &&
+            window.__qubit.experiences[experimentId].trigger) {
+
+            return true;
+        }
+        return false;
     }
 
 }

@@ -59,14 +59,30 @@ describe('QubitHelper', () => {
 
     });
 
-    describe('checkForQubit', () => {
+    describe('qubitExists', () => {
         it('returns true if qubit is available on the window', () => {
-            assert.equal(QubitHelper.checkForQubit(), true);
+            assert.equal(QubitHelper.qubitExists(), true);
         });
 
         it('returns false if qubit is available on the window', () => {
             global.window = {};
-            assert.equal(QubitHelper.checkForQubit(), false);
+            assert.equal(QubitHelper.qubitExists(), false);
+        });
+    });
+
+    describe('experimentExists', () => {
+        beforeEach(() => {
+            mockWindow['__qubit'].experiences.foo = {
+                trigger: sinon.stub(),
+            };
+        });
+
+        it('returns true if the experiment and trigger is initialized on the window', () => {
+            assert.equal(QubitHelper.experimentExists('foo'), true);
+        });
+
+        it('returns false if the experiment is not on the window', () => {
+            assert.equal(QubitHelper.experimentExists('bar'), false);
         });
     });
 
