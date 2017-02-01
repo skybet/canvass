@@ -105,6 +105,7 @@ describe('Manager', () => {
             mockExperiment.id = 'test id';
             mockExperiment.status = 'test status';
             mockExperiment.triggers = [{}];
+            mockExperiment.variants = {0: 'foo', 1: 'bar'};
             mockExperiment.group = '0';
             testManager.addExperiment(mockExperiment);
 
@@ -117,6 +118,7 @@ describe('Manager', () => {
                     Experiment: mockExperiment.id,
                     Status: mockExperiment.status,
                     Triggers: 'Object',
+                    Variants: '0,1',
                     Group: mockExperiment.group,
                 },
             ];

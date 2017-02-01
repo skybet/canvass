@@ -121,9 +121,16 @@ class Manager extends EventEmitter
         experiments.forEach((entry) => {
             let experiment = this.getExperiment(entry);
 
-            let triggers = experiment.triggers.map((t) => { return t.constructor.name || "trigger"; }).toString();
+            let triggers = experiment.triggers.map((t, i) => { return t.constructor.name || i; }).toString();
+            let variants = Object.keys(experiment.variants).toString();
 
-            status.push({Experiment: experiment.id, Status: experiment.status, Triggers: triggers, Group: experiment.group});
+            status.push({
+                Experiment: experiment.id,
+                Status: experiment.status,
+                Triggers: triggers,
+                Variants: variants,
+                Group: experiment.group,
+            });
         });
         this.logger.table(status);
     }
