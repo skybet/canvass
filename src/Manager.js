@@ -1,6 +1,5 @@
 import Experiment from './Experiment';
 import EventEmitter from './Helpers/EventEmitter';
-
 import Config from '~/src/Config';
 
 class Manager extends EventEmitter
@@ -11,6 +10,7 @@ class Manager extends EventEmitter
     constructor() {
         super();
         this.logger = require('./Helpers/Logger').default;
+        this.config = Config;
         this.register = {};
     }
 
