@@ -1,27 +1,27 @@
 import cookie from 'cookie';
+import logger from '~/src/Helpers/Logger';
+
+export const defaults = {
+    debug: false,
+    disableActivation: false,
+};
 
 export class Config
 {
-    static defaults = {
-        debug: false,
-        disableActivation: false,
-    };
-
-    constructor(config) {
-        this.logger = require('~/src/Helpers/Logger').default;
-
-        this.config = Object.assign({}, this.defaults, config);
+    constructor() {
+        this.config = Object.assign({}, defaults);
 
         if (typeof document !== 'undefined') {
             let cookies = cookie.parse(document.cookie);
+
             if (cookies.canvassDisableActivation) {
                 this.set('disableActivation', true);
-                this.logger.info('Detected "disableActivation" cookie. Disabling activation of experiments.');
+                logger.info('Detected "disableActivation" cookie. Disabling activation of experiments.');
             }
 
             if (cookies.canvassDebug) {
                 this.set('debug', true);
-                this.logger.info('Detected "debug" cookie. Enabling debug logging.');
+                logger.info('Detected "debug" cookie. Enabling debug logging.');
             }
         }
     }
