@@ -1,5 +1,5 @@
 import cookie from 'cookie';
-import Logger from '~/src/Helpers/Logger';
+import Logger from './Helpers/Logger';
 
 export const defaults = {
     debug: false,
