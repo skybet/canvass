@@ -1,5 +1,5 @@
 import cookie from 'cookie';
-import logger from './Helpers/Logger';
+import Logger from '~/src/Helpers/Logger';
 
 export const defaults = {
     debug: false,
@@ -16,12 +16,12 @@ export class Config
 
             if (cookies.canvassDisableActivation) {
                 this.set('disableActivation', true);
-                logger.info('Detected "disableActivation" cookie. Disabling activation of experiments.');
+                Logger.info('Detected "disableActivation" cookie. Disabling activation of experiments.');
             }
 
             if (cookies.canvassDebug) {
                 this.set('debug', true);
-                logger.info('Detected "debug" cookie. Enabling debug logging.');
+                Logger.info('Detected "debug" cookie. Enabling debug logging.');
             }
         }
     }
