@@ -6,7 +6,7 @@ import {Config, defaults} from '~/src/Config';
 import cookie from 'cookie';
 import logger from '~/src/Helpers/Logger';
 
-describe.only('Config', () => {
+describe('Config', () => {
 
     let testConfig, testDefaults;
 
@@ -59,7 +59,7 @@ describe.only('Config', () => {
         it('fails gracefully if a global document object cannot be found', () => {
             let oldDocument = global.document;
             delete global.document;
-            
+
             assert.doesNotThrow(() => new Config());
 
             global.document = oldDocument;

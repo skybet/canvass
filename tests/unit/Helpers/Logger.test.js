@@ -1,10 +1,11 @@
 import sinon from 'sinon';
 import assert from 'assert';
 import singleLogger, {Logger} from '~/src/Helpers/Logger';
+import Config from '~/src/Config';
 
 describe('Logger', () => {
 
-    let mockLogger, testingLogger;
+    let mockLogger, testingLogger, mockConfig;
 
     beforeEach(() => {
         mockLogger = {
@@ -17,6 +18,12 @@ describe('Logger', () => {
         };
 
         testingLogger = new Logger(mockLogger);
+
+        mockConfig = sinon.stub(Config, 'get');
+    });
+
+    afterEach(() => {
+        mockConfig.restore();
     });
 
     it('should correctly prefix a message', () => {
@@ -51,7 +58,9 @@ describe('Logger', () => {
         sinon.assert.calledWith(mockLogger.info, '[canvass] ' + testMessage);
     });
 
-    it.skip('should call the loggers debug method when calling debug', () => {
+    it('should call the loggers debug method when calling debug if debug mode is on', () => {
+        mockConfig.withArgs('debug').returns(true);
+
         let testMessage = 'test debug message';
         testingLogger.debug(testMessage);
 
@@ -59,7 +68,18 @@ describe('Logger', () => {
         sinon.assert.calledWith(mockLogger.debug, '[canvass] ' + testMessage);
     });
 
-    it.skip('should call the log method if a debug method does not exist', () => {
+    it('should not call the loggers debug method when calling debug if debug mode is off', () => {
+        mockConfig.withArgs('debug').returns(false);
+
+        let testMessage = 'test debug message';
+        testingLogger.debug(testMessage);
+
+        sinon.assert.notCalled(mockLogger.debug);
+    });
+
+    it('should call the log method if a debug method does not exist', () => {
+        mockConfig.withArgs('debug').returns(true);
+
         mockLogger = {
             error: sinon.spy(),
             warn: sinon.spy(),
