@@ -10,18 +10,19 @@ export class Config
 {
     constructor() {
         this.config = Object.assign({}, defaults);
-        
+        this.logger = logger;
+
         if (typeof document !== 'undefined') {
             let cookies = cookie.parse(document.cookie);
 
             if (cookies.canvassDisableActivation) {
                 this.set('disableActivation', true);
-                logger.info('Detected "disableActivation" cookie. Disabling activation of experiments.');
+                this.logger.info('Detected "disableActivation" cookie. Disabling activation of experiments.');
             }
 
             if (cookies.canvassDebug) {
                 this.set('debug', true);
-                logger.info('Detected "debug" cookie. Enabling debug logging.');
+                this.logger.info('Detected "debug" cookie. Enabling debug logging.');
             }
         }
     }

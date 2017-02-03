@@ -1,9 +1,12 @@
 /* eslint no-underscore-dangle: 0 */
-
-import Logger from '~/src/Helpers/Logger';
+import logger from '~/src/Helpers/Logger';
 
 class QubitHelper
 {
+    constructor() {
+        this.logger = logger;
+    }
+
     /**
      * Informs Qubit an experiment has been triggered and calls a callback with an arguement of the
      * group that the user has been assigned to.
@@ -28,7 +31,7 @@ class QubitHelper
         if (this.experimentExists(experimentId)) {
             window.__qubit.experiences[experimentId].trigger(callback);
         } else {
-            Logger.warn('"' + experimentId + '" experiment could not be triggered on the qubit window object.');
+            this.logger.warn('"' + experimentId + '" experiment could not be triggered on the qubit window object.');
         }
 
         return null;
@@ -49,7 +52,7 @@ class QubitHelper
             throw new Error('Missing argument: action');
         }
 
-        Logger.info('[Canvass] Tracking action: ' + action);
+        this.logger.info('[Canvass] Tracking action: ' + action);
 
         if (callback) {
             return callback();
@@ -67,7 +70,7 @@ class QubitHelper
      */
     qubitExists() {
         if (!window.__qubit) {
-            Logger.warn('[Canvass] Qubit window object not available. Unable to continue.');
+            this.logger.warn('[Canvass] Qubit window object not available. Unable to continue.');
             return false;
         }
 
