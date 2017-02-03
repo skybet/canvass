@@ -1,17 +1,17 @@
+export const LEVEL = {
+    ERROR: 1,
+    WARN: 2,
+    INFO: 3,
+    DEBUG: 4,
+};
+
 export class Logger
 {
     static PREFIX = '[canvass]';
 
-    static LEVEL = {
-        ERROR: 1,
-        WARN: 2,
-        INFO: 3,
-        DEBUG: 4,
-    };
-
     constructor(logger, outputLevel) {
         this.logger = logger || console;
-        this.outputLevel = outputLevel || Logger.LEVEL.WARN;
+        this.outputLevel = outputLevel || LEVEL.WARN;
     }
 
     setLogger(logger) {
@@ -31,7 +31,7 @@ export class Logger
     }
 
     debug(message) {
-        if (this.outputLevel === Logger.LEVEL.DEBUG) {
+        if (this.outputLevel === LEVEL.DEBUG) {
             let useMethod = this.logger.debug || this.logger.log;
             useMethod(this.prefixMessage(message));
         }

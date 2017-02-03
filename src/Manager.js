@@ -1,7 +1,7 @@
 import Experiment from './Experiment';
 import EventEmitter from './Helpers/EventEmitter';
 import config from '~/src/Config';
-import logger from '~/src/Helpers/Logger';
+import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 
 class Manager extends EventEmitter
 {
@@ -14,7 +14,7 @@ class Manager extends EventEmitter
 
         this.logger = logger;
         if (this.config.get('debug')) {
-            this.logger.setOutputLevel(this.logger.LEVEL.DEBUG);
+            this.logger.setOutputLevel(LoggerOutputLevels.DEBUG);
         }
 
         this.register = {};

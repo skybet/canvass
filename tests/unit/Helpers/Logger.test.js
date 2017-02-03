@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import assert from 'assert';
-import singleLogger, {Logger} from '~/src/Helpers/Logger';
+import singleLogger, {Logger, LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 
 describe('Logger', () => {
 
@@ -22,12 +22,12 @@ describe('Logger', () => {
     it('should set defaults if no constructor args given', () => {
         let logger = new Logger();
         assert.equal(logger.logger, console);
-        assert.equal(logger.outputLevel, Logger.LEVEL.WARN);
+        assert.equal(logger.outputLevel, LoggerOutputLevels.WARN);
     });
 
     it('should set the outputLevel correctly on constructor', () => {
-        let logger = new Logger(console, Logger.LEVEL.INFO);
-        assert.equal(logger.outputLevel, Logger.LEVEL.INFO);
+        let logger = new Logger(console, LoggerOutputLevels.INFO);
+        assert.equal(logger.outputLevel, LoggerOutputLevels.INFO);
     });
 
     it('should correctly prefix a message', () => {
@@ -63,7 +63,7 @@ describe('Logger', () => {
     });
 
     it('should call the loggers debug method when calling debug if debug level is set', () => {
-        testingLogger.setOutputLevel(Logger.LEVEL.DEBUG);
+        testingLogger.setOutputLevel(LoggerOutputLevels.DEBUG);
         let testMessage = 'test debug message';
 
         testingLogger.debug(testMessage);
@@ -73,7 +73,7 @@ describe('Logger', () => {
     });
 
     it('should not call the loggers debug method when calling debug if debug level is not set', () => {
-        testingLogger.setOutputLevel(Logger.LEVEL.WARN);
+        testingLogger.setOutputLevel(LoggerOutputLevels.WARN);
         let testMessage = 'test debug message';
 
         testingLogger.debug(testMessage);
@@ -88,7 +88,7 @@ describe('Logger', () => {
             info: sinon.spy(),
             log: sinon.spy(),
         };
-        testingLogger = new Logger(mockLogger, Logger.LEVEL.DEBUG);
+        testingLogger = new Logger(mockLogger, LoggerOutputLevels.DEBUG);
         let testMessage = 'test debug message';
 
         testingLogger.debug(testMessage);
