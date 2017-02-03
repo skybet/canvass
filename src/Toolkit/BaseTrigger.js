@@ -1,4 +1,5 @@
 import EventEmitter from '~/src/Helpers/EventEmitter';
+import logger from '~/src/Helpers/Logger';
 
 class BaseTrigger extends EventEmitter
 {
@@ -10,6 +11,7 @@ class BaseTrigger extends EventEmitter
      */
     checkTrigger() {
         if (this.isTriggered()) {
+            logger.debug(`"${this.constructor.name}" trigger just fired`);
             this.emit('TRIGGERED');
         }
     }
