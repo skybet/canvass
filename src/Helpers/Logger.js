@@ -1,11 +1,17 @@
-import Config from '~/src/Config';
-
 export class Logger
 {
     static PREFIX = '[canvass]';
 
-    constructor(logger) {
+    static LEVEL = {
+        ERROR: 1,
+        WARN: 2,
+        INFO: 3,
+        DEBUG: 4,
+    };
+
+    constructor(logger, outputLevel) {
         this.logger = logger || console;
+        this.outputLevel = outputLevel || Logger.LEVEL.WARN;
     }
 
     setLogger(logger) {
@@ -25,7 +31,7 @@ export class Logger
     }
 
     debug(message) {
-        if (Config.get('debug')) {
+        if (this.outputLevel === Logger.LEVEL.DEBUG) {
             let useMethod = this.logger.debug || this.logger.log;
             useMethod(this.prefixMessage(message));
         }
@@ -38,6 +44,10 @@ export class Logger
 
     prefixMessage(message) {
         return `${Logger.PREFIX} ${message}`;
+    }
+
+    setOutputLevel(outputLevel) {
+        this.outputLevel = outputLevel;
     }
 
 }

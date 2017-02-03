@@ -1,11 +1,10 @@
 import sinon from 'sinon';
 import assert from 'assert';
 import singleLogger, {Logger} from '~/src/Helpers/Logger';
-import Config from '~/src/Config';
 
 describe('Logger', () => {
 
-    let mockLogger, testingLogger, mockConfig;
+    let mockLogger, testingLogger;
 
     beforeEach(() => {
         mockLogger = {
@@ -18,12 +17,17 @@ describe('Logger', () => {
         };
 
         testingLogger = new Logger(mockLogger);
-
-        mockConfig = sinon.stub(Config, 'get');
     });
 
-    afterEach(() => {
-        mockConfig.restore();
+    it('should set defaults if no constructor args given', () => {
+        let logger = new Logger();
+        assert.equal(logger.logger, console);
+        assert.equal(logger.outputLevel, Logger.LEVEL.WARN);
+    });
+
+    it('should set the outputLevel correctly on constructor', () => {
+        let logger = new Logger(console, Logger.LEVEL.INFO);
+        assert.equal(logger.outputLevel, Logger.LEVEL.INFO);
     });
 
     it('should correctly prefix a message', () => {
@@ -58,37 +62,35 @@ describe('Logger', () => {
         sinon.assert.calledWith(mockLogger.info, '[canvass] ' + testMessage);
     });
 
-    it('should call the loggers debug method when calling debug if debug mode is on', () => {
-        mockConfig.withArgs('debug').returns(true);
-
+    it('should call the loggers debug method when calling debug if debug level is set', () => {
+        testingLogger.setOutputLevel(Logger.LEVEL.DEBUG);
         let testMessage = 'test debug message';
+
         testingLogger.debug(testMessage);
 
         sinon.assert.calledOnce(mockLogger.debug);
         sinon.assert.calledWith(mockLogger.debug, '[canvass] ' + testMessage);
     });
 
-    it('should not call the loggers debug method when calling debug if debug mode is off', () => {
-        mockConfig.withArgs('debug').returns(false);
-
+    it('should not call the loggers debug method when calling debug if debug level is not set', () => {
+        testingLogger.setOutputLevel(Logger.LEVEL.WARN);
         let testMessage = 'test debug message';
+
         testingLogger.debug(testMessage);
 
         sinon.assert.notCalled(mockLogger.debug);
     });
 
     it('should call the log method if a debug method does not exist', () => {
-        mockConfig.withArgs('debug').returns(true);
-
         mockLogger = {
             error: sinon.spy(),
             warn: sinon.spy(),
             info: sinon.spy(),
             log: sinon.spy(),
         };
-        testingLogger = new Logger(mockLogger);
-
+        testingLogger = new Logger(mockLogger, Logger.LEVEL.DEBUG);
         let testMessage = 'test debug message';
+
         testingLogger.debug(testMessage);
 
         sinon.assert.calledOnce(mockLogger.log);

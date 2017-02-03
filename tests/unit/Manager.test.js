@@ -2,6 +2,7 @@ import Manager from '~/src/Manager';
 import sinon from 'sinon';
 import assert from 'assert';
 import EventEmitter from 'events';
+import logger from '~/src/Helpers/Logger';
 
 describe('Manager', () => {
 
@@ -99,34 +100,38 @@ describe('Manager', () => {
     });
 
     describe('PrintState', () => {
+
+        let mockLogger;
+
+        beforeEach(() => {
+            mockLogger = sinon.mock(logger);
+
+        });
+
+        afterEach(() => {
+            mockLogger.restore();
+
+        });
+
         it('should call table on the logger with the correct data', () => {
-            let mockLogger = {
-                table: sinon.spy(),
-            };
             mockExperiment.id = 'test id';
             mockExperiment.status = 'test status';
             mockExperiment.triggers = [{}];
             mockExperiment.variants = {0: 'foo', 1: 'bar'};
             mockExperiment.group = '0';
             testManager.addExperiment(mockExperiment);
-
-            testManager.logger = mockLogger;
+            mockLogger.expects('table').once().withExactArgs([{
+                Experiment: mockExperiment.id,
+                Status: mockExperiment.status,
+                Triggers: 'Object',
+                Variants: '0,1',
+                Group: mockExperiment.group,
+                ExistsOnHelper: true,
+            }]);
 
             testManager.printState();
 
-            let expectedData = [
-                {
-                    Experiment: mockExperiment.id,
-                    Status: mockExperiment.status,
-                    Triggers: 'Object',
-                    Variants: '0,1',
-                    Group: mockExperiment.group,
-                    ExistsOnHelper: true,
-                },
-            ];
-
-            sinon.assert.calledOnce(mockLogger.table);
-            sinon.assert.calledWith(mockLogger.table, expectedData);
+            mockLogger.verify();
         });
     });
 
