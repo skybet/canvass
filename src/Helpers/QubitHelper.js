@@ -23,16 +23,19 @@ class QubitHelper
             throw new Error('Missing argument: callback');
         }
 
-        if (!this.qubitExists()) {
+        let qubit = this.getQubit();
+        if (!qubit) {
+            this.logger.warn('Qubit window object not available. Unable to continue.');
             return;
         }
-        
+
         // Call to qubit to trigger experience
-        if (!this.experimentExists(experimentId)) {
-            this.logger.warn('"' + experimentId + '" experiment could not be triggered.');
+        let qubitExperimentTrigger = this.getQubitExperimentTrigger(experimentId);
+        if (!qubitExperimentTrigger) {
+            this.logger.warn(`"${experimentId}" experiment trigger could not be found in Qubit, so could not be triggered.`);
             return;
         }
-        window.__qubit.experiences[experimentId].trigger(callback);
+        qubitExperimentTrigger(callback);
     }
 
     /**
@@ -47,11 +50,11 @@ class QubitHelper
             throw new Error('Missing argument: action');
         }
 
-        if (!this.qubitExists()) {
+        if (!this.getQubit()) {
             return null;
         }
 
-        this.logger.info('[Canvass] Tracking action: ' + action);
+        this.logger.info('Tracking action: ' + action);
 
         if (callback) {
             return callback();
@@ -67,13 +70,23 @@ class QubitHelper
      * @private
      * @returns {boolean} Whether or not qubit is available
      */
-    qubitExists() {
-        if (!window.__qubit) {
-            this.logger.warn('[Canvass] Qubit window object not available. Unable to continue.');
-            return false;
+    getQubit() {
+        return window.__qubit;
+    }
+
+    /**
+     * Returns the qubit experiences array containing experiments if it exists.
+     *
+     * @private
+     * @returns {array} The experiences array
+     */
+    getAllQubitExperiments() {
+        let qubit = this.getQubit();
+        if (qubit && qubit.experiences) {
+            return qubit.experiences;
         }
 
-        return true;
+        return null;
     }
 
     /**
@@ -83,30 +96,14 @@ class QubitHelper
      * @private
      * @returns {boolean} Whether or not the experiment is initialized in qubit
      */
-    experimentExists(experimentId) {
-        let experiments = this.getExperiments();
+    getQubitExperimentTrigger(experimentId) {
+        let experiments = this.getAllQubitExperiments();
 
-        if (experiments[experimentId] &&
+        if (experiments &&
+            experiments[experimentId] &&
             experiments[experimentId].trigger) {
 
-            return true;
-        }
-
-        this.logger.warn('"' + experimentId + '" experiment or trigger could not be found on the qubit window object.');
-        return false;
-    }
-
-    /**
-     * Returns the qubit experiences array containing experiments if it exists.
-     *
-     * @private
-     * @returns {array} The experiences array
-     */
-    getExperiments() {
-        if (this.qubitExists() &&
-            window.__qubit.experiences) {
-
-            return window.__qubit.experiences;
+            return experiments[experimentId].trigger;
         }
 
         return null;
