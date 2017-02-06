@@ -3,6 +3,9 @@ import logger from '~/src/Helpers/Logger';
 
 class QubitHelper
 {
+    /**
+     * @public
+     */
     constructor() {
         this.logger = logger;
     }
@@ -11,6 +14,7 @@ class QubitHelper
      * Informs Qubit an experiment has been triggered and calls a callback with an arguement of the
      * group that the user has been assigned to.
      *
+     * @public
      * @param {string} experimentId The name of the experiment in Qubit
      * @param {function} callback The method that qubit calls once it has triggered the experience
      */
@@ -41,6 +45,7 @@ class QubitHelper
     /**
      * Sends an action to Qubit and calls the callback
      *
+     * @public
      * @param {string} action The name of the action in Qubit
      * @param {function} [callback] A method to call after sending the action
      * @returns {function} Callback function
@@ -64,20 +69,9 @@ class QubitHelper
     }
 
     /**
-     * Checks whether the qubit object is available on the window to use. If not, we
-     * won't be able to communicate with qubit via the helper.
-     *
-     * @private
-     * @returns {boolean} Whether or not qubit is available
-     */
-    getQubit() {
-        return window.__qubit;
-    }
-
-    /**
      * Returns the qubit experiences array containing experiments if it exists.
      *
-     * @private
+     * @public
      * @returns {array} The experiences array
      */
     getAllQubitExperiments() {
@@ -93,7 +87,7 @@ class QubitHelper
      * Checks whether the experiment and it's trigger is available on the window. If not,
      * we won't be able to communicate with qubit and successfully enter the experiment.
      *
-     * @private
+     * @public
      * @returns {boolean} Whether or not the experiment is initialized in qubit
      */
     getQubitExperimentTrigger(experimentId) {
@@ -107,6 +101,17 @@ class QubitHelper
         }
 
         return null;
+    }
+
+    /**
+     * Checks whether the qubit object is available on the window to use. If not, we
+     * won't be able to communicate with qubit via the helper.
+     *
+     * @private
+     * @returns {boolean} Whether or not qubit is available
+     */
+    getQubit() {
+        return window.__qubit;
     }
 
 }
