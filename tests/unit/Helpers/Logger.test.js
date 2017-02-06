@@ -30,11 +30,11 @@ describe('Logger', () => {
         assert.equal(logger.outputLevel, LoggerOutputLevels.INFO);
     });
 
-    it('should correctly prefix a message', () => {
+    it('should correctly format a message', () => {
         let message = 'test message';
-        let result = testingLogger.prefixMessage(message);
+        let result = testingLogger.formatMessages([message]);
 
-        assert.equal(result, '[canvass] ' + message);
+        assert.deepEqual(result, ['[canvass]', message]);
     });
 
     it('should call the loggers error method when calling error', () => {
@@ -43,7 +43,7 @@ describe('Logger', () => {
         testingLogger.error(testMessage, testError);
 
         sinon.assert.calledOnce(mockLogger.error);
-        sinon.assert.calledWith(mockLogger.error, '[canvass] ' + testMessage, testError);
+        sinon.assert.calledWith(mockLogger.error, '[canvass]', testMessage, testError);
     });
 
     it('should call the loggers warn method when calling warn', () => {
@@ -51,7 +51,7 @@ describe('Logger', () => {
         testingLogger.warn(testMessage);
 
         sinon.assert.calledOnce(mockLogger.warn);
-        sinon.assert.calledWith(mockLogger.warn, '[canvass] ' + testMessage);
+        sinon.assert.calledWith(mockLogger.warn, '[canvass]', testMessage);
     });
 
     it('should call the loggers info method when calling info', () => {
@@ -59,7 +59,7 @@ describe('Logger', () => {
         testingLogger.info(testMessage);
 
         sinon.assert.calledOnce(mockLogger.info);
-        sinon.assert.calledWith(mockLogger.info, '[canvass] ' + testMessage);
+        sinon.assert.calledWith(mockLogger.info, '[canvass]', testMessage);
     });
 
     it('should call the loggers debug method when calling debug if debug level is set', () => {
@@ -69,7 +69,7 @@ describe('Logger', () => {
         testingLogger.debug(testMessage);
 
         sinon.assert.calledOnce(mockLogger.debug);
-        sinon.assert.calledWith(mockLogger.debug, '[canvass] ' + testMessage);
+        sinon.assert.calledWith(mockLogger.debug, '[canvass]', testMessage);
     });
 
     it('should not call the loggers debug method when calling debug if debug level is not set', () => {
@@ -94,7 +94,7 @@ describe('Logger', () => {
         testingLogger.debug(testMessage);
 
         sinon.assert.calledOnce(mockLogger.log);
-        sinon.assert.calledWith(mockLogger.log, '[canvass] ' + testMessage);
+        sinon.assert.calledWith(mockLogger.log, '[canvass]', testMessage);
     });
 
     it('should call the loggers table method when calling table', () => {

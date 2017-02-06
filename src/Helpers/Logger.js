@@ -18,22 +18,22 @@ export class Logger
         this.logger = logger;
     }
 
-    error(message, e) {
-        this.logger.error(this.prefixMessage(message), e);
+    error() {
+        this.logger.error(...this.formatMessages(Array.prototype.slice.call(arguments)));
     }
 
-    warn(message) {
-        this.logger.warn(this.prefixMessage(message));
+    warn() {
+        this.logger.warn(...this.formatMessages(Array.prototype.slice.call(arguments)));
     }
 
-    info(message) {
-        this.logger.info(this.prefixMessage(message));
+    info() {
+        this.logger.info(...this.formatMessages(Array.prototype.slice.call(arguments)));
     }
 
-    debug(message) {
+    debug() {
         if (this.outputLevel === LEVEL.DEBUG) {
             let useMethod = this.logger.debug || this.logger.log;
-            useMethod(this.prefixMessage(message));
+            useMethod(...this.formatMessages(Array.prototype.slice.call(arguments)));
         }
     }
 
@@ -42,8 +42,13 @@ export class Logger
         useMethod(data);
     }
 
-    prefixMessage(message) {
-        return `${Logger.PREFIX} ${message}`;
+    formatMessages(messages) {
+        if (messages.length < 1) {
+            return messages;
+        }
+
+        messages.unshift(Logger.PREFIX);
+        return messages;
     }
 
     setOutputLevel(outputLevel) {
