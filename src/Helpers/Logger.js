@@ -88,6 +88,7 @@ export class Logger
      *
      * @public
      * @param {...*} args Objects to output
+     * @returns {array} The formatted array of log messages
      */
     formatMessages(messages) {
         if (messages.length < 1) {

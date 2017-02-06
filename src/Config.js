@@ -8,6 +8,9 @@ export const defaults = {
 
 export class Config
 {
+    /**
+     * @public
+     */
     constructor() {
         this.config = Object.assign({}, defaults);
         this.logger = logger;
@@ -27,10 +30,24 @@ export class Config
         }
     }
 
+    /**
+     * Gets the config option value associated with the supplied key
+     *
+     * @public
+     * @param {string} key The config key
+     * @returns {object} Value of config option
+     */
     get(key) {
         return this.config[key];
     }
 
+    /**
+     * Sets the value of a config option
+     *
+     * @public
+     * @param {string} key The config option key
+     * @param {string} value The value of the config option
+     */
     set(key, value) {
         this.config[key] = value;
     }

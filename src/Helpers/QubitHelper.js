@@ -97,6 +97,12 @@ class QubitHelper
         return false;
     }
 
+    /**
+     * Returns the qubit experiences array containing experiments if it exists.
+     *
+     * @private
+     * @returns {array} The experiences array
+     */
     getExperiments() {
         if (this.qubitExists() &&
             window.__qubit.experiences) {
