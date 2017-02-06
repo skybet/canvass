@@ -19,106 +19,118 @@ describe('Logger', () => {
         testingLogger = new Logger(mockLogger);
     });
 
-    it('should set defaults if no constructor args given', () => {
-        let logger = new Logger();
-        assert.equal(logger.logger, console);
-        assert.equal(logger.outputLevel, LoggerOutputLevels.WARN);
+    describe('Constructor', () => {
+        it('should set defaults if no constructor args given', () => {
+            let logger = new Logger();
+            assert.equal(logger.logger, console);
+            assert.equal(logger.outputLevel, LoggerOutputLevels.WARN);
+        });
+
+        it('should set the outputLevel correctly on constructor', () => {
+            let logger = new Logger(console, LoggerOutputLevels.INFO);
+            assert.equal(logger.outputLevel, LoggerOutputLevels.INFO);
+        });
     });
 
-    it('should set the outputLevel correctly on constructor', () => {
-        let logger = new Logger(console, LoggerOutputLevels.INFO);
-        assert.equal(logger.outputLevel, LoggerOutputLevels.INFO);
+    describe('FormatMessages', () => {
+        it('should correctly add a prefix', () => {
+            let message = 'test message';
+            let result = testingLogger.formatMessages([message]);
+
+            assert.deepEqual(result, ['[canvass]', message]);
+        });
+
+        it('should not add a prefix if no messages were supplied', () => {
+            let result = testingLogger.formatMessages([]);
+
+            assert.deepEqual(result, []);
+        });
     });
 
-    it('should correctly format a message', () => {
-        let message = 'test message';
-        let result = testingLogger.formatMessages([message]);
+    describe('Logger', () => {
+        it('should call the loggers error method when calling error', () => {
+            let testMessage = 'test error message';
+            let testError = new Error(testMessage);
+            testingLogger.error(testMessage, testError);
 
-        assert.deepEqual(result, ['[canvass]', message]);
-    });
+            sinon.assert.calledOnce(mockLogger.error);
+            sinon.assert.calledWith(mockLogger.error, '[canvass]', testMessage, testError);
+        });
 
-    it('should call the loggers error method when calling error', () => {
-        let testMessage = 'test error message';
-        let testError = new Error(testMessage);
-        testingLogger.error(testMessage, testError);
+        it('should call the loggers warn method when calling warn', () => {
+            let testMessage = 'test warn message';
+            testingLogger.warn(testMessage);
 
-        sinon.assert.calledOnce(mockLogger.error);
-        sinon.assert.calledWith(mockLogger.error, '[canvass]', testMessage, testError);
-    });
+            sinon.assert.calledOnce(mockLogger.warn);
+            sinon.assert.calledWith(mockLogger.warn, '[canvass]', testMessage);
+        });
 
-    it('should call the loggers warn method when calling warn', () => {
-        let testMessage = 'test warn message';
-        testingLogger.warn(testMessage);
+        it('should call the loggers info method when calling info', () => {
+            let testMessage = 'test info message';
+            testingLogger.info(testMessage);
 
-        sinon.assert.calledOnce(mockLogger.warn);
-        sinon.assert.calledWith(mockLogger.warn, '[canvass]', testMessage);
-    });
+            sinon.assert.calledOnce(mockLogger.info);
+            sinon.assert.calledWith(mockLogger.info, '[canvass]', testMessage);
+        });
 
-    it('should call the loggers info method when calling info', () => {
-        let testMessage = 'test info message';
-        testingLogger.info(testMessage);
+        it('should call the loggers debug method when calling debug if debug level is set', () => {
+            testingLogger.setOutputLevel(LoggerOutputLevels.DEBUG);
+            let testMessage = 'test debug message';
 
-        sinon.assert.calledOnce(mockLogger.info);
-        sinon.assert.calledWith(mockLogger.info, '[canvass]', testMessage);
-    });
+            testingLogger.debug(testMessage);
 
-    it('should call the loggers debug method when calling debug if debug level is set', () => {
-        testingLogger.setOutputLevel(LoggerOutputLevels.DEBUG);
-        let testMessage = 'test debug message';
+            sinon.assert.calledOnce(mockLogger.debug);
+            sinon.assert.calledWith(mockLogger.debug, '[canvass]', testMessage);
+        });
 
-        testingLogger.debug(testMessage);
+        it('should not call the loggers debug method when calling debug if debug level is not set', () => {
+            testingLogger.setOutputLevel(LoggerOutputLevels.WARN);
+            let testMessage = 'test debug message';
 
-        sinon.assert.calledOnce(mockLogger.debug);
-        sinon.assert.calledWith(mockLogger.debug, '[canvass]', testMessage);
-    });
+            testingLogger.debug(testMessage);
 
-    it('should not call the loggers debug method when calling debug if debug level is not set', () => {
-        testingLogger.setOutputLevel(LoggerOutputLevels.WARN);
-        let testMessage = 'test debug message';
+            sinon.assert.notCalled(mockLogger.debug);
+        });
 
-        testingLogger.debug(testMessage);
+        it('should call the log method if a debug method does not exist', () => {
+            mockLogger = {
+                error: sinon.spy(),
+                warn: sinon.spy(),
+                info: sinon.spy(),
+                log: sinon.spy(),
+            };
+            testingLogger = new Logger(mockLogger, LoggerOutputLevels.DEBUG);
+            let testMessage = 'test debug message';
 
-        sinon.assert.notCalled(mockLogger.debug);
-    });
+            testingLogger.debug(testMessage);
 
-    it('should call the log method if a debug method does not exist', () => {
-        mockLogger = {
-            error: sinon.spy(),
-            warn: sinon.spy(),
-            info: sinon.spy(),
-            log: sinon.spy(),
-        };
-        testingLogger = new Logger(mockLogger, LoggerOutputLevels.DEBUG);
-        let testMessage = 'test debug message';
+            sinon.assert.calledOnce(mockLogger.log);
+            sinon.assert.calledWith(mockLogger.log, '[canvass]', testMessage);
+        });
 
-        testingLogger.debug(testMessage);
+        it('should call the loggers table method when calling table', () => {
+            let testData = {message: 'test table message'};
+            testingLogger.table(testData);
 
-        sinon.assert.calledOnce(mockLogger.log);
-        sinon.assert.calledWith(mockLogger.log, '[canvass]', testMessage);
-    });
+            sinon.assert.calledOnce(mockLogger.table);
+            sinon.assert.calledWith(mockLogger.table, testData);
+        });
 
-    it('should call the loggers table method when calling table', () => {
-        let testData = {message: 'test table message'};
-        testingLogger.table(testData);
+        it('should call the log method if a table method does not exist', () => {
+            mockLogger = {
+                error: sinon.spy(),
+                warn: sinon.spy(),
+                info: sinon.spy(),
+                log: sinon.spy(),
+            };
+            testingLogger = new Logger(mockLogger);
 
-        sinon.assert.calledOnce(mockLogger.table);
-        sinon.assert.calledWith(mockLogger.table, testData);
-    });
+            let testData = {message: 'test table message'};
+            testingLogger.table(testData);
 
-    it('should call the log method if a table method does not exist', () => {
-        mockLogger = {
-            error: sinon.spy(),
-            warn: sinon.spy(),
-            info: sinon.spy(),
-            log: sinon.spy(),
-        };
-        testingLogger = new Logger(mockLogger);
-
-        let testData = {message: 'test table message'};
-        testingLogger.table(testData);
-
-        sinon.assert.calledOnce(mockLogger.log);
-        sinon.assert.calledWith(mockLogger.log, testData);
+            sinon.assert.calledOnce(mockLogger.log);
+            sinon.assert.calledWith(mockLogger.log, testData);
+        });
     });
 
     it('should use the logger passed in using setLogger', () => {

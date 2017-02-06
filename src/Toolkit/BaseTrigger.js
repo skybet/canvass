@@ -3,6 +3,11 @@ import logger from '~/src/Helpers/Logger';
 
 class BaseTrigger extends EventEmitter
 {
+
+    constructor() {
+        super();
+        this.logger = logger;
+    }
     /**
      * Check the trigger to see if it should be fired, and emit the TRIGGERED event if so.
      *
@@ -11,7 +16,7 @@ class BaseTrigger extends EventEmitter
      */
     checkTrigger() {
         if (this.isTriggered()) {
-            logger.debug(`"${this.constructor.name}" trigger just fired`);
+            this.logger.debug(`"${this.constructor.name}" trigger just fired`);
             this.emit('TRIGGERED');
         }
     }

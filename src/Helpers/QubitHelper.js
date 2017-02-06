@@ -15,10 +15,6 @@ class QubitHelper
      * @param {function} callback The method that qubit calls once it has triggered the experience
      */
     triggerExperiment(experimentId, callback) {
-        if (!this.qubitExists()) {
-            return null;
-        }
-
         if (!experimentId) {
             throw new Error('Missing argument: experimentId');
         }
@@ -27,14 +23,16 @@ class QubitHelper
             throw new Error('Missing argument: callback');
         }
 
+        if (!this.qubitExists()) {
+            return;
+        }
+        
         // Call to qubit to trigger experience
         if (!this.experimentExists(experimentId)) {
             this.logger.warn('"' + experimentId + '" experiment could not be triggered.');
-            return null;
+            return;
         }
         window.__qubit.experiences[experimentId].trigger(callback);
-
-        return null;
     }
 
     /**
@@ -42,14 +40,15 @@ class QubitHelper
      *
      * @param {string} action The name of the action in Qubit
      * @param {function} [callback] A method to call after sending the action
+     * @returns {function} Callback function
      */
     trackAction(action, callback) {
-        if (!this.qubitExists()) {
-            return null;
-        }
-
         if (!action) {
             throw new Error('Missing argument: action');
+        }
+
+        if (!this.qubitExists()) {
+            return null;
         }
 
         this.logger.info('[Canvass] Tracking action: ' + action);
