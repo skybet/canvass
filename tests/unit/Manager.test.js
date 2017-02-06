@@ -129,7 +129,7 @@ describe('Manager', () => {
                 Group: mockExperiment.group,
                 ExistsOnHelper: true,
             }]);
-            mockLogger.expects('info').once().withArgs([])
+            mockLogger.expects('info').once().withArgs('Qubit Live Experiments', [])
 
             testManager.printState();
 

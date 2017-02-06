@@ -78,7 +78,7 @@ class Manager extends EventEmitter
      * @param {string} id ID of the experiment to remove
      */
     removeExperiment(id) {
-        this.logger.debug('Removing experiment ' + id);
+        this.logger.debug(`Removing experiment "${id}"`);
         let experiment = this.getExperiment(id);
         experiment.removeListener(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
         delete this.register[experiment.getId()];
@@ -92,7 +92,7 @@ class Manager extends EventEmitter
      * @param {string} actionName Name of the action to track
      */
     trackAction(experimentId, actionName) {
-        this.logger.debug('Tracking action ' + actionName + ' for experiment ' + experimentId);
+        this.logger.debug(`Tracking action "${actionName}" for experiment ' + "${experimentId}"`);
         this.helper.trackAction(experimentId + ':' + actionName);
     }
 
@@ -133,7 +133,7 @@ class Manager extends EventEmitter
             });
         });
         this.logger.table(status);
-        this.logger.info(this.helper.getExperiments());
+        this.logger.info('Qubit Live Experiments', this.helper.getAllQubitExperiments());
     }
 }
 
