@@ -28,11 +28,11 @@ class QubitHelper
         }
 
         // Call to qubit to trigger experience
-        if (this.experimentExists(experimentId)) {
-            window.__qubit.experiences[experimentId].trigger(callback);
-        } else {
-            this.logger.warn('"' + experimentId + '" experiment could not be triggered on the qubit window object.');
+        if (!this.experimentExists(experimentId)) {
+            this.logger.warn('"' + experimentId + '" experiment could not be triggered.');
+            return null;
         }
+        window.__qubit.experiences[experimentId].trigger(callback);
 
         return null;
     }
@@ -85,14 +85,26 @@ class QubitHelper
      * @returns {boolean} Whether or not the experiment is initialized in qubit
      */
     experimentExists(experimentId) {
-        if (this.qubitExists() &&
-            window.__qubit.experiences &&
-            window.__qubit.experiences[experimentId] &&
-            window.__qubit.experiences[experimentId].trigger) {
+        let experiments = this.getExperiments();
+
+        if (experiments[experimentId] &&
+            experiments[experimentId].trigger) {
 
             return true;
         }
+
+        this.logger.warn('"' + experimentId + '" experiment or trigger could not be found on the qubit window object.');
         return false;
+    }
+
+    getExperiments() {
+        if (this.qubitExists() &&
+            window.__qubit.experiences) {
+
+            return window.__qubit.experiences;
+        }
+
+        return null;
     }
 
 }

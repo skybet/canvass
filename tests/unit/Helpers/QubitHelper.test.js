@@ -54,7 +54,8 @@ describe('QubitHelper', () => {
         });
 
         it('fails gracefully if there is no matching experience in qubit', () => {
-            assert.doesNotThrow(() => QubitHelper.triggerExperiment('DoesNotExistInQubit', () => {}));
+            QubitHelper.triggerExperiment('DoesNotExistInQubit', () => {});
+            //assert.doesNotThrow(() => QubitHelper.triggerExperiment('DoesNotExistInQubit', () => {}));
         });
 
     });
