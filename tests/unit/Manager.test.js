@@ -12,8 +12,8 @@ describe('Manager', () => {
         mockHelper = {
             triggerExperiment: sinon.stub().returns(0),
             trackAction: sinon.spy(),
-            experimentExists: sinon.stub().returns(true),
-            getExperiments: sinon.stub().returns([]),
+            getQubitExperimentTrigger: sinon.stub().returns(()=>{}),
+            getAllQubitExperiments: sinon.stub().returns([]),
         };
         mockExperiment = {
             on: sinon.spy(),

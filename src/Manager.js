@@ -121,7 +121,7 @@ class Manager extends EventEmitter
             let experiment = this.getExperiment(entry);
             let triggers = experiment.triggers.map((t, i) => { return t.constructor.name || i; }).toString();
             let variants = Object.keys(experiment.variants).toString();
-            let existsOnHelper = this.helper.experimentExists(entry);
+            let existsOnHelper = Boolean(this.helper.getQubitExperimentTrigger(entry));
 
             status.push({
                 Experiment: experiment.id,
