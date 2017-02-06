@@ -133,6 +133,7 @@ class Manager extends EventEmitter
             });
         });
         this.logger.table(status);
+        this.logger.info(this.helper.getExperiments());
     }
 }
 

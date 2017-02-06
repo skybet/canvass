@@ -13,6 +13,7 @@ describe('Manager', () => {
             triggerExperiment: sinon.stub().returns(0),
             trackAction: sinon.spy(),
             experimentExists: sinon.stub().returns(true),
+            getExperiments: sinon.stub().returns([]),
         };
         mockExperiment = {
             on: sinon.spy(),
@@ -128,6 +129,7 @@ describe('Manager', () => {
                 Group: mockExperiment.group,
                 ExistsOnHelper: true,
             }]);
+            mockLogger.expects('info').once().withArgs([])
 
             testManager.printState();
 
