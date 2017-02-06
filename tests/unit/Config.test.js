@@ -2,7 +2,7 @@
 
 import sinon from 'sinon';
 import assert from 'assert';
-import {Config, defaults} from '~/src/Config';
+import {Config, configDefaults} from '~/src/Config';
 import cookie from 'cookie';
 import logger from '~/src/Helpers/Logger';
 
@@ -12,7 +12,7 @@ describe('Config', () => {
 
     beforeEach(() => {
         global.document = {cookie: ''};
-        testDefaults = defaults;
+        testDefaults = configDefaults;
     });
 
     describe('Initialization', () => {

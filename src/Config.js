@@ -1,7 +1,7 @@
 import cookie from 'cookie';
 import logger from '~/src/Helpers/Logger';
 
-export const defaults = {
+export const configDefaults = {
     debug: false,
     disableActivation: false,
 };
@@ -12,7 +12,7 @@ export class Config
      * @public
      */
     constructor() {
-        this.config = Object.assign({}, defaults);
+        this.config = Object.assign({}, configDefaults);
         this.logger = logger;
 
         if (typeof document !== 'undefined') {
