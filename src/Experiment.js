@@ -1,4 +1,5 @@
 import EventEmitter from '~/src/Helpers/EventEmitter';
+import logger from '~/src/Helpers/Logger';
 
 class Experiment extends EventEmitter
 {
@@ -15,6 +16,8 @@ class Experiment extends EventEmitter
      */
     constructor(id, triggers, variants) {
         super();
+        this.logger = logger;
+
         if (!id) {
             throw new Error('Missing argument: id');
         }
@@ -32,7 +35,7 @@ class Experiment extends EventEmitter
         }
 
         this.id = id;
-        this.status = Experiment.Status.WAITING;
+        this.setStatus(Experiment.Status.WAITING);
         this.group = null;
         this.triggers = triggers;
         this.variants = variants;
@@ -119,6 +122,8 @@ class Experiment extends EventEmitter
         }
         this.status = status;
         this.emit(this.status);
+
+        this.logger.debug(`"${this.id}" experiment status updated to: ${status}`);
     }
 
     /**

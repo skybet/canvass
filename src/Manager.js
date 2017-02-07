@@ -1,5 +1,7 @@
 import Experiment from './Experiment';
 import EventEmitter from './Helpers/EventEmitter';
+import config from '~/src/Config';
+import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 
 class Manager extends EventEmitter
 {
@@ -8,6 +10,13 @@ class Manager extends EventEmitter
      */
     constructor() {
         super();
+        this.config = config;
+
+        this.logger = logger;
+        if (this.config.get('debug')) {
+            this.logger.setOutputLevel(LoggerOutputLevels.DEBUG);
+        }
+
         this.register = {};
     }
 
@@ -19,6 +28,8 @@ class Manager extends EventEmitter
      */
     addExperiment(experiment) {
         this.register[experiment.getId()] = experiment;
+        this.logger.debug(`"${experiment.getId()}" experiment added to the Manager`);
+
         experiment.on(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
         experiment.on(Experiment.Status.ACTIVE, () => this.emit(experiment.getId() + '.ACTIVE'));
         experiment.setupTriggers();
@@ -32,8 +43,17 @@ class Manager extends EventEmitter
      * @param {string} experimentId The unique ID for the experiment being activated
      */
     activateExperiment(experimentId) {
+        if (this.config.get('disableActivation')) {
+            this.logger.info(`"${experimentId}" should have triggered, but experiments are disabled`);
+            return;
+        }
+
+        this.logger.info(`"${experimentId}" experiment is being triggered`);
         let experiment = this.getExperiment(experimentId);
-        this.helper.triggerExperiment(experimentId, (group) => experiment.setGroup(group));
+        this.helper.triggerExperiment(experimentId, (group) => {
+            this.logger.info(`"${experimentId}" experiment group set to: ' + group`);
+            experiment.setGroup(group);
+        });
     }
 
     /**
@@ -58,6 +78,7 @@ class Manager extends EventEmitter
      * @param {string} id ID of the experiment to remove
      */
     removeExperiment(id) {
+        this.logger.debug(`Removing experiment "${id}"`);
         let experiment = this.getExperiment(id);
         experiment.removeListener(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
         delete this.register[experiment.getId()];
@@ -71,6 +92,7 @@ class Manager extends EventEmitter
      * @param {string} actionName Name of the action to track
      */
     trackAction(experimentId, actionName) {
+        this.logger.debug(`Tracking action "${actionName}" for experiment ' + "${experimentId}"`);
         this.helper.trackAction(experimentId + ':' + actionName);
     }
 
@@ -82,8 +104,36 @@ class Manager extends EventEmitter
      * @return {Manager}
      */
     setHelper(helper) {
+        this.logger.debug(`Setting helper to "' + ${helper.constructor.name}"`);
         this.helper = helper;
         return this;
+    }
+
+    /**
+     * Prints the state of experiments to the console in a human readable way
+     *
+     * @public
+     */
+    printState() {
+        let status = [];
+        let experiments = Object.keys(this.register);
+        experiments.forEach((entry) => {
+            let experiment = this.getExperiment(entry);
+            let triggers = experiment.triggers.map((t, i) => { return t.constructor.name || i; }).toString();
+            let variants = Object.keys(experiment.variants).toString();
+            let existsOnHelper = Boolean(this.helper.getQubitExperimentTrigger(entry));
+
+            status.push({
+                Experiment: experiment.id,
+                Status: experiment.status,
+                Triggers: triggers,
+                Variants: variants,
+                Group: experiment.group,
+                ExistsOnHelper: existsOnHelper,
+            });
+        });
+        this.logger.table(status);
+        this.logger.info('Qubit Live Experiments', this.helper.getAllQubitExperiments());
     }
 }
 

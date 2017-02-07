@@ -2,6 +2,7 @@ import Manager from '~/src/Manager';
 import sinon from 'sinon';
 import assert from 'assert';
 import EventEmitter from 'events';
+import logger from '~/src/Helpers/Logger';
 
 describe('Manager', () => {
 
@@ -11,6 +12,8 @@ describe('Manager', () => {
         mockHelper = {
             triggerExperiment: sinon.stub().returns(0),
             trackAction: sinon.spy(),
+            getQubitExperimentTrigger: sinon.stub().returns(()=>{}),
+            getAllQubitExperiments: sinon.stub().returns([]),
         };
         mockExperiment = {
             on: sinon.spy(),
@@ -94,6 +97,43 @@ describe('Manager', () => {
 
             sinon.assert.calledOnce(mockHelper.trackAction);
             sinon.assert.calledWith(mockHelper.trackAction, '1:click');
+        });
+    });
+
+    describe('PrintState', () => {
+
+        let mockLogger;
+
+        beforeEach(() => {
+            mockLogger = sinon.mock(logger);
+
+        });
+
+        afterEach(() => {
+            mockLogger.restore();
+
+        });
+
+        it('should call table on the logger with the correct data', () => {
+            mockExperiment.id = 'test id';
+            mockExperiment.status = 'test status';
+            mockExperiment.triggers = [{}];
+            mockExperiment.variants = {0: 'foo', 1: 'bar'};
+            mockExperiment.group = '0';
+            testManager.addExperiment(mockExperiment);
+            mockLogger.expects('table').once().withExactArgs([{
+                Experiment: mockExperiment.id,
+                Status: mockExperiment.status,
+                Triggers: 'Object',
+                Variants: '0,1',
+                Group: mockExperiment.group,
+                ExistsOnHelper: true,
+            }]);
+            mockLogger.expects('info').once().withArgs('Qubit Live Experiments', [])
+
+            testManager.printState();
+
+            mockLogger.verify();
         });
     });
 

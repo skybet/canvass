@@ -40,7 +40,7 @@ describe('QubitHelper', () => {
     describe('triggerExperiment', () => {
 
         beforeEach(() => {
-            mockWindow.__qubit.experiences.testExperiment = {
+            mockWindow['__qubit'].experiences.testExperiment = {
                 trigger: sinon.stub(),
             };
         });
@@ -59,14 +59,33 @@ describe('QubitHelper', () => {
 
     });
 
-    describe('checkForQubit', () => {
-        it('returns true if qubit is available on the window', () => {
-            assert.equal(QubitHelper.checkForQubit(), true);
+    describe('getQubit', () => {
+        it('returns qubit window object from the window if available', () => {
+            assert.equal(QubitHelper.getQubit(), mockWindow['__qubit']);
         });
 
-        it('returns false if qubit is available on the window', () => {
+        it('returns undefined if the object is not available', () => {
             global.window = {};
-            assert.equal(QubitHelper.checkForQubit(), false);
+            assert.equal(QubitHelper.getQubit(), undefined);
+        });
+    });
+
+    describe('getExperimentTrigger', () => {
+        beforeEach(() => {
+            mockWindow['__qubit'].experiences.foo = {
+                trigger: sinon.stub(),
+            };
+        });
+
+        it('returns the experiments trigger function if available on qubit', () => {
+            assert.equal(
+                QubitHelper.getQubitExperimentTrigger('foo'),
+                mockWindow['__qubit'].experiences.foo.trigger
+            );
+        });
+
+        it('returns null if the experiment trigger is not on the window', () => {
+            assert.equal(QubitHelper.getQubitExperimentTrigger('bar'), null);
         });
     });
 
