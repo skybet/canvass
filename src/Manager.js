@@ -51,7 +51,7 @@ class Manager extends EventEmitter
         this.logger.info(`"${experimentId}" experiment is being triggered`);
         let experiment = this.getExperiment(experimentId);
         this.helper.triggerExperiment(experimentId, (group) => {
-            this.logger.info(`"${experimentId}" experiment group set to: ' + group`);
+            this.logger.info(`"${experimentId}" experiment group set to: ${group}`);
             experiment.setGroup(group);
         });
     }
@@ -92,7 +92,7 @@ class Manager extends EventEmitter
      * @param {string} actionName Name of the action to track
      */
     trackAction(experimentId, actionName) {
-        this.logger.debug(`Tracking action "${actionName}" for experiment ' + "${experimentId}"`);
+        this.logger.debug(`Tracking action "${actionName}" for experiment "${experimentId}"`);
         this.helper.trackAction(experimentId + ':' + actionName);
     }
 
@@ -104,7 +104,7 @@ class Manager extends EventEmitter
      * @return {Manager}
      */
     setHelper(helper) {
-        this.logger.debug(`Setting helper to "' + ${helper.constructor.name}"`);
+        this.logger.debug(`Setting helper to "${helper.constructor.name}"`);
         this.helper = helper;
         return this;
     }
