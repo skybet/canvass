@@ -3,6 +3,8 @@ import logger from '~/src/Helpers/Logger';
 
 class QubitHelper
 {
+    displayName = 'QubitHelper';
+    
     /**
      * @public
      */

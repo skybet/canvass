@@ -104,7 +104,7 @@ class Manager extends EventEmitter
      * @return {Manager}
      */
     setHelper(helper) {
-        this.logger.debug(`Setting helper to "${helper.constructor.name}"`);
+        this.logger.debug(`Setting helper to "${helper.displayName}"`);
         this.helper = helper;
         return this;
     }
@@ -119,7 +119,7 @@ class Manager extends EventEmitter
         let experiments = Object.keys(this.register);
         experiments.forEach((entry) => {
             let experiment = this.getExperiment(entry);
-            let triggers = experiment.triggers.map((t, i) => { return t.constructor.name || i; }).toString();
+            let triggers = experiment.triggers.map((t, i) => { return t.displayName || i; }).toString();
             let variants = Object.keys(experiment.variants).toString();
             let existsOnHelper = Boolean(this.helper.getQubitExperimentTrigger(entry));
 

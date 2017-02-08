@@ -3,6 +3,7 @@ import logger from '~/src/Helpers/Logger';
 
 class BaseTrigger extends EventEmitter
 {
+    displayName = 'BaseTrigger';
 
     constructor() {
         super();
@@ -16,7 +17,7 @@ class BaseTrigger extends EventEmitter
      */
     checkTrigger() {
         if (this.isTriggered()) {
-            this.logger.debug(`"${this.constructor.name}" trigger just fired`);
+            this.logger.debug(`"${this.displayName}" trigger just fired`);
             this.emit('TRIGGERED');
         }
     }
