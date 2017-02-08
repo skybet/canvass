@@ -117,19 +117,19 @@ describe('Manager', () => {
         it('should call table on the logger with the correct data', () => {
             mockExperiment.id = 'test id';
             mockExperiment.status = 'test status';
-            mockExperiment.triggers = [{}];
+            mockExperiment.triggers = [{displayName: 'TestTrigger'}];
             mockExperiment.variants = {0: 'foo', 1: 'bar'};
             mockExperiment.group = '0';
             testManager.addExperiment(mockExperiment);
             mockLogger.expects('table').once().withExactArgs([{
                 Experiment: mockExperiment.id,
                 Status: mockExperiment.status,
-                Triggers: 'Object',
+                Triggers: 'TestTrigger',
                 Variants: '0,1',
                 Group: mockExperiment.group,
                 ExistsOnHelper: true,
             }]);
-            mockLogger.expects('info').once().withArgs('Qubit Live Experiments', [])
+            mockLogger.expects('info').once().withArgs('Qubit Live Experiments', []);
 
             testManager.printState();
 
