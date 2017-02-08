@@ -3,13 +3,15 @@ import logger from '~/src/Helpers/Logger';
 
 class QubitHelper
 {
-    static displayName = 'Qubit';
-
     /**
      * @public
      */
     constructor() {
         this.logger = logger;
+    }
+
+    static get displayName() {
+        return 'QubitHelper';
     }
 
     /**
