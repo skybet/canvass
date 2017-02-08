@@ -3,7 +3,7 @@ import logger from '~/src/Helpers/Logger';
 
 class BaseTrigger extends EventEmitter
 {
-    static displayName = 'BaseTrigger';
+    displayName = 'BaseTrigger';
 
     constructor() {
         super();
