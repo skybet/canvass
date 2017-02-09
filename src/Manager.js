@@ -2,8 +2,9 @@ import Experiment from './Experiment';
 import EventEmitter from './Helpers/EventEmitter';
 import config from '~/src/Config';
 import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
+import cookie from 'cookie';
 
-class Manager extends EventEmitter
+export class Manager extends EventEmitter
 {
     /**
      * @public
@@ -11,7 +12,8 @@ class Manager extends EventEmitter
     constructor() {
         super();
         this.config = config;
-        this.triggeredExperiments = ['FROG'];
+        this.triggeredExperiments = [];
+        this.loadTriggeredExperiments();
 
         this.logger = logger;
         if (this.config.get('debug')) {
@@ -19,6 +21,15 @@ class Manager extends EventEmitter
         }
 
         this.register = {};
+    }
+
+    loadTriggeredExperiments() {
+        if (typeof document !== 'undefined') {
+            let cookies = cookie.parse(document.cookie);
+            if (cookies.canvassTriggeredExperiments) {
+                this.triggeredExperiments = JSON.parse(cookies.canvassTriggeredExperiments);
+            }
+        }
     }
 
     /**

@@ -1,8 +1,9 @@
-import Manager from '~/src/Manager';
+import Manager, {Manager as ManagerClass} from '~/src/Manager';
 import sinon from 'sinon';
 import assert from 'assert';
 import EventEmitter from 'events';
 import logger from '~/src/Helpers/Logger';
+import cookie from 'cookie';
 
 describe('Manager', () => {
 
@@ -45,6 +46,7 @@ describe('Manager', () => {
         });
 
         it('should enroll an experiment if triggers fired in a previous session', () => {
+            testManager.triggeredExperiments = ['FROG'];
             testManager.addExperiment(mockExperiment);
             sinon.assert.calledOnce(mockExperiment.enroll);
         });
@@ -72,6 +74,31 @@ describe('Manager', () => {
 
             sinon.assert.calledOnce(mockActivateExperiment);
             sinon.assert.calledWith(mockActivateExperiment, 'FROG');
+        });
+    });
+
+    describe('Triggered Experiments', () => {
+
+        beforeEach(() => {
+            global.document = {cookie: ''};
+        });
+
+        afterEach(() => {
+            cookie.parse.restore();
+        });
+
+        it('should be initialized from the cookie', () => {
+            let triggeredExperiments = ['FROG'];
+            let cookieValue = JSON.stringify(triggeredExperiments);
+
+            sinon.stub(cookie, 'parse', () => {
+                return {canvassTriggeredExperiments: cookieValue};
+            });
+
+            let testManagerWithCookies = new ManagerClass();
+
+            assert.deepEqual(testManagerWithCookies.triggeredExperiments, triggeredExperiments);
+
         });
     });
 
