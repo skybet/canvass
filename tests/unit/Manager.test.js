@@ -22,6 +22,7 @@ describe('Manager', () => {
         mockExperiment.setGroup = sinon.spy();
         mockExperiment.getId = sinon.stub().returns('FROG');
         mockExperiment.setupTriggers = sinon.spy();
+        mockExperiment.enroll = sinon.spy();
 
         testManager = Manager;
         testManager.setHelper(mockHelper);
@@ -41,6 +42,11 @@ describe('Manager', () => {
         it('should add an experiment to the registry', () => {
             testManager.addExperiment(mockExperiment);
             assert.deepEqual(testManager.register, {FROG: mockExperiment});
+        });
+
+        it('should enroll an experiment if triggers fired in a previous session', () => {
+            testManager.addExperiment(mockExperiment);
+            sinon.assert.calledOnce(mockExperiment.enroll);
         });
 
         it('should remove an experiment from the registry', () => {

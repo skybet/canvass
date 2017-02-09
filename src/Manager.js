@@ -11,6 +11,7 @@ class Manager extends EventEmitter
     constructor() {
         super();
         this.config = config;
+        this.triggeredExperiments = ['FROG'];
 
         this.logger = logger;
         if (this.config.get('debug')) {
@@ -33,6 +34,14 @@ class Manager extends EventEmitter
         experiment.on(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
         experiment.on(Experiment.Status.ACTIVE, () => this.emit(experiment.getId() + '.ACTIVE'));
         experiment.setupTriggers();
+
+        if (this.experimentAlreadyTriggered(experiment.getId())) {
+            experiment.enroll();
+        }
+    }
+
+    experimentAlreadyTriggered(experimentId) {
+        return this.triggeredExperiments.includes(experimentId);
     }
 
     /**
