@@ -15,13 +15,14 @@ describe('Manager', () => {
             getQubitExperimentTrigger: sinon.stub().returns(()=>{}),
             getAllQubitExperiments: sinon.stub().returns([]),
         };
-        mockExperiment = {
-            on: sinon.spy(),
-            setGroup: sinon.spy(),
-            getId: sinon.stub().returns('FROG'),
-            removeListener: sinon.spy(),
-            setupTriggers: sinon.spy(),
-        };
+
+        mockExperiment = new EventEmitter();
+        mockExperiment.on = sinon.spy(mockExperiment, 'on');
+        mockExperiment.removeListener = sinon.spy(mockExperiment, 'removeListener');
+        mockExperiment.setGroup = sinon.spy();
+        mockExperiment.getId = sinon.stub().returns('FROG');
+        mockExperiment.setupTriggers = sinon.spy();
+
         testManager = Manager;
         testManager.setHelper(mockHelper);
     });
@@ -33,35 +34,26 @@ describe('Manager', () => {
     });
 
     describe('Experiment', () => {
-        beforeEach(() => {
-            mockExperiment = new EventEmitter();
-            mockExperiment.on = sinon.spy(mockExperiment, 'on');
-            mockExperiment.removeListener = sinon.spy(mockExperiment, 'removeListener');
-            mockExperiment.setGroup = sinon.spy();
-            mockExperiment.getId = sinon.stub().returns('FROG');
-            mockExperiment.setupTriggers = sinon.spy();
-
-            testManager.addExperiment(mockExperiment);
-        });
-
         afterEach(() => {
-            testManager.removeExperiment('FROG');
+            testManager.register = [];
         });
 
         it('should add an experiment to the registry', () => {
+            testManager.addExperiment(mockExperiment);
             assert.deepEqual(testManager.register, {FROG: mockExperiment});
         });
 
         it('should remove an experiment from the registry', () => {
+            testManager.addExperiment(mockExperiment);
             testManager.removeExperiment('FROG');
 
             sinon.assert.calledOnce(mockExperiment.removeListener);
             assert.deepEqual(testManager.register, {});
-
-            testManager.addExperiment(mockExperiment);
         });
 
         it('should listen for experiment emitting enrolled', () => {
+            testManager.addExperiment(mockExperiment);
+
             sinon.assert.called(mockExperiment.on);
             sinon.assert.calledWith(mockExperiment.on, 'ENROLLED');
         });
@@ -69,7 +61,9 @@ describe('Manager', () => {
         it('should call activateExperiment when enrolled emitted', () => {
             let mockActivateExperiment = sinon.spy(testManager, 'activateExperiment');
 
+            testManager.addExperiment(mockExperiment);
             mockExperiment.emit('ENROLLED');
+
             sinon.assert.calledOnce(mockActivateExperiment);
             sinon.assert.calledWith(mockActivateExperiment, 'FROG');
         });
