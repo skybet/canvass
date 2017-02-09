@@ -11,26 +11,16 @@ export class Manager extends EventEmitter
      */
     constructor() {
         super();
+        this.register = {};
         this.config = config;
-        this.triggeredExperiments = [];
-        this.loadTriggeredExperiments();
 
         this.logger = logger;
         if (this.config.get('debug')) {
             this.logger.setOutputLevel(LoggerOutputLevels.DEBUG);
         }
 
-        this.register = {};
-    }
-
-    // TODO document me
-    loadTriggeredExperiments() {
-        if (typeof document !== 'undefined') {
-            let cookies = cookie.parse(document.cookie);
-            if (cookies.canvassTriggeredExperiments) {
-                this.triggeredExperiments = JSON.parse(cookies.canvassTriggeredExperiments);
-            }
-        }
+        this.triggeredExperiments = [];
+        this.loadTriggeredExperiments();
     }
 
     /**
@@ -50,31 +40,6 @@ export class Manager extends EventEmitter
         if (this.experimentAlreadyTriggered(experiment.getId())) {
             experiment.enroll();
         }
-    }
-
-    experimentAlreadyTriggered(experimentId) {
-        return this.triggeredExperiments.includes(experimentId);
-    }
-
-    /**
-     * Activates an experiment. Contacts the experiment reporting system via the helper and gets
-     * a group for this user
-     *
-     * @private
-     * @param {string} experimentId The unique ID for the experiment being activated
-     */
-    activateExperiment(experimentId) {
-        if (this.config.get('disableActivation')) {
-            this.logger.info(`"${experimentId}" should have triggered, but experiments are disabled`);
-            return;
-        }
-
-        this.logger.info(`"${experimentId}" experiment is being triggered`);
-        let experiment = this.getExperiment(experimentId);
-        this.helper.triggerExperiment(experimentId, (group) => {
-            this.logger.info(`"${experimentId}" experiment group set to: ${group}`);
-            experiment.setGroup(group);
-        });
     }
 
     /**
@@ -156,6 +121,54 @@ export class Manager extends EventEmitter
         this.logger.table(status);
         this.logger.info('Qubit Live Experiments', this.helper.getAllQubitExperiments());
     }
+
+    /**
+     * Activates an experiment. Contacts the experiment reporting system via the helper and gets
+     * a group for this user
+     *
+     * @private
+     * @param {string} experimentId The unique ID for the experiment being activated
+     */
+    activateExperiment(experimentId) {
+        if (this.config.get('disableActivation')) {
+            this.logger.info(`"${experimentId}" should have triggered, but experiments are disabled`);
+            return;
+        }
+
+        this.logger.info(`"${experimentId}" experiment is being triggered`);
+        let experiment = this.getExperiment(experimentId);
+        this.helper.triggerExperiment(experimentId, (group) => {
+            this.logger.info(`"${experimentId}" experiment group set to: ${group}`);
+            experiment.setGroup(group);
+        });
+    }
+
+    /**
+     * Loads triggered experiments from the cookie
+     *
+     * @private
+     * @param {string} experimentId The unique ID for the experiment being activated
+     */
+    loadTriggeredExperiments() {
+        if (typeof document !== 'undefined') {
+            let cookies = cookie.parse(document.cookie);
+            if (cookies.canvassTriggeredExperiments) {
+                this.triggeredExperiments = JSON.parse(cookies.canvassTriggeredExperiments);
+            }
+        }
+    }
+
+    /**
+     * Check if an experiment has previously been triggered
+     *
+     * @private
+     * @param {string} experimentId The unique ID for the experiment being activated
+     * @returns {boolean}
+     */
+    experimentAlreadyTriggered(experimentId) {
+        return this.triggeredExperiments.includes(experimentId);
+    }
+
 }
 
 export default new Manager();
