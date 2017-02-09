@@ -23,6 +23,7 @@ export class Manager extends EventEmitter
         this.register = {};
     }
 
+    // TODO document me
     loadTriggeredExperiments() {
         if (typeof document !== 'undefined') {
             let cookies = cookie.parse(document.cookie);
