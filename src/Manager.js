@@ -38,6 +38,7 @@ export class Manager extends EventEmitter
         experiment.setupTriggers();
 
         if (this.experimentAlreadyTriggered(experiment.getId())) {
+            this.logger.info(`"${experiment.getId()}" experiment has been triggered already for this user, enrolling again`)
             experiment.enroll();
         }
     }
