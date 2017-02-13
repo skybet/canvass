@@ -3,6 +3,7 @@ import EventEmitter from './Helpers/EventEmitter';
 import config from '~/src/Config';
 import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 import cookie from 'cookie';
+import cookies from 'js-cookie';
 
 export class Manager extends EventEmitter
 {
@@ -30,17 +31,29 @@ export class Manager extends EventEmitter
      * @param {Experiment} experiment The experiment to be added
      */
     addExperiment(experiment) {
-        this.register[experiment.getId()] = experiment;
-        this.logger.debug(`"${experiment.getId()}" experiment added to the Manager`);
+        let experimentId = experiment.getId();
 
-        experiment.on(Experiment.Status.ENROLLED, () => this.activateExperiment(experiment.getId()));
-        experiment.on(Experiment.Status.ACTIVE, () => this.emit(experiment.getId() + '.ACTIVE'));
-        experiment.setupTriggers();
+        this.register[experimentId] = experiment;
+        this.logger.debug(`"${experimentId}" experiment added to the Manager`);
 
-        if (this.experimentAlreadyTriggered(experiment.getId())) {
-            this.logger.info(`"${experiment.getId()}" experiment has been triggered already for this user, enrolling again`)
+        this.setupExperimentListeners(experiment);
+
+        if (this.experimentAlreadyTriggered(experimentId)) {
+            this.logger.info(`"${experimentId}" experiment has been triggered already for this user, enrolling again`);
             experiment.enroll();
         }
+    }
+
+    setupExperimentListeners(experiment) {
+        let experimentId = experiment.getId();
+
+        experiment.on(Experiment.Status.ENROLLED, () => {
+            this.saveTriggeredExperiment(experimentId);
+            this.activateExperiment(experimentId);
+        });
+        experiment.on(Experiment.Status.ACTIVE, () => this.emit(experimentId + '.ACTIVE'));
+
+        experiment.setupTriggers();
     }
 
     /**
@@ -157,6 +170,10 @@ export class Manager extends EventEmitter
                 this.triggeredExperiments = JSON.parse(cookies.canvassTriggeredExperiments);
             }
         }
+    }
+
+    saveTriggeredExperiment(experimentId) {
+        cookies.set('canvassTriggeredExperiments', JSON.stringify([experimentId]));
     }
 
     /**

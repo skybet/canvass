@@ -4,6 +4,7 @@ import assert from 'assert';
 import EventEmitter from 'events';
 import logger from '~/src/Helpers/Logger';
 import cookie from 'cookie';
+import cookies from 'js-cookie';
 
 describe('Manager', () => {
 
@@ -79,12 +80,16 @@ describe('Manager', () => {
 
     describe('Triggered Experiments', () => {
 
+        let mockCookies;
+
         beforeEach(() => {
-            global.document = {cookie: ''};
+            mockCookies = sinon.mock(cookies);
+
         });
 
         afterEach(() => {
-            cookie.parse.restore();
+            mockCookies.restore();
+
         });
 
         it('should be initialized from the cookie', () => {
@@ -98,7 +103,17 @@ describe('Manager', () => {
             let testManagerWithCookies = new ManagerClass();
 
             assert.deepEqual(testManagerWithCookies.triggeredExperiments, triggeredExperiments);
+        });
 
+        it('should save an enrolled experiment to the cookie', () => {
+            let triggeredExperiments = ['Example'];
+            let cookieValue = JSON.stringify(triggeredExperiments);
+            mockCookies.expects('set').once().withArgs('canvassTriggeredExperiments', cookieValue);
+
+            let testManagerWithCookies = new ManagerClass();
+            testManagerWithCookies.saveTriggeredExperiment('Example');
+
+            mockCookies.verify();
         });
     });
 
