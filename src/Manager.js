@@ -2,7 +2,6 @@ import Experiment from './Experiment';
 import EventEmitter from './Helpers/EventEmitter';
 import config from '~/src/Config';
 import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
-import cookie from 'cookie';
 import cookies from 'js-cookie';
 
 export class Manager extends EventEmitter
@@ -164,11 +163,10 @@ export class Manager extends EventEmitter
      * @param {string} experimentId The unique ID for the experiment being activated
      */
     loadTriggeredExperiments() {
-        if (typeof document !== 'undefined') {
-            let cookies = cookie.parse(document.cookie);
-            if (cookies.canvassTriggeredExperiments) {
-                this.triggeredExperiments = JSON.parse(cookies.canvassTriggeredExperiments);
-            }
+        let triggeredExperimentsCookie = cookies.get('canvassTriggeredExperiments');
+
+        if (triggeredExperimentsCookie) {
+            this.triggeredExperiments = JSON.parse(triggeredExperimentsCookie);
         }
     }
 

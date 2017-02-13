@@ -3,7 +3,6 @@ import sinon from 'sinon';
 import assert from 'assert';
 import EventEmitter from 'events';
 import logger from '~/src/Helpers/Logger';
-import cookie from 'cookie';
 import cookies from 'js-cookie';
 
 describe('Manager', () => {
@@ -11,6 +10,8 @@ describe('Manager', () => {
     let testManager, mockHelper, mockExperiment;
 
     beforeEach(() => {
+        global.document = {cookie: ''};
+
         mockHelper = {
             triggerExperiment: sinon.stub().returns(0),
             trackAction: sinon.spy(),
@@ -95,14 +96,12 @@ describe('Manager', () => {
         it('should be initialized from the cookie', () => {
             let triggeredExperiments = ['FROG'];
             let cookieValue = JSON.stringify(triggeredExperiments);
-
-            sinon.stub(cookie, 'parse', () => {
-                return {canvassTriggeredExperiments: cookieValue};
-            });
+            mockCookies.expects('get').once().returns(cookieValue);
 
             let testManagerWithCookies = new ManagerClass();
 
             assert.deepEqual(testManagerWithCookies.triggeredExperiments, triggeredExperiments);
+            mockCookies.verify();
         });
 
         it('should save an enrolled experiment to the cookie', () => {
