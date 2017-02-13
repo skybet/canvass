@@ -19,8 +19,7 @@ export class Manager extends EventEmitter
             this.logger.setOutputLevel(LoggerOutputLevels.DEBUG);
         }
 
-        this.triggeredExperiments = [];
-        this.loadTriggeredExperiments();
+        this.triggeredExperiments = this.getTriggeredExperimentsFromCookie();
     }
 
     /**
@@ -162,16 +161,20 @@ export class Manager extends EventEmitter
      * @private
      * @param {string} experimentId The unique ID for the experiment being activated
      */
-    loadTriggeredExperiments() {
+    getTriggeredExperimentsFromCookie() {
         let triggeredExperimentsCookie = cookies.get('canvassTriggeredExperiments');
-
-        if (triggeredExperimentsCookie) {
-            this.triggeredExperiments = JSON.parse(triggeredExperimentsCookie);
+        if (!triggeredExperimentsCookie) {
+            return [];
         }
+
+        return JSON.parse(triggeredExperimentsCookie);
     }
 
     saveTriggeredExperiment(experimentId) {
-        cookies.set('canvassTriggeredExperiments', JSON.stringify([experimentId]));
+        let triggeredExperiments = this.getTriggeredExperimentsFromCookie();
+        triggeredExperiments.push(experimentId);
+
+        cookies.set('canvassTriggeredExperiments', JSON.stringify(triggeredExperiments));
     }
 
     /**

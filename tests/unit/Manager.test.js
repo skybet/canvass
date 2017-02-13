@@ -114,6 +114,20 @@ describe('Manager', () => {
 
             mockCookies.verify();
         });
+
+        it('should not overwrite existing triggered experiments when saving a new one', () =>{
+            let expectedTriggeredExperiments = ['Foo', 'Bar'];
+            let cookieValue = JSON.stringify(expectedTriggeredExperiments);
+            mockCookies.expects('set').once().withArgs('canvassTriggeredExperiments', cookieValue);
+
+            // Set up the manager with a currently saved Foo experiment in the cookie
+            let testManagerWithCookies = new ManagerClass();
+            testManagerWithCookies.getTriggeredExperimentsFromCookie = sinon.stub().returns(['Foo']);
+
+            testManagerWithCookies.saveTriggeredExperiment('Bar');
+
+            mockCookies.verify();
+        })
     });
 
     describe('ActiveExperiment', () => {
