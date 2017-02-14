@@ -23,12 +23,6 @@ describe('Config', () => {
     describe('Initialization', () => {
 
         beforeEach(() => {
-            // sinon.stub(cookie, 'parse', () => {
-            //     return {};
-            // });
-
-            //mockCookies.expects('get').once().returns({});
-
             testConfig = new Config();
         });
 
