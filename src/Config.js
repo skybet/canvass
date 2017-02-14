@@ -1,4 +1,4 @@
-import cookie from 'cookie';
+import cookies from 'js-cookie';
 import logger from '~/src/Helpers/Logger';
 
 export const configDefaults = {
@@ -15,18 +15,14 @@ export class Config
         this.config = Object.assign({}, configDefaults);
         this.logger = logger;
 
-        if (typeof document !== 'undefined') {
-            let cookies = cookie.parse(document.cookie);
+        if (cookies.get('canvassDisableActivation')) {
+            this.set('disableActivation', true);
+            this.logger.info('Detected "disableActivation" cookie. Disabling activation of experiments.');
+        }
 
-            if (cookies.canvassDisableActivation) {
-                this.set('disableActivation', true);
-                this.logger.info('Detected "disableActivation" cookie. Disabling activation of experiments.');
-            }
-
-            if (cookies.canvassDebug) {
-                this.set('debug', true);
-                this.logger.info('Detected "debug" cookie. Enabling debug logging.');
-            }
+        if (cookies.get('canvassDebug')) {
+            this.set('debug', true);
+            this.logger.info('Detected "debug" cookie. Enabling debug logging.');
         }
     }
 
