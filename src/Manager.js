@@ -3,6 +3,7 @@ import EventEmitter from './Helpers/EventEmitter';
 import config from '~/src/Config';
 import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
+import CookieNames from '~/src/Helpers/CookieNames'
 
 export class Manager extends EventEmitter
 {
@@ -168,7 +169,7 @@ export class Manager extends EventEmitter
      * @return {Array} Array of triggered experiments
      */
     getTriggeredExperimentsFromCookie() {
-        let triggeredExperimentsCookie = cookies.get('canvassTriggeredExperiments');
+        let triggeredExperimentsCookie = cookies.get(CookieNames.TRIGGERED_EXPERIMENTS);
         if (!triggeredExperimentsCookie) {
             return [];
         }
@@ -187,7 +188,7 @@ export class Manager extends EventEmitter
         let triggeredExperiments = this.getTriggeredExperimentsFromCookie();
         triggeredExperiments.push(experimentId);
 
-        cookies.set('canvassTriggeredExperiments', JSON.stringify(triggeredExperiments));
+        cookies.set(CookieNames.TRIGGERED_EXPERIMENTS, JSON.stringify(triggeredExperiments));
     }
 
     /**
