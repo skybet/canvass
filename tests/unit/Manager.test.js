@@ -4,6 +4,7 @@ import assert from 'assert';
 import EventEmitter from 'events';
 import logger from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
+import CookieNames from '~/src/Helpers/CookieNames';
 
 describe('Manager', () => {
 
@@ -107,7 +108,7 @@ describe('Manager', () => {
         it('should save an enrolled experiment to the cookie', () => {
             let triggeredExperiments = ['Example'];
             let cookieValue = JSON.stringify(triggeredExperiments);
-            mockCookies.expects('set').once().withArgs('canvassTriggeredExperiments', cookieValue);
+            mockCookies.expects('set').once().withArgs(CookieNames.TRIGGERED_EXPERIMENTS, cookieValue);
 
             let testManagerWithCookies = new ManagerClass();
             testManagerWithCookies.saveTriggeredExperimentToCookie('Example');
@@ -118,7 +119,7 @@ describe('Manager', () => {
         it('should not overwrite existing triggered experiments when saving a new one', () =>{
             let expectedTriggeredExperiments = ['Foo', 'Bar'];
             let cookieValue = JSON.stringify(expectedTriggeredExperiments);
-            mockCookies.expects('set').once().withArgs('canvassTriggeredExperiments', cookieValue);
+            mockCookies.expects('set').once().withArgs(CookieNames.TRIGGERED_EXPERIMENTS, cookieValue);
 
             // Set up the manager with a currently saved Foo experiment in the cookie
             let testManagerWithCookies = new ManagerClass();

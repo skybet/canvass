@@ -4,6 +4,7 @@ import sinon from 'sinon';
 import assert from 'assert';
 import {Config, configDefaults} from '~/src/Config';
 import cookies from 'js-cookie';
+import CookieNames from '~/src/Helpers/CookieNames';
 import logger from '~/src/Helpers/Logger';
 
 describe('Config', () => {
@@ -67,7 +68,7 @@ describe('Config', () => {
             mockCookies
                 .expects('get')
                 .once()
-                .withArgs('canvassDisableActivation')
+                .withArgs(CookieNames.DISABLE_ACTIVATION)
                 .returns({canvassDisableActivation: 1});
             mockCookies.expects('get').atLeast(1);
             loggerMock.expects('info').once();
@@ -83,7 +84,7 @@ describe('Config', () => {
             mockCookies
                 .expects('get')
                 .once()
-                .withArgs('canvassDebug')
+                .withArgs(CookieNames.DEBUG)
                 .returns({canvassDebug: 1});
             mockCookies.expects('get').atLeast(1);
             loggerMock.expects('info').once();
