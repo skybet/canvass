@@ -46,7 +46,7 @@ export class Manager extends EventEmitter
         let experimentId = experiment.getId();
 
         experiment.on(Experiment.Status.ENROLLED, () => {
-            this.saveTriggeredExperiment(experimentId);
+            this.saveTriggeredExperimentToCookie(experimentId);
             this.activateExperiment(experimentId);
         });
         experiment.on(Experiment.Status.ACTIVE, () => this.emit(experimentId + '.ACTIVE'));
@@ -170,7 +170,7 @@ export class Manager extends EventEmitter
         return JSON.parse(triggeredExperimentsCookie);
     }
 
-    saveTriggeredExperiment(experimentId) {
+    saveTriggeredExperimentToCookie(experimentId) {
         let triggeredExperiments = this.getTriggeredExperimentsFromCookie();
         triggeredExperiments.push(experimentId);
 

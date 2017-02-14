@@ -110,7 +110,7 @@ describe('Manager', () => {
             mockCookies.expects('set').once().withArgs('canvassTriggeredExperiments', cookieValue);
 
             let testManagerWithCookies = new ManagerClass();
-            testManagerWithCookies.saveTriggeredExperiment('Example');
+            testManagerWithCookies.saveTriggeredExperimentToCookie('Example');
 
             mockCookies.verify();
         });
@@ -124,7 +124,7 @@ describe('Manager', () => {
             let testManagerWithCookies = new ManagerClass();
             testManagerWithCookies.getTriggeredExperimentsFromCookie = sinon.stub().returns(['Foo']);
 
-            testManagerWithCookies.saveTriggeredExperiment('Bar');
+            testManagerWithCookies.saveTriggeredExperimentToCookie('Bar');
 
             mockCookies.verify();
         })
