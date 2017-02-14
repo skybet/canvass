@@ -159,7 +159,7 @@ export class Manager extends EventEmitter
      * Loads triggered experiments from the cookie
      *
      * @private
-     * @param {string} experimentId The unique ID for the experiment being activated
+     * @return {Array} Array of triggered experiments
      */
     getTriggeredExperimentsFromCookie() {
         let triggeredExperimentsCookie = cookies.get('canvassTriggeredExperiments');
@@ -170,6 +170,13 @@ export class Manager extends EventEmitter
         return JSON.parse(triggeredExperimentsCookie);
     }
 
+    /**
+     * Save an experiment to the triggered experiments cookie so we can keep trackAction
+     * of which experiments have already been enrolled for a specific user.
+     *
+     * @private
+     * @param {string} experimentId The unique ID for the experiment being activated
+     */
     saveTriggeredExperimentToCookie(experimentId) {
         let triggeredExperiments = this.getTriggeredExperimentsFromCookie();
         triggeredExperiments.push(experimentId);
