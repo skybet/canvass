@@ -42,6 +42,12 @@ export class Manager extends EventEmitter
         }
     }
 
+    /**
+     * Set up listeners to status changes on an experiment object
+     *
+     * @private
+     * @param {Experiment} experiment The experiment to be listened to
+     */
     setupExperimentListeners(experiment) {
         let experimentId = experiment.getId();
 
