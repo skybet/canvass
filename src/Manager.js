@@ -199,7 +199,7 @@ export class Manager extends EventEmitter
      * @returns {boolean}
      */
     experimentAlreadyTriggered(experimentId) {
-        return this.triggeredExperiments.includes(experimentId);
+        return Boolean(this.triggeredExperiments.indexOf(experimentId) !== -1);
     }
 
 }
