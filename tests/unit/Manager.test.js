@@ -116,19 +116,30 @@ describe('Manager', () => {
             mockCookies.verify();
         });
 
-        it('should not overwrite existing triggered experiments when saving a new one', () =>{
-            let expectedTriggeredExperiments = ['Foo', 'Bar'];
-            let cookieValue = JSON.stringify(expectedTriggeredExperiments);
-            mockCookies.expects('set').once().withArgs(CookieNames.TRIGGERED_EXPERIMENTS, cookieValue);
-
-            // Set up the manager with a currently saved Foo experiment in the cookie
+        it('should not add an experiment to a cookie if it is already been saved', () => {
+            // Set up the manager with a currently saved Foo and Bar experiment in the cookie
             let testManagerWithCookies = new ManagerClass();
-            testManagerWithCookies.getTriggeredExperimentsFromCookie = sinon.stub().returns(['Foo']);
+            testManagerWithCookies.triggeredExperiments = ['Foo', 'Bar'];
+            testManagerWithCookies.getTriggeredExperimentsFromCookie = sinon.stub().returns(['Foo', 'Bar']);
+            mockCookies.expects('set').never();
+            testManagerWithCookies.saveTriggeredExperimentToCookie('Foo');
 
-            testManagerWithCookies.saveTriggeredExperimentToCookie('Bar');
-
+            assert.deepEqual(testManagerWithCookies.triggeredExperiments, ['Foo', 'Bar']);
             mockCookies.verify();
-        })
+        });
+
+        it('should not overwrite existing triggered experiments when saving a new one', () => {
+            // Set up the manager with a currently saved Foo and Bar experiment in the cookie
+            let testManagerWithCookies = new ManagerClass();
+            testManagerWithCookies.triggeredExperiments = ['Foo', 'Bar'];
+            testManagerWithCookies.getTriggeredExperimentsFromCookie = sinon.stub().returns(['Foo', 'Bar']);
+            mockCookies.expects('set').once().withArgs(CookieNames.TRIGGERED_EXPERIMENTS, JSON.stringify(['Foo', 'Bar', 'Zoo']));
+
+            testManagerWithCookies.saveTriggeredExperimentToCookie('Zoo');
+
+            assert.deepEqual(testManagerWithCookies.triggeredExperiments, ['Foo', 'Bar', 'Zoo']);
+            mockCookies.verify();
+        });
     });
 
     describe('ActiveExperiment', () => {

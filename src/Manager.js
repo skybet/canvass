@@ -185,10 +185,12 @@ export class Manager extends EventEmitter
      * @param {string} experimentId The unique ID for the experiment being activated
      */
     saveTriggeredExperimentToCookie(experimentId) {
-        let triggeredExperiments = this.getTriggeredExperimentsFromCookie();
-        triggeredExperiments.push(experimentId);
+        if (this.experimentAlreadyTriggered(experimentId)) {
+            return;
+        }
 
-        cookies.set(CookieNames.TRIGGERED_EXPERIMENTS, JSON.stringify(triggeredExperiments));
+        this.triggeredExperiments.push(experimentId);
+        cookies.set(CookieNames.TRIGGERED_EXPERIMENTS, JSON.stringify(this.triggeredExperiments));
     }
 
     /**
