@@ -35,6 +35,6 @@
     "prepublish": "npm test && npm run build"
   },
   "dependencies": {
-    "cookie": "^0.3.1"
+    "js-cookie": "^2.1.3"
   }
 }

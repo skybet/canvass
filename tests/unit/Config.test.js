@@ -3,31 +3,30 @@
 import sinon from 'sinon';
 import assert from 'assert';
 import {Config, configDefaults} from '~/src/Config';
-import cookie from 'cookie';
+import cookies from 'js-cookie';
+import CookieNames from '~/src/Helpers/CookieNames';
 import logger from '~/src/Helpers/Logger';
 
 describe('Config', () => {
 
-    let testConfig, testDefaults;
+    let testConfig, testDefaults, mockCookies;
 
     beforeEach(() => {
         global.document = {cookie: ''};
         testDefaults = configDefaults;
+        mockCookies = sinon.mock(cookies);
+    });
+
+    afterEach(() => {
+        mockCookies.restore();
     });
 
     describe('Initialization', () => {
 
         beforeEach(() => {
-            sinon.stub(cookie, 'parse', () => {
-                return {};
-            });
-
             testConfig = new Config();
         });
 
-        afterEach(() => {
-            cookie.parse.restore();
-        });
 
         it('sets default configuration', () => {
             assert.deepEqual(testConfig.config, testDefaults);
@@ -66,31 +65,35 @@ describe('Config', () => {
         });
 
         it('overrides disableActivation if cookie is set', () => {
-            sinon.stub(cookie, 'parse', () => {
-                return {canvassDisableActivation: 1};
-            });
+            mockCookies
+                .expects('get')
+                .once()
+                .withArgs(CookieNames.DISABLE_ACTIVATION)
+                .returns({canvassDisableActivation: 1});
+            mockCookies.expects('get').atLeast(1);
             loggerMock.expects('info').once();
 
             testConfig = new Config();
 
-            assert.equal(testConfig.get('disableActivation'), true);
+            assert.equal(testConfig.config.disableActivation, true);
+            mockCookies.verify();
             loggerMock.verify();
-
-            cookie.parse.restore();
         });
 
         it('overrides debug if cookie is set', () => {
-            sinon.stub(cookie, 'parse', () => {
-                return {canvassDebug: 1};
-            });
+            mockCookies
+                .expects('get')
+                .once()
+                .withArgs(CookieNames.DEBUG)
+                .returns({canvassDebug: 1});
+            mockCookies.expects('get').atLeast(1);
             loggerMock.expects('info').once();
 
             testConfig = new Config();
 
             assert.equal(testConfig.get('debug'), true);
+            mockCookies.verify();
             loggerMock.verify();
-
-            cookie.parse.restore();
         });
     });
 });
