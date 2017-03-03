@@ -4,7 +4,7 @@ import logger from '~/src/Helpers/Logger';
 class QubitHelper
 {
     displayName = 'QubitHelper';
-    
+
     /**
      * @public
      */
@@ -52,22 +52,41 @@ class QubitHelper
      * @param {function} [callback] A method to call after sending the action
      * @returns {function} Callback function
      */
-    trackAction(action, callback) {
-        if (!action) {
-            throw new Error('Missing argument: action');
+    trackEvent(type, name, value) {
+        if (!type) {
+            throw new Error('Missing argument: type');
         }
 
-        if (!this.getQubit()) {
-            return null;
+        if (!name) {
+            throw new Error('Missing argument: name');
         }
 
-        this.logger.info('Tracking action: ' + action);
+        let qubit = this.getQubit();
+        if (!qubit) return;
 
-        if (callback) {
-            return callback();
+        if (type === 'qp') {
+            this.trackQPEvent(name, value);
+        } else if (type === 'uv') {
+            this.trackUVEvent(name);
         }
 
-        return null;
+        return;
+    }
+
+    trackQPEvent(name, value) {
+        let qubit = this.getQubit();
+        if (!qubit) return;
+
+        this.logger.info('Tracking QP Event: ' + name);
+        qubit.uv.emit(name, value);
+    }
+
+    trackUVEvent(name) {
+        let uv = getUniversalVariable();
+        if (!uv) return;
+
+        this.logger.info('Tracking UV Event: ' + name);
+        uv.events.push({action: name});
     }
 
     /**
@@ -114,6 +133,10 @@ class QubitHelper
      */
     getQubit() {
         return window.__qubit;
+    }
+
+    getUniversalVariable() {
+        return window.universal_variable;
     }
 
 }
