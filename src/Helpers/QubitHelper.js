@@ -82,7 +82,7 @@ class QubitHelper
     }
 
     trackUVEvent(name) {
-        let uv = getUniversalVariable();
+        let uv = this.getUniversalVariable();
         if (!uv) return;
 
         this.logger.info('Tracking UV Event: ' + name);
