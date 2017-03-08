@@ -31,7 +31,7 @@ describe('QubitHelper', () => {
         delete global.window;
     });
 
-    describe.only('trackEvent', () => {
+    describe('trackEvent', () => {
         it('throws an error if type is not an argument', () => {
             assert.throws(() => QubitHelper.trackEvent(), /type/);
         });
