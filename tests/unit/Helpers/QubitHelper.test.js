@@ -17,7 +17,7 @@ describe('QubitHelper', () => {
                     emit: uvEmitSpy,
                 },
             },
-            universal_variable: {
+            universal_variable: { /* eslint camelcase: 0 */
                 events: {
                     push: uvEventsPushSpy,
                 },
