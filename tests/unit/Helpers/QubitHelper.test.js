@@ -4,12 +4,23 @@ import QubitHelper from '~/src/Helpers/QubitHelper';
 
 describe('QubitHelper', () => {
 
-    let mockWindow;
+    let mockWindow, uvEmitSpy, uvEventsPushSpy;
+
+    uvEmitSpy = sinon.spy();
+    uvEventsPushSpy = sinon.spy();
 
     beforeEach(() => {
         global.window = {
             __qubit: {
                 experiences: [],
+                uv: {
+                    emit: uvEmitSpy,
+                },
+            },
+            universal_variable: { /* eslint camelcase: 0 */
+                events: {
+                    push: uvEventsPushSpy,
+                },
             },
         };
 
@@ -20,20 +31,31 @@ describe('QubitHelper', () => {
         delete global.window;
     });
 
-    describe('trackAction', () => {
-        it('calls callback', () => {
-            let callback = sinon.spy();
-            QubitHelper.trackAction('action', callback);
-
-            sinon.assert.calledOnce(callback);
+    describe('trackEvent', () => {
+        it('throws an error if type is not an argument', () => {
+            assert.throws(() => QubitHelper.trackEvent(), /type/);
         });
 
-        it('does not break when there is no callback', () => {
-            QubitHelper.trackAction('action');
+        it('throws an error if name is not an argument', () => {
+            assert.throws(() => QubitHelper.trackEvent('qp'), /name/);
         });
 
-        it('throws an error if action is not an argument', () => {
-            assert.throws(() => QubitHelper.trackAction(), /action/);
+        it('throws an error if type is not supported', () => {
+            assert.throws(() => QubitHelper.trackEvent('unknownType', 'foo'), /unknown type/);
+        });
+
+        it('calls emit on qubit if type is qp', () => {
+            QubitHelper.trackEvent('qp', 'foo');
+
+            sinon.assert.calledOnce(uvEmitSpy);
+            sinon.assert.calledWith(uvEmitSpy, 'foo');
+        });
+
+        it('calls events.push on universal_variable object if type is uv', () => {
+            QubitHelper.trackEvent('uv', 'foo');
+
+            sinon.assert.calledOnce(uvEventsPushSpy);
+            sinon.assert.calledWith(uvEventsPushSpy, {action: 'foo'});
         });
     });
 

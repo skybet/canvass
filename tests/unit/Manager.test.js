@@ -15,7 +15,7 @@ describe('Manager', () => {
 
         mockHelper = {
             triggerExperiment: sinon.stub().returns(0),
-            trackAction: sinon.spy(),
+            trackEvent: sinon.spy(),
             getQubitExperimentTrigger: sinon.stub().returns(()=>{}),
             getAllQubitExperiments: sinon.stub().returns([]),
         };
@@ -158,12 +158,12 @@ describe('Manager', () => {
         });
     });
 
-    describe('TrackAction', () => {
-        it('should call trackAction on the helper', () => {
-            testManager.trackAction('1', 'click');
+    describe('TrackEvent', () => {
+        it('should call trackEvent on the helper', () => {
+            testManager.trackEvent('foo', 'bar', 'value');
 
-            sinon.assert.calledOnce(mockHelper.trackAction);
-            sinon.assert.calledWith(mockHelper.trackAction, '1:click');
+            sinon.assert.calledOnce(mockHelper.trackEvent);
+            sinon.assert.calledWith(mockHelper.trackEvent, 'foo', 'bar', 'value');
         });
     });
 

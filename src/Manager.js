@@ -90,15 +90,15 @@ export class Manager extends EventEmitter
     }
 
     /**
-     * Track an action for an experiment
+     * Track an event via the helper
      *
      * @public
-     * @param {string} experimentId ID of the experiment to track an action for
-     * @param {string} actionName Name of the action to track
+     * @param {string} type The type of event
+     * @param {string} name The name of the event
+     * @param {object} value The value object of the event
      */
-    trackAction(experimentId, actionName) {
-        this.logger.debug(`Tracking action "${actionName}" for experiment "${experimentId}"`);
-        this.helper.trackAction(experimentId + ':' + actionName);
+    trackEvent(type, name, value) {
+        this.helper.trackEvent(type, name, value);
     }
 
     /**

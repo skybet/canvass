@@ -4,7 +4,7 @@ import logger from '~/src/Helpers/Logger';
 class QubitHelper
 {
     displayName = 'QubitHelper';
-    
+
     /**
      * @public
      */
@@ -45,29 +45,58 @@ class QubitHelper
     }
 
     /**
-     * Sends an action to Qubit and calls the callback
+     * Sends an event to Qubit via the appropriate method according to type
      *
      * @public
-     * @param {string} action The name of the action in Qubit
-     * @param {function} [callback] A method to call after sending the action
-     * @returns {function} Callback function
+     * @param {string} type The type of Qubit event to send
+     * @param {string} name The name of the event in Qubit
+     * @param {object} value The value object of the event
      */
-    trackAction(action, callback) {
-        if (!action) {
-            throw new Error('Missing argument: action');
+    trackEvent(type, name, value) {
+        if (!type) throw new Error('Missing argument: type');
+        if (!name) throw new Error('Missing argument: name');
+
+        let qubit = this.getQubit();
+        if (!qubit) return;
+
+        if (type === 'qp') {
+            this.trackQPEvent(name, value);
+        } else if (type === 'uv') {
+            this.trackUVEvent(name);
+        } else {
+            throw new Error(`Cannot track even with unknown type: ${type}`);
         }
 
-        if (!this.getQubit()) {
-            return null;
-        }
+        return;
+    }
 
-        this.logger.info('Tracking action: ' + action);
+    /**
+     * Tracks a QProtocol event
+     *
+     * @private
+     * @param {string} name The name of the event in Qubit
+     * @param {object} value The value object of the event
+     */
+    trackQPEvent(name, value) {
+        let qubit = this.getQubit();
+        if (!qubit) return;
 
-        if (callback) {
-            return callback();
-        }
+        this.logger.info('Tracking QP Event: ' + name);
+        qubit.uv.emit(name, value);
+    }
 
-        return null;
+    /**
+     * Tracks a universal variable event
+     *
+     * @private
+     * @param {string} name The name of the event in Qubit
+     */
+    trackUVEvent(name) {
+        let uv = this.getUniversalVariable();
+        if (!uv) return;
+
+        this.logger.info('Tracking UV Event: ' + name);
+        uv.events.push({action: name});
     }
 
     /**
@@ -106,14 +135,24 @@ class QubitHelper
     }
 
     /**
-     * Checks whether the qubit object is available on the window to use. If not, we
-     * won't be able to communicate with qubit via the helper.
+     * Returns the qubit window object which we use to communicate with the smartserve
+     * script.
      *
      * @private
-     * @returns {boolean} Whether or not qubit is available
+     * @returns {object} Qubit window object
      */
     getQubit() {
         return window.__qubit;
+    }
+
+    /**
+     * Returns the qubit universal variable object which is used to send legacy events.
+     *
+     * @private
+     * @returns {object} Qubit universal variable object
+     */
+    getUniversalVariable() {
+        return window.universal_variable;
     }
 
 }
