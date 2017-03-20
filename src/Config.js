@@ -1,6 +1,6 @@
 import cookies from 'js-cookie';
 import logger from '~/src/Helpers/Logger';
-import CookieNames from '~/src/Helpers/CookieNames'
+import CookieNames from '~/src/Helpers/CookieNames';
 
 export const configDefaults = {
     debug: false,
