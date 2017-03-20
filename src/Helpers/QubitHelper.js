@@ -57,7 +57,7 @@ class QubitHelper
         if (!name) throw new Error('Missing argument: name');
 
         let qubit = this.getQubit();
-        if (!qubit) return;
+        if (!qubit) { return; }
 
         if (type === 'qp') {
             this.trackQPEvent(name, value);
@@ -79,10 +79,16 @@ class QubitHelper
      */
     trackQPEvent(name, value) {
         let qubit = this.getQubit();
-        if (!qubit) return;
+        if (!qubit) { return; }
 
-        this.logger.info('Tracking QP Event: ' + name);
+        if (!qubit.uv) {
+            this.logger.warn('Qubit uv window object could not be found so could not track event: ' + name +
+                '. Live experiment results could be impacted.');
+            return;
+        }
+
         qubit.uv.emit(name, value);
+        this.logger.info('Tracking QP Event: ' + name);
     }
 
     /**
@@ -93,10 +99,10 @@ class QubitHelper
      */
     trackUVEvent(name) {
         let uv = this.getUniversalVariable();
-        if (!uv) return;
+        if (!uv) { return; }
 
-        this.logger.info('Tracking UV Event: ' + name);
         uv.events.push({action: name});
+        this.logger.info('Tracking UV Event: ' + name);
     }
 
     /**
