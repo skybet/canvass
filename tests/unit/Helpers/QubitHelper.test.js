@@ -1,10 +1,11 @@
 import sinon from 'sinon';
 import assert from 'assert';
+import logger from '~/src/Helpers/Logger';
 import QubitHelper from '~/src/Helpers/QubitHelper';
 
 describe('QubitHelper', () => {
 
-    let mockWindow, uvEmitSpy, uvEventsPushSpy;
+    let mockWindow, uvEmitSpy, uvEventsPushSpy, mockLogger;
 
     uvEmitSpy = sinon.spy();
     uvEventsPushSpy = sinon.spy();
@@ -25,10 +26,16 @@ describe('QubitHelper', () => {
         };
 
         mockWindow = global.window;
+
+        mockLogger = sinon.mock(logger);
+
     });
 
     afterEach(() => {
         delete global.window;
+        mockLogger.restore();
+        uvEmitSpy.reset();
+        uvEventsPushSpy.reset();
     });
 
     describe('trackEvent', () => {
@@ -49,6 +56,23 @@ describe('QubitHelper', () => {
 
             sinon.assert.calledOnce(uvEmitSpy);
             sinon.assert.calledWith(uvEmitSpy, 'foo');
+        });
+
+        it('does not call emit if uv object is not available', () => {
+            delete mockWindow['__qubit'].uv;
+
+            QubitHelper.trackEvent('qp', 'foo');
+
+            sinon.assert.notCalled(uvEmitSpy);
+        });
+
+        it('logs a warning if uv window object is not available', () => {
+            delete mockWindow['__qubit'].uv;
+            mockLogger.expects('warn').once().withArgs(sinon.match(/foo/));
+
+            QubitHelper.trackEvent('qp', 'foo');
+
+            mockLogger.verify();
         });
 
         it('calls events.push on universal_variable object if type is uv', () => {
