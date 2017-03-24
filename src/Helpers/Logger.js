@@ -17,6 +17,8 @@ export class Logger
     constructor(logger, outputLevel) {
         this.logger = logger || console;
         this.outputLevel = outputLevel || LEVEL.WARN;
+
+        this.alreadyLogged = new Set();
     }
 
     /**
@@ -30,13 +32,24 @@ export class Logger
     }
 
     /**
+     * Sets the output level
+     *
+     * @public
+     * @param {Logger.LEVEL} [outputLevel] Level of logging to output
+     */
+    setOutputLevel(outputLevel) {
+        this.outputLevel = outputLevel;
+    }
+
+    /**
      * Outputs an error
      *
      * @public
      * @param {...*} args Objects to output
      */
     error() {
-        this.logger.error(...this.formatMessages(Array.prototype.slice.call(arguments)));
+        let messages = this.formatMessages(Array.prototype.slice.call(arguments));
+        this.logMessages(messages, this.logger.error);
     }
 
     /**
@@ -46,7 +59,8 @@ export class Logger
      * @param {...*} args Objects to output
      */
     warn() {
-        this.logger.warn(...this.formatMessages(Array.prototype.slice.call(arguments)));
+        let messages = this.formatMessages(Array.prototype.slice.call(arguments));
+        this.logMessages(messages, this.logger.warn);
     }
 
     /**
@@ -56,7 +70,8 @@ export class Logger
      * @param {...*} args Objects to output
      */
     info() {
-        this.logger.info(...this.formatMessages(Array.prototype.slice.call(arguments)));
+        let messages = this.formatMessages(Array.prototype.slice.call(arguments));
+        this.logMessages(messages, this.logger.info);
     }
 
     /**
@@ -67,8 +82,9 @@ export class Logger
      */
     debug() {
         if (this.outputLevel === LEVEL.DEBUG) {
-            let useMethod = this.logger.debug || this.logger.log;
-            useMethod(...this.formatMessages(Array.prototype.slice.call(arguments)));
+            let logFunction = this.logger.debug || this.logger.log;
+            let messages = this.formatMessages(Array.prototype.slice.call(arguments));
+            this.logMessages(messages, logFunction);
         }
     }
 
@@ -79,14 +95,14 @@ export class Logger
      * @param {object} data Data object or array to output
      */
     table(data) {
-        let useMethod = this.logger.table || this.logger.log;
-        useMethod(data);
+        let logFunction = this.logger.table || this.logger.log;
+        logFunction(data);
     }
 
     /**
      * Formats arguments to the logging functions to include the prefix
      *
-     * @public
+     * @private
      * @param {...*} args Objects to output
      * @returns {array} The formatted array of log messages
      */
@@ -100,13 +116,21 @@ export class Logger
     }
 
     /**
-     * Sets the output level
+     * Logs the messages via the appropriate log function and if it's not been logged already
+     * this session.
      *
-     * @public
-     * @param {Logger.LEVEL} [outputLevel] Level of logging to output
+     * @private
+     * @param {array} [messages] Messages to log out
+     * @param {function} [logFunction] Function to log the messages with
      */
-    setOutputLevel(outputLevel) {
-        this.outputLevel = outputLevel;
+    logMessages(messages, logFunction) {
+        let messagesString = messages.toString();
+
+        if (!this.alreadyLogged.has(messagesString)) {
+            logFunction(...messages);
+        }
+        
+        this.alreadyLogged.add(messagesString);
     }
 
 }
