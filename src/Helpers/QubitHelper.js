@@ -88,7 +88,7 @@ class QubitHelper
         }
 
         qubit.uv.emit(name, value);
-        this.logger.info('Tracking QP Event: ' + name);
+        this.logger.info('Tracking QP Event: ' + name, value);
     }
 
     /**

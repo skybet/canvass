@@ -131,6 +131,15 @@ describe('Logger', () => {
             sinon.assert.calledOnce(mockLogger.log);
             sinon.assert.calledWith(mockLogger.log, testData);
         });
+
+        it('should only call the log method if the messages have not already been logged', () => {
+            let testMessage = 'test info message';
+            testingLogger.info(testMessage);
+            testingLogger.info(testMessage);
+
+            sinon.assert.calledOnce(mockLogger.info);
+            sinon.assert.calledWith(mockLogger.info, '[canvass]', testMessage);
+        });
     });
 
     it('should use the logger passed in using setLogger', () => {
