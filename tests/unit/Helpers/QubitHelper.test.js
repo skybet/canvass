@@ -66,7 +66,16 @@ describe('QubitHelper', () => {
             sinon.assert.notCalled(uvEmitSpy);
         });
 
-        it('logs a warning if uv window object is not available', () => {
+        it('logs a warning if qubit window object is not available when sending a qp event', () => {
+            delete mockWindow['__qubit'];
+            mockLogger.expects('warn').once().withArgs(sinon.match(/foo/));
+
+            QubitHelper.trackEvent('qp', 'foo');
+
+            mockLogger.verify();
+        });
+
+        it('logs a warning if uv window object is not available when sending a qp event', () => {
             delete mockWindow['__qubit'].uv;
             mockLogger.expects('warn').once().withArgs(sinon.match(/foo/));
 
@@ -75,11 +84,20 @@ describe('QubitHelper', () => {
             mockLogger.verify();
         });
 
-        it('calls events.push on universal_variable object if type is uv', () => {
+        it('calls events.push on universal_variable object if type is uv when sending a legacy event', () => {
             QubitHelper.trackEvent('uv', 'foo');
 
             sinon.assert.calledOnce(uvEventsPushSpy);
             sinon.assert.calledWith(uvEventsPushSpy, {action: 'foo'});
+        });
+
+        it('logs a warning if universal_variable window object is not available', () => {
+            delete mockWindow['universal_variable'];
+            mockLogger.expects('warn').once().withArgs(sinon.match(/foo/));
+
+            QubitHelper.trackEvent('uv', 'foo');
+
+            mockLogger.verify();
         });
     });
 
