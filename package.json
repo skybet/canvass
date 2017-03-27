@@ -1,6 +1,6 @@
 {
   "name": "canvass",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Canvass is a framework for implementing A/B/n and multi-variant testing",
   "main": "distribution/Manager.js",
   "repository": "ssh://git@stash.skybet.net:7999/vegas/canvass.git",
