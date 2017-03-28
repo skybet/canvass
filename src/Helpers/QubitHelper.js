@@ -1,6 +1,11 @@
 /* eslint no-underscore-dangle: 0 */
 import logger from '~/src/Helpers/Logger';
 
+export const EventType = {
+    QPROTOCOL: 'QProtocol',
+    UNIVERSAL_VARIABLE: 'UniversalVariable',
+};
+
 class QubitHelper
 {
     displayName = 'QubitHelper';
@@ -56,9 +61,9 @@ class QubitHelper
         if (!type) throw new Error('Missing argument: type');
         if (!name) throw new Error('Missing argument: name');
 
-        if (type === 'qp') {
+        if (type === EventType.QPROTOCOL) {
             this.trackQPEvent(name, value);
-        } else if (type === 'uv') {
+        } else if (type === EventType.UNIVERSAL_VARIABLE) {
             this.trackUVEvent(name);
         } else {
             throw new Error(`Cannot track even with unknown type: ${type}`);

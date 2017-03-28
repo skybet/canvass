@@ -2,7 +2,7 @@
   "name": "canvass",
   "version": "1.0.3",
   "description": "Canvass is a framework for implementing A/B/n and multi-variant testing",
-  "main": "distribution/Manager.js",
+  "main": "distribution/Main.js",
   "repository": "ssh://git@stash.skybet.net:7999/vegas/canvass.git",
   "author": "Adam Blanchard, Steve Goode",
   "license": "UNLICENSED",
