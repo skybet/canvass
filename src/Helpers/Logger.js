@@ -49,7 +49,7 @@ export class Logger
      */
     error() {
         let messages = this.formatMessages(Array.prototype.slice.call(arguments));
-        this.logMessages(messages, this.logger.error);
+        this.logger.error(...messages);
     }
 
     /**
@@ -60,7 +60,7 @@ export class Logger
      */
     warn() {
         let messages = this.formatMessages(Array.prototype.slice.call(arguments));
-        this.logMessages(messages, this.logger.warn);
+        this.logUniqueMessages(messages, this.logger.warn);
     }
 
     /**
@@ -71,7 +71,7 @@ export class Logger
      */
     info() {
         let messages = this.formatMessages(Array.prototype.slice.call(arguments));
-        this.logMessages(messages, this.logger.info);
+        this.logger.info(...messages);
     }
 
     /**
@@ -84,7 +84,7 @@ export class Logger
         if (this.outputLevel === LEVEL.DEBUG) {
             let logFunction = this.logger.debug || this.logger.log;
             let messages = this.formatMessages(Array.prototype.slice.call(arguments));
-            this.logMessages(messages, logFunction);
+            logFunction(...messages);
         }
     }
 
@@ -123,13 +123,13 @@ export class Logger
      * @param {array} [messages] Messages to log out
      * @param {function} [logFunction] Function to log the messages with
      */
-    logMessages(messages, logFunction) {
-        let messagesString = messages.toString();
+    logUniqueMessages(messages, logFunction) {
+        let messagesString = JSON.stringify(messages);
 
         if (!this.alreadyLogged.has(messagesString)) {
             logFunction(...messages);
         }
-        
+
         this.alreadyLogged.add(messagesString);
     }
 
