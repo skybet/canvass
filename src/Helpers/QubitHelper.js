@@ -84,7 +84,7 @@ class QubitHelper
         }
 
         qubit.uv.emit(name, value);
-        this.logger.info('Tracking QP Event: ' + name, value);
+        this.logger.debug('Tracking QP Event: ' + name, value);
     }
 
     /**
@@ -102,7 +102,7 @@ class QubitHelper
         }
 
         uv.events.push({action: name});
-        this.logger.info('Tracking UV Event: ' + name);
+        this.logger.debug('Tracking UV Event: ' + name);
     }
 
     /**

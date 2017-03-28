@@ -38,7 +38,7 @@ export class Manager extends EventEmitter
         this.setupExperimentListeners(experiment);
 
         if (this.experimentAlreadyTriggered(experimentId)) {
-            this.logger.info(`"${experimentId}" experiment has been triggered already for this user, enrolling again`);
+            this.logger.debug(`"${experimentId}" experiment has been triggered already for this user, enrolling again`);
             experiment.enroll();
         }
     }
@@ -150,14 +150,14 @@ export class Manager extends EventEmitter
      */
     activateExperiment(experimentId) {
         if (this.config.get('disableActivation')) {
-            this.logger.info(`"${experimentId}" should have triggered, but experiments are disabled`);
+            this.logger.debug(`"${experimentId}" should have triggered, but experiments are disabled`);
             return;
         }
 
-        this.logger.info(`"${experimentId}" experiment is being triggered`);
+        this.logger.debug(`"${experimentId}" experiment is being triggered`);
         let experiment = this.getExperiment(experimentId);
         this.helper.triggerExperiment(experimentId, (group) => {
-            this.logger.info(`"${experimentId}" experiment group set to: ${group}`);
+            this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
             experiment.setGroup(group);
         });
     }
