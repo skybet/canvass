@@ -132,13 +132,13 @@ describe('Logger', () => {
             sinon.assert.calledWith(mockLogger.log, testData);
         });
 
-        it('should only call the log method if the messages have not already been logged', () => {
+        it('should only call the log.warning method if the messages have not already been logged', () => {
             let testMessage = 'test info message';
-            testingLogger.info(testMessage);
-            testingLogger.info(testMessage);
+            testingLogger.warn(testMessage);
+            testingLogger.warn(testMessage);
 
-            sinon.assert.calledOnce(mockLogger.info);
-            sinon.assert.calledWith(mockLogger.info, '[canvass]', testMessage);
+            sinon.assert.calledOnce(mockLogger.warn);
+            sinon.assert.calledWith(mockLogger.warn, '[canvass]', testMessage);
         });
     });
 

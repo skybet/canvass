@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import assert from 'assert';
 import logger from '~/src/Helpers/Logger';
-import QubitHelper from '~/src/Helpers/QubitHelper';
+import QubitHelper, {EventType} from '~/src/Helpers/QubitHelper';
 
 describe('QubitHelper', () => {
 
@@ -52,7 +52,7 @@ describe('QubitHelper', () => {
         });
 
         it('calls emit on qubit if type is qp', () => {
-            QubitHelper.trackEvent('qp', 'foo');
+            QubitHelper.trackEvent(EventType.QPROTOCOL, 'foo');
 
             sinon.assert.calledOnce(uvEmitSpy);
             sinon.assert.calledWith(uvEmitSpy, 'foo');
@@ -61,7 +61,7 @@ describe('QubitHelper', () => {
         it('does not call emit if uv object is not available', () => {
             delete mockWindow['__qubit'].uv;
 
-            QubitHelper.trackEvent('qp', 'foo');
+            QubitHelper.trackEvent(EventType.QPROTOCOL, 'foo');
 
             sinon.assert.notCalled(uvEmitSpy);
         });
@@ -70,7 +70,7 @@ describe('QubitHelper', () => {
             delete mockWindow['__qubit'];
             mockLogger.expects('warn').once().withArgs(sinon.match(/foo/));
 
-            QubitHelper.trackEvent('qp', 'foo');
+            QubitHelper.trackEvent(EventType.QPROTOCOL, 'foo');
 
             mockLogger.verify();
         });
@@ -79,13 +79,13 @@ describe('QubitHelper', () => {
             delete mockWindow['__qubit'].uv;
             mockLogger.expects('warn').once().withArgs(sinon.match(/foo/));
 
-            QubitHelper.trackEvent('qp', 'foo');
+            QubitHelper.trackEvent(EventType.QPROTOCOL, 'foo');
 
             mockLogger.verify();
         });
 
         it('calls events.push on universal_variable object if type is uv when sending a legacy event', () => {
-            QubitHelper.trackEvent('uv', 'foo');
+            QubitHelper.trackEvent(EventType.UNIVERSAL_VARIABLE, 'foo');
 
             sinon.assert.calledOnce(uvEventsPushSpy);
             sinon.assert.calledWith(uvEventsPushSpy, {action: 'foo'});
@@ -95,7 +95,7 @@ describe('QubitHelper', () => {
             delete mockWindow['universal_variable'];
             mockLogger.expects('warn').once().withArgs(sinon.match(/foo/));
 
-            QubitHelper.trackEvent('uv', 'foo');
+            QubitHelper.trackEvent(EventType.UNIVERSAL_VARIABLE, 'foo');
 
             mockLogger.verify();
         });
