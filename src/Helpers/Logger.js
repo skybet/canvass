@@ -84,7 +84,7 @@ export class Logger
         if (this.outputLevel === LEVEL.DEBUG) {
             let logFunction = this.logger.debug || this.logger.log;
             let messages = this.formatMessages(Array.prototype.slice.call(arguments));
-            logFunction(...messages);
+            logFunction.bind(this.logger)(...messages);
         }
     }
 
@@ -96,7 +96,7 @@ export class Logger
      */
     table(data) {
         let logFunction = this.logger.table || this.logger.log;
-        logFunction(data);
+        logFunction.bind(this.logger)(data);
     }
 
     /**
