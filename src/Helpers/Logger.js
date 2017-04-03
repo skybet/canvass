@@ -127,7 +127,7 @@ export class Logger
         let messagesString = JSON.stringify(messages);
 
         if (!this.alreadyLogged.has(messagesString)) {
-            logFunction(...messages);
+            logFunction.bind(this.logger)(...messages);
         }
 
         this.alreadyLogged.add(messagesString);
