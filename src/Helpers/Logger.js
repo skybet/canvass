@@ -82,7 +82,7 @@ export class Logger
      */
     debug() {
         if (this.outputLevel === LEVEL.DEBUG) {
-            let logFunction = this.logger.debug || this.logger.log;
+            let logFunction = (this.logger.debug || this.logger.log).bind(this.logger);
             let messages = this.formatMessages(Array.prototype.slice.call(arguments));
             logFunction(...messages);
         }
@@ -95,7 +95,7 @@ export class Logger
      * @param {object} data Data object or array to output
      */
     table(data) {
-        let logFunction = this.logger.table || this.logger.log;
+        let logFunction = (this.logger.table || this.logger.log).bind(this.logger);
         logFunction(data);
     }
 
@@ -127,7 +127,7 @@ export class Logger
         let messagesString = JSON.stringify(messages);
 
         if (!this.alreadyLogged.has(messagesString)) {
-            logFunction(...messages);
+            logFunction.bind(this.logger)(...messages);
         }
 
         this.alreadyLogged.add(messagesString);
