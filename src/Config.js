@@ -1,10 +1,12 @@
 import cookies from 'js-cookie';
 import logger from '~/src/Helpers/Logger';
 import CookieNames from '~/src/Helpers/CookieNames';
+import URLSearchParams from 'url-search-params';
 
 export const configDefaults = {
     debug: false,
     disableActivation: false,
+    previewMode: false,
 };
 
 export class Config
@@ -25,6 +27,51 @@ export class Config
             this.set('debug', true);
             this.logger.info('Detected "debug" cookie. Enabling debug logging.');
         }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const previewModeParam = urlParams.get('canvassPreviewMode');
+        this.previewModeExperiments = this.parsePreviewModeExperiments(previewModeParam);
+        if (this.previewModeExperiments) {
+            this.set('previewMode', true);
+            this.logger.info('Detected "previewMode" query string. Enabling preview mode.');
+        }
+
+    }
+
+    parsePreviewModeExperiments(previewModeParam) {
+        if (!previewModeParam || previewModeParam === 'off') {
+            return null;
+        }
+
+        if (this.isJson(previewModeParam)) {
+            return JSON.parse(previewModeParam);
+        }
+
+        if (previewModeParam === 'all') {
+            return {foo: 1};
+        }
+
+        if (previewModeParam === 'none') {
+            return {foo: 0};
+        }
+
+        return null;
+    }
+
+    isJson(item) {
+        let jsonItem = (typeof item !== 'string') ? JSON.stringify(item) : item;
+
+        try {
+            jsonItem = JSON.parse(jsonItem);
+        } catch (e) {
+            return false;
+        }
+
+        if (typeof jsonItem === 'object' && jsonItem !== null) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
