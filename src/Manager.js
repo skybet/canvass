@@ -156,10 +156,17 @@ export class Manager extends EventEmitter
 
         this.logger.debug(`"${experimentId}" experiment is being triggered`);
         let experiment = this.getExperiment(experimentId);
-        this.helper.triggerExperiment(experimentId, (group) => {
-            this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
+
+        if (this.config.get('previewMode')) {
+            let group = this.config.getPreviewModeExperiments()[experimentId];
             experiment.setGroup(group);
-        });
+            this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
+        } else {
+            this.helper.triggerExperiment(experimentId, (group) => {
+                experiment.setGroup(group);
+                this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
+            });
+        }
     }
 
     /**

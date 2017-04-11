@@ -5,20 +5,25 @@ export const LEVEL = {
     DEBUG: 4,
 };
 
+export const PREFIX_DEFAULT = '[canvass]';
+
 export class Logger
 {
-    static PREFIX = '[canvass]';
-
     /**
      * @public
      * @param {logger} [logger] Logging instance such as console.log
      * @param {Logger.LEVEL} [outputLevel] Level of logging to output
      */
     constructor(logger, outputLevel) {
+        this.prefix = PREFIX_DEFAULT;
         this.logger = logger || console;
         this.outputLevel = outputLevel || LEVEL.WARN;
 
         this.alreadyLogged = new Set();
+    }
+
+    setPrefix(prefix) {
+        this.prefix = prefix;
     }
 
     /**
@@ -111,7 +116,7 @@ export class Logger
             return messages;
         }
 
-        messages.unshift(Logger.PREFIX);
+        messages.unshift(this.prefix);
         return messages;
     }
 

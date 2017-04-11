@@ -1,5 +1,5 @@
 import cookies from 'js-cookie';
-import logger from '~/src/Helpers/Logger';
+import logger, {PREFIX_DEFAULT as LOGGER_PREFIX_DEFAULT} from '~/src/Helpers/Logger';
 import CookieNames from '~/src/Helpers/CookieNames';
 import URLSearchParams from 'url-search-params';
 
@@ -34,8 +34,13 @@ export class Config
         if (this.previewModeExperiments) {
             this.set('previewMode', true);
             this.logger.info('Detected "previewMode" query string. Enabling preview mode.');
+            this.logger.setPrefix(LOGGER_PREFIX_DEFAULT + '[preview-mode]');
         }
 
+    }
+
+    getPreviewModeExperiments() {
+        return this.previewModeExperiments;
     }
 
     parsePreviewModeExperiments(previewModeParam) {
@@ -44,6 +49,7 @@ export class Config
         }
 
         if (this.isJson(previewModeParam)) {
+            // TODO validate that these experiments are actually experiments?
             return JSON.parse(previewModeParam);
         }
 
