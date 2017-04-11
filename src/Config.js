@@ -17,12 +17,15 @@ export class Config
         this.config = Object.assign({}, configDefaults);
         this.logger = logger;
 
+        this.configureDebug();
+        this.configurePreviewMode();
+    }
+
+    configureDebug() {
         if (cookies.get(CookieNames.DEBUG)) {
             this.set('debug', true);
             this.logger.info('Detected "debug" cookie. Enabling debug logging.');
         }
-
-        this.configurePreviewMode();
     }
 
     configurePreviewMode() {
