@@ -157,26 +157,37 @@ export class Manager extends EventEmitter
         this.logger.debug(`"${experimentId}" experiment is being triggered`);
         let experiment = this.getExperiment(experimentId);
 
-        let previewModeExperiments = this.config.getPreviewModeExperiments();
-        if (this.config.get('previewMode') && (experimentId in previewModeExperiments)) {
+        const previewMode = this.config.get('previewMode');
 
-            let group = this.config.getPreviewModeExperiments()[experimentId];
-            // In preview mode, we want to catch errors due to missing variants as this could
-            // be a user error.
-            try {
-                experiment.setGroup(group);
-            } catch (e) {
-                this.logger.error(e.message);
-            }
-
-            this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
-
-        } else {
+        if (previewMode === 'off') {
+            // Get group from helper
             this.helper.triggerExperiment(experimentId, (group) => {
                 experiment.setGroup(group);
                 this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
             });
+            return;
         }
+
+        let group;
+        if (previewMode === 'custom') {
+            const previewModeExperiments = this.config.getPreviewModeExperiments();
+            group = (experimentId in previewModeExperiments) ? this.config.getPreviewModeExperiments()[experimentId] : 0;
+        }
+        if (previewMode === 'all') {
+            group = 1; // TODO don't magic these numbers
+        }
+        if (previewMode === 'none') {
+            group = 0;
+        }
+
+        // In preview mode, we want to catch errors due to missing variants as this could be a user error.
+        try {
+            experiment.setGroup(group);
+        } catch (e) {
+            this.logger.error(e.message);
+        }
+
+        this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
 
     }
 

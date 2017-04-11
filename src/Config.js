@@ -6,7 +6,7 @@ import URLSearchParams from 'url-search-params';
 export const configDefaults = {
     debug: false,
     disableActivation: false,
-    previewMode: false,
+    previewMode: 'off',
 };
 
 export class Config
@@ -28,41 +28,49 @@ export class Config
             this.logger.info('Detected "debug" cookie. Enabling debug logging.');
         }
 
-        this.previewModeExperiments = this.parsePreviewModeExperiments();
-        if (this.previewModeExperiments) {
-            this.set('previewMode', true);
-            this.logger.info('Detected "previewMode" query string. Enabling preview mode.');
+        this.configurePreviewMode();
+    }
+
+    configurePreviewMode() {
+        this.setPreviewModeExperiments({});
+        const previewMode = this.parsePreviewModeFromQueryString();
+        this.set('previewMode', previewMode);
+
+        if (previewMode !== 'off') {
+            this.logger.info(`Detected "previewMode" query string. Enabling preview in "${previewMode}" mode.`);
             this.logger.setPrefix(LOGGER_PREFIX_DEFAULT + '[preview-mode]');
         }
+    }
 
+    parsePreviewModeFromQueryString() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const previewModeParam = urlParams.get('canvassPreviewMode');
+
+        let defaultMode = 'off';
+
+        if (this.isJson(previewModeParam)) {
+            // TODO validate that these experiments are actually experiments here?
+            let parsedParam = JSON.parse(previewModeParam);
+
+            if (typeof parsedParam === 'object') {
+                this.setPreviewModeExperiments(parsedParam);
+                return 'custom';
+            }
+            return defaultMode;
+
+        } else if (previewModeParam === 'all' || previewModeParam === 'none') {
+            return previewModeParam;
+        }
+
+        return defaultMode;
     }
 
     getPreviewModeExperiments() {
         return this.previewModeExperiments;
     }
 
-    parsePreviewModeExperiments() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const previewModeParam = urlParams.get('canvassPreviewMode');
-
-        if (!previewModeParam || previewModeParam === 'off') {
-            return null;
-        }
-
-        if (this.isJson(previewModeParam)) {
-            // TODO validate that these experiments are actually experiments?
-            return JSON.parse(previewModeParam);
-        }
-
-        if (previewModeParam === 'all') {
-            return {foo: 1};
-        }
-
-        if (previewModeParam === 'none') {
-            return {foo: 0};
-        }
-
-        return null;
+    setPreviewModeExperiments(experiments) {
+        this.previewModeExperiments = experiments;
     }
 
     isJson(item) {
