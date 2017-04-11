@@ -3,7 +3,7 @@ import EventEmitter from './Helpers/EventEmitter';
 import config from '~/src/Config';
 import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
-import CookieNames from '~/src/Helpers/CookieNames'
+import CookieNames from '~/src/Helpers/CookieNames';
 
 export class Manager extends EventEmitter
 {

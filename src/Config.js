@@ -28,9 +28,7 @@ export class Config
             this.logger.info('Detected "debug" cookie. Enabling debug logging.');
         }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const previewModeParam = urlParams.get('canvassPreviewMode');
-        this.previewModeExperiments = this.parsePreviewModeExperiments(previewModeParam);
+        this.previewModeExperiments = this.parsePreviewModeExperiments();
         if (this.previewModeExperiments) {
             this.set('previewMode', true);
             this.logger.info('Detected "previewMode" query string. Enabling preview mode.');
@@ -43,7 +41,10 @@ export class Config
         return this.previewModeExperiments;
     }
 
-    parsePreviewModeExperiments(previewModeParam) {
+    parsePreviewModeExperiments() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const previewModeParam = urlParams.get('canvassPreviewMode');
+
         if (!previewModeParam || previewModeParam === 'off') {
             return null;
         }
