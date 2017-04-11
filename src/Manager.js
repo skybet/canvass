@@ -157,16 +157,27 @@ export class Manager extends EventEmitter
         this.logger.debug(`"${experimentId}" experiment is being triggered`);
         let experiment = this.getExperiment(experimentId);
 
-        if (this.config.get('previewMode')) {
+        let previewModeExperiments = this.config.getPreviewModeExperiments();
+        if (this.config.get('previewMode') && (experimentId in previewModeExperiments)) {
+
             let group = this.config.getPreviewModeExperiments()[experimentId];
-            experiment.setGroup(group);
+            // In preview mode, we want to catch errors due to missing variants as this could
+            // be a user error.
+            try {
+                experiment.setGroup(group);
+            } catch (e) {
+                this.logger.error(e.message);
+            }
+
             this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
+
         } else {
             this.helper.triggerExperiment(experimentId, (group) => {
                 experiment.setGroup(group);
                 this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
             });
         }
+
     }
 
     /**
