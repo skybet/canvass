@@ -5,7 +5,6 @@ import URLSearchParams from 'url-search-params';
 
 export const configDefaults = {
     debug: false,
-    disableActivation: false,
     previewMode: 'off',
 };
 
@@ -17,11 +16,6 @@ export class Config
     constructor() {
         this.config = Object.assign({}, configDefaults);
         this.logger = logger;
-
-        if (cookies.get(CookieNames.DISABLE_ACTIVATION)) {
-            this.set('disableActivation', true);
-            this.logger.info('Detected "disableActivation" cookie. Disabling activation of experiments.');
-        }
 
         if (cookies.get(CookieNames.DEBUG)) {
             this.set('debug', true);

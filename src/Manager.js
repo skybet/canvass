@@ -149,11 +149,6 @@ export class Manager extends EventEmitter
      * @param {string} experimentId The unique ID for the experiment being activated
      */
     activateExperiment(experimentId) {
-        if (this.config.get('disableActivation')) {
-            this.logger.debug(`"${experimentId}" should have triggered, but experiments are disabled`);
-            return;
-        }
-
         this.logger.debug(`"${experimentId}" experiment is being triggered`);
         let experiment = this.getExperiment(experimentId);
 
