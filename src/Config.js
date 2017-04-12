@@ -30,13 +30,31 @@ export class Config
 
     configurePreviewMode() {
         this.setPreviewModeExperiments({});
-        const previewMode = this.parsePreviewModeFromQueryString();
-        this.set('previewMode', previewMode);
 
-        if (sessionStorage) { // TODO test in incognito and shitty browsers
-            sessionStorage.setItem('previewMode', previewMode);
+        // Load preview mode
+        const previewModeQueryString = this.parsePreviewModeFromQueryString();
+        const previewModeSessionStorage = sessionStorage ? sessionStorage.getItem('previewMode') : null;
+        let previewMode;
+        if (!previewModeQueryString && previewModeSessionStorage) {
+            previewMode = previewModeSessionStorage;
+        } else if (previewModeQueryString) {
+            previewMode = previewModeQueryString;
+        } else {
+            previewMode = 'off';
         }
 
+        // Save preview mode state
+        this.set('previewMode', previewMode);
+        if (sessionStorage) { // TODO test in incognito and shitty browsers
+            // If turning preview mode off, just remove the key
+            if (previewMode === 'off' && previewModeSessionStorage) {
+                sessionStorage.removeItem('previewMode');
+            } else {
+                sessionStorage.setItem('previewMode', previewMode);
+            }
+        }
+
+        // Setup logger for preview mode if enabled
         if (previewMode !== 'off') {
             this.logger.info(`Detected "previewMode" query string. Enabling preview in "${previewMode}" mode.`);
             this.logger.setPrefix(LOGGER_PREFIX_DEFAULT + '[preview-mode]');
@@ -47,8 +65,6 @@ export class Config
         const urlParams = new URLSearchParams(window.location.search);
         const previewModeParam = urlParams.get('canvassPreviewMode');
 
-        let defaultMode = 'off';
-
         if (this.isJson(previewModeParam)) {
             // TODO validate that these experiments are actually experiments here?
             let parsedParam = JSON.parse(previewModeParam);
@@ -57,13 +73,14 @@ export class Config
                 this.setPreviewModeExperiments(parsedParam);
                 return 'custom';
             }
-            return defaultMode;
+            // TODO test how to get here
+            return 'off';
 
-        } else if (previewModeParam === 'all' || previewModeParam === 'none') {
+        } else if (previewModeParam === 'all' || previewModeParam === 'none' || previewModeParam === 'off') {
             return previewModeParam;
         }
 
-        return defaultMode;
+        return null;
     }
 
     getPreviewModeExperiments() {
