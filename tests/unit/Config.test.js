@@ -7,7 +7,7 @@ import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
 import logger from '~/src/Helpers/Logger';
 
-describe('Config', () => {
+describe.skip('Config', () => {
 
     let testConfig, testDefaults, mockCookies;
 

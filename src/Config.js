@@ -33,6 +33,10 @@ export class Config
         const previewMode = this.parsePreviewModeFromQueryString();
         this.set('previewMode', previewMode);
 
+        if (sessionStorage) { // TODO test in incognito and shitty browsers
+            sessionStorage.setItem('previewMode', previewMode);
+        }
+
         if (previewMode !== 'off') {
             this.logger.info(`Detected "previewMode" query string. Enabling preview in "${previewMode}" mode.`);
             this.logger.setPrefix(LOGGER_PREFIX_DEFAULT + '[preview-mode]');
