@@ -32,8 +32,33 @@ export class Config
         this.setPreviewModeExperiments({});
 
         // Load preview mode
+        const previewMode = this.loadPreviewMode();
+
+        // Save preview mode state
+        this.savePreviewMode(previewMode);
+
+        // Setup logger for preview mode if enabled
+        if (previewMode !== 'off') {
+            this.logger.info(`Detected "previewMode" query string. Enabling preview in "${previewMode}" mode.`);
+            this.logger.setPrefix(LOGGER_PREFIX_DEFAULT + '[preview-mode]');
+        }
+    }
+
+    savePreviewMode(mode) {
+        this.set('previewMode', mode);
+        if (sessionStorage) { // TODO test in incognito and shitty browsers
+            // If turning preview mode off, just remove the key
+            if (mode === 'off' && sessionStorage.getItem('canvassPreviewMode')) {
+                sessionStorage.removeItem('canvassPreviewMode');
+            } else {
+                sessionStorage.setItem('canvassPreviewMode', mode);
+            }
+        }
+    }
+
+    loadPreviewMode() {
         const previewModeQueryString = this.parsePreviewModeFromQueryString();
-        const previewModeSessionStorage = sessionStorage ? sessionStorage.getItem('previewMode') : null;
+        const previewModeSessionStorage = sessionStorage ? sessionStorage.getItem('canvassPreviewMode') : null;
         let previewMode;
         if (!previewModeQueryString && previewModeSessionStorage) {
             previewMode = previewModeSessionStorage;
@@ -43,22 +68,7 @@ export class Config
             previewMode = 'off';
         }
 
-        // Save preview mode state
-        this.set('previewMode', previewMode);
-        if (sessionStorage) { // TODO test in incognito and shitty browsers
-            // If turning preview mode off, just remove the key
-            if (previewMode === 'off' && previewModeSessionStorage) {
-                sessionStorage.removeItem('previewMode');
-            } else {
-                sessionStorage.setItem('previewMode', previewMode);
-            }
-        }
-
-        // Setup logger for preview mode if enabled
-        if (previewMode !== 'off') {
-            this.logger.info(`Detected "previewMode" query string. Enabling preview in "${previewMode}" mode.`);
-            this.logger.setPrefix(LOGGER_PREFIX_DEFAULT + '[preview-mode]');
-        }
+        return previewMode;
     }
 
     parsePreviewModeFromQueryString() {
