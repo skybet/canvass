@@ -29,46 +29,56 @@ export class Config
     }
 
     configurePreviewMode() {
-        this.setPreviewModeExperiments({});
+        const {mode, experiments} = this.parsePreviewMode();
 
-        // Load preview mode
-        const previewMode = this.loadPreviewMode();
+        this.set('previewMode', mode);
+        this.setPreviewModeExperiments(experiments);
 
-        // Save preview mode state
-        this.savePreviewMode(previewMode);
+        this.savePreviewMode(mode, experiments);
 
         // Setup logger for preview mode if enabled
-        if (previewMode !== 'off') {
-            this.logger.info(`Detected "previewMode" query string. Enabling preview in "${previewMode}" mode.`);
+        if (mode !== 'off') {
+            this.logger.info(`Enabling preview in "${mode}" mode.`);
             this.logger.setPrefix(LOGGER_PREFIX_DEFAULT + '[preview-mode]');
         }
     }
 
-    savePreviewMode(mode) {
-        this.set('previewMode', mode);
+    savePreviewMode(mode, experiments) {
         if (sessionStorage) { // TODO test in incognito and shitty browsers
             // If turning preview mode off, just remove the key
-            if (mode === 'off' && sessionStorage.getItem('canvassPreviewMode')) {
+            if (mode === 'off') {
                 sessionStorage.removeItem('canvassPreviewMode');
+                sessionStorage.removeItem('canvassPreviewModeExperiments');
             } else {
                 sessionStorage.setItem('canvassPreviewMode', mode);
+                sessionStorage.setItem('canvassPreviewModeExperiments', JSON.stringify(experiments));
             }
         }
     }
 
-    loadPreviewMode() {
+    parsePreviewMode() {
         const previewModeQueryString = this.parsePreviewModeFromQueryString();
-        const previewModeSessionStorage = sessionStorage ? sessionStorage.getItem('canvassPreviewMode') : null;
+        const previewModeSessionStorage = this.parsePreviewModeFromSessionStorage();
+
         let previewMode;
         if (!previewModeQueryString && previewModeSessionStorage) {
             previewMode = previewModeSessionStorage;
+
         } else if (previewModeQueryString) {
             previewMode = previewModeQueryString;
+
         } else {
-            previewMode = 'off';
+            previewMode = {mode: 'off', experiments: {}};
         }
 
         return previewMode;
+    }
+
+    parsePreviewModeFromSessionStorage() {
+        const mode = sessionStorage ? sessionStorage.getItem('canvassPreviewMode') : null;
+        const experiments = sessionStorage ? JSON.parse(sessionStorage.getItem('canvassPreviewModeExperiments')) : {};
+
+        return mode ? {mode, experiments} : null;
     }
 
     parsePreviewModeFromQueryString() {
@@ -80,14 +90,13 @@ export class Config
             let parsedParam = JSON.parse(previewModeParam);
 
             if (typeof parsedParam === 'object') {
-                this.setPreviewModeExperiments(parsedParam);
-                return 'custom';
+                return {mode: 'custom', experiments: parsedParam};
             }
             // TODO test how to get here
-            return 'off';
+            return {mode: 'off', experiments: {}};
 
         } else if (previewModeParam === 'all' || previewModeParam === 'none' || previewModeParam === 'off') {
-            return previewModeParam;
+            return {mode: previewModeParam, experiments: {}};
         }
 
         return null;
@@ -102,7 +111,7 @@ export class Config
     }
 
     isJson(item) {
-        let jsonItem = (typeof item !== 'string') ? JSON.stringify(item) : item;
+        let jsonItem = (typeof item !== 'string') ? JSON.stringify(item) : item; // TODO check this
 
         try {
             jsonItem = JSON.parse(jsonItem);
