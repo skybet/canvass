@@ -1,6 +1,6 @@
 import Experiment from './Experiment';
 import EventEmitter from './Helpers/EventEmitter';
-import config from '~/src/Config';
+import config, {PreviewModes} from '~/src/Config';
 import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
@@ -155,7 +155,7 @@ export class Manager extends EventEmitter
 
         const previewMode = this.config.get('previewMode');
 
-        if (previewMode === 'off') {
+        if (previewMode === PreviewModes.OFF) {
             // Get group from helper
             this.helper.triggerExperiment(experimentId, (group) => {
                 experiment.setGroup(group);
@@ -165,14 +165,14 @@ export class Manager extends EventEmitter
         }
 
         let group;
-        if (previewMode === 'custom') {
+        if (previewMode === PreviewModes.CUSTOM) {
             const previewModeExperiments = this.config.getPreviewModeExperiments();
             group = (experimentId in previewModeExperiments) ? this.config.getPreviewModeExperiments()[experimentId] : 0;
         }
-        if (previewMode === 'all') {
+        if (previewMode === PreviewModes.ALL) {
             group = 1; // TODO don't magic these numbers
         }
-        if (previewMode === 'none') {
+        if (previewMode === PreviewModes.NONE) {
             group = 0;
         }
 

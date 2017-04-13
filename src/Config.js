@@ -3,9 +3,16 @@ import logger, {PREFIX_DEFAULT as LOGGER_PREFIX_DEFAULT} from '~/src/Helpers/Log
 import CookieNames from '~/src/Helpers/CookieNames';
 import URLSearchParams from 'url-search-params';
 
+export const PreviewModes = {
+    CUSTOM: 'custom',
+    ALL: 'all',
+    NONE: 'none',
+    OFF: 'off',
+};
+
 export const configDefaults = {
     debug: false,
-    previewMode: 'off',
+    previewMode: PreviewModes.OFF,
 };
 
 export class Config
@@ -37,7 +44,7 @@ export class Config
         this.savePreviewMode(mode, experiments);
 
         // Setup logger for preview mode if enabled
-        if (mode !== 'off') {
+        if (mode !== PreviewModes.OFF) {
             this.logger.info(`Enabling preview in "${mode}" mode.`);
             this.logger.setPrefix(LOGGER_PREFIX_DEFAULT + '[preview-mode]');
         }
@@ -46,7 +53,7 @@ export class Config
     savePreviewMode(mode, experiments) {
         if (sessionStorage) { // TODO test in incognito and shitty browsers
             // If turning preview mode off, just remove the key
-            if (mode === 'off') {
+            if (mode === PreviewModes.OFF) {
                 sessionStorage.removeItem('canvassPreviewMode');
                 sessionStorage.removeItem('canvassPreviewModeExperiments');
             } else {
@@ -68,7 +75,7 @@ export class Config
             previewMode = previewModeQueryString;
 
         } else {
-            previewMode = {mode: 'off', experiments: {}};
+            previewMode = {mode: PreviewModes.OFF, experiments: {}};
         }
 
         return previewMode;
@@ -94,12 +101,15 @@ export class Config
             let parsedParam = JSON.parse(previewModeParam);
 
             if (typeof parsedParam === 'object') {
-                return {mode: 'custom', experiments: parsedParam};
+                return {mode: PreviewModes.CUSTOM, experiments: parsedParam};
             }
             // TODO test how to get here
-            return {mode: 'off', experiments: {}};
+            return {mode: PreviewModes.OFF, experiments: {}};
 
-        } else if (previewModeParam === 'all' || previewModeParam === 'none' || previewModeParam === 'off') {
+        } else if (previewModeParam === PreviewModes.ALL ||
+            previewModeParam === PreviewModes.NONE ||
+            previewModeParam === PreviewModes.OFF) {
+
             return {mode: previewModeParam, experiments: {}};
         }
 

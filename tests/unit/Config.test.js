@@ -2,12 +2,12 @@
 
 import sinon from 'sinon';
 import assert from 'assert';
-import {Config, configDefaults} from '~/src/Config';
+import {Config, configDefaults, PreviewModes} from '~/src/Config';
 import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
 import logger from '~/src/Helpers/Logger';
 
-describe('Config', () => {
+describe.only('Config', () => {
 
     let testConfig, testDefaults, mockCookies;
 
@@ -40,6 +40,10 @@ describe('Config', () => {
             assert.equal(testConfig.get('debug'), testDefaults.debug);
             testConfig.set('debug', true);
             assert.equal(testConfig.get('debug'), true);
+
+            assert.equal(testConfig.get('previewMode'), testDefaults.previewMode);
+            testConfig.set('previewMode', PreviewModes.ALL);
+            assert.equal(testConfig.get('previewMode'), PreviewModes.ALL);
         });
     });
 
