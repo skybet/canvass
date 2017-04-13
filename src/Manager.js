@@ -139,7 +139,7 @@ export class Manager extends EventEmitter
         });
         this.logger.table(status);
         this.logger.info(`Preview Mode: "${this.config.get('previewMode')}"`);
-        this.logger.info('Qubit Live Experiments (see at app.qubit.com):', this.helper.getAllQubitExperiments());
+        this.logger.info('Qubit Live Experiments (see more info at app.qubit.com):', this.helper.getAllQubitExperiments());
     }
 
     /**
@@ -151,7 +151,7 @@ export class Manager extends EventEmitter
      */
     activateExperiment(experimentId) {
         this.logger.debug(`"${experimentId}" experiment is being triggered`);
-        let experiment = this.getExperiment(experimentId);
+        const experiment = this.getExperiment(experimentId);
 
         const previewMode = this.config.get('previewMode');
 

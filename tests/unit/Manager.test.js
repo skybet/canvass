@@ -196,7 +196,8 @@ describe('Manager', () => {
                 Group: mockExperiment.group,
                 ExistsOnHelper: true,
             }]);
-            mockLogger.expects('info').once().withArgs('Qubit Live Experiments', []);
+            mockLogger.expects('info').once().withArgs('Qubit Live Experiments (see more info at app.qubit.com):', []);
+            mockLogger.expects('info').once().withArgs('Preview Mode: "off"');
 
             testManager.printState();
 
