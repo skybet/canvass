@@ -7,7 +7,7 @@ import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
 import logger from '~/src/Helpers/Logger';
 
-describe.skip('Config', () => {
+describe('Config', () => {
 
     let testConfig, testDefaults, mockCookies;
 
@@ -64,29 +64,12 @@ describe.skip('Config', () => {
             global.document = oldDocument;
         });
 
-        it('overrides disableActivation if cookie is set', () => {
-            mockCookies
-                .expects('get')
-                .once()
-                .withArgs(CookieNames.DISABLE_ACTIVATION)
-                .returns({canvassDisableActivation: 1});
-            mockCookies.expects('get').atLeast(1);
-            loggerMock.expects('info').once();
-
-            testConfig = new Config();
-
-            assert.equal(testConfig.config.disableActivation, true);
-            mockCookies.verify();
-            loggerMock.verify();
-        });
-
         it('overrides debug if cookie is set', () => {
             mockCookies
                 .expects('get')
                 .once()
                 .withArgs(CookieNames.DEBUG)
                 .returns({canvassDebug: 1});
-            mockCookies.expects('get').atLeast(1);
             loggerMock.expects('info').once();
 
             testConfig = new Config();

@@ -82,6 +82,10 @@ export class Config
     }
 
     parsePreviewModeFromQueryString() {
+        if (!window) {
+            return null;
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const previewModeParam = urlParams.get('canvassPreviewMode');
 
