@@ -138,7 +138,8 @@ export class Manager extends EventEmitter
             });
         });
         this.logger.table(status);
-        this.logger.info('Qubit Live Experiments', this.helper.getAllQubitExperiments());
+        this.logger.info(`Preview Mode: "${this.config.get('previewMode')}"`);
+        this.logger.info('Qubit Live Experiments (see at app.qubit.com):', this.helper.getAllQubitExperiments());
     }
 
     /**
