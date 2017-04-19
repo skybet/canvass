@@ -170,7 +170,7 @@ export class Manager extends EventEmitter
             group = (experimentId in previewModeExperiments) ? this.config.getPreviewModeExperiments()[experimentId] : 0;
         }
         if (previewMode === PreviewModes.ALL) {
-            group = 1; // TODO don't magic these numbers
+            group = 1;
         }
         if (previewMode === PreviewModes.NONE) {
             group = 0;

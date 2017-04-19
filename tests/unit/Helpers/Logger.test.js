@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import assert from 'assert';
 import singleLogger, {Logger, LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 
-describe.skip('Logger', () => {
+describe('Logger', () => {
 
     let mockLogger, testingLogger;
 

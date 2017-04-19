@@ -166,6 +166,21 @@ class QubitHelper
         return window.universal_variable;
     }
 
+// TODO implement me
+//     printAllTriggeredExperimentsWithTrafficAllocation = function() {
+//
+// 	var qubitIdToExperimentNameMap = Object.keys(__qubit.experiences).reduce(function(previous, current) {
+//         previous[__qubit.experiences[current].id] = current;
+//         return previous;
+//     }, {});
+//
+// 	__qubit.uv.on(/experience/, function (d) {
+// 		let canvassExperimentId = qubitIdToExperimentNameMap[d.experienceId];
+// 		if (canvassExperimentId) console.log('Experience: "' + canvassExperimentId + '" was triggered with traffic split: ' + d.trafficAllocation);
+//     }).replay()
+//
+// };
+
 }
 
 export default new QubitHelper();
