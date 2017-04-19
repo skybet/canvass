@@ -51,7 +51,7 @@ export class Config
     }
 
     savePreviewMode(mode, experiments) {
-        if (sessionStorage) { // TODO test in incognito and shitty browsers
+        if (sessionStorage) {
             // If turning preview mode off, just remove the key
             if (mode === PreviewModes.OFF) {
                 sessionStorage.removeItem('canvassPreviewMode');
@@ -98,13 +98,12 @@ export class Config
         const previewModeParam = urlParams.get('canvassPreviewMode');
 
         if (this.isJson(previewModeParam)) {
-            // TODO validate that these experiments are actually experiments here?
             let parsedParam = JSON.parse(previewModeParam);
 
             if (typeof parsedParam === 'object') {
                 return {mode: PreviewModes.CUSTOM, experiments: parsedParam};
             }
-            // TODO test how to get here
+
             return {mode: PreviewModes.OFF, experiments: {}};
 
         } else if (previewModeParam === PreviewModes.ALL ||
@@ -133,16 +132,16 @@ export class Config
         this.previewModeExperiments = experiments;
     }
 
-    isJson(item) {
-        let jsonItem = (typeof item !== 'string') ? JSON.stringify(item) : item; // TODO check this
+    isJson(data) {
+        let jsonData;
 
         try {
-            jsonItem = JSON.parse(jsonItem);
+            jsonData = JSON.parse(data);
         } catch (e) {
             return false;
         }
 
-        if (typeof jsonItem === 'object' && jsonItem !== null) {
+        if (typeof jsonData === 'object' && jsonData !== null) {
             return true;
         }
 

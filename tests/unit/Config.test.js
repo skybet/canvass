@@ -144,6 +144,34 @@ describe('Config', () => {
                 assert.deepEqual(config.getPreviewModeExperiments(), {foo: 1});
             });
 
+            describe('isJson', () => {
+                let config;
+
+                beforeEach(() => {
+                    config = new Config();
+                });
+
+                it('returns true if json object', () => {
+                    const input = JSON.stringify({foo: 'bar'});
+                    assert.equal(config.isJson(input), true);
+                });
+
+                it('returns false if json but not object', () => {
+                    const input = JSON.stringify('foo');
+                    assert.equal(config.isJson(input), false);
+                });
+
+                it('returns false if invalid json', () => {
+                    const input = '{"foo"}';
+                    assert.equal(config.isJson(input), false);
+                });
+
+                it('returns false if type is not string', () => {
+                    const input = 1;
+                    assert.equal(config.isJson(input), false);
+                });
+            });
+
             describe('Loading Logic', () => {
                 it('if no preview mode query string but session storage is set, load from there', () => {
                     // mock session storage
@@ -205,11 +233,6 @@ describe('Config', () => {
                     assert.equal(config.get('previewMode'), PreviewModes.OFF);
                 });
             });
-
-
         });
-
-
     });
-
 });
