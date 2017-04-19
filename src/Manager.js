@@ -1,6 +1,7 @@
 import Experiment from './Experiment';
 import EventEmitter from './Helpers/EventEmitter';
-import config, {PreviewModes} from '~/src/Config';
+import config from '~/src/Config/Config';
+import {PreviewModes} from './Config/PreviewModeHelper';
 import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
