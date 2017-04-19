@@ -166,20 +166,30 @@ class QubitHelper
         return window.universal_variable;
     }
 
-// TODO implement me
-//     printAllTriggeredExperimentsWithTrafficAllocation = function() {
-//
-// 	var qubitIdToExperimentNameMap = Object.keys(__qubit.experiences).reduce(function(previous, current) {
-//         previous[__qubit.experiences[current].id] = current;
-//         return previous;
-//     }, {});
-//
-// 	__qubit.uv.on(/experience/, function (d) {
-// 		let canvassExperimentId = qubitIdToExperimentNameMap[d.experienceId];
-// 		if (canvassExperimentId) console.log('Experience: "' + canvassExperimentId + '" was triggered with traffic split: ' + d.trafficAllocation);
-//     }).replay()
-//
-// };
+    printAllTriggeredExperimentsWithTrafficAllocation() {
+        const experiments = this.getAllQubitExperiments();
+        const qubitIdToExperimentIdMap = Object.keys(experiments).reduce((previous, current) => {
+            const qubitId = experiments[current].id;
+            if (qubitId) {
+                previous[qubitId] = current;
+                return previous;
+            }
+            this.logger.error(`Could not find qubit id for experiment: ${current}`);
+            return undefined;
+        }, {});
+
+        const qubit = this.getQubit();
+        if (!qubit || !qubit.uv) {
+            throw new Error('Qubit uv object could not be found so cannot find traffic allocation');
+        }
+
+        qubit.uv.on(/experience/, (response) => {
+            const canvassExperimentId = qubitIdToExperimentIdMap[response.experienceId];
+            if (canvassExperimentId) {
+                this.logger.info(`Experience: "${canvassExperimentId}" was triggered with traffic split: ${response.trafficAllocation}`);
+            }
+        }).replay();
+    }
 
 }
 
