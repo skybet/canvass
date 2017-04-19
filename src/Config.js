@@ -82,6 +82,7 @@ export class Config
     }
 
     parsePreviewModeFromSessionStorage() {
+        const sessionStorage = this.getSessionStorage();
         const mode = sessionStorage ? sessionStorage.getItem('canvassPreviewMode') : null;
         const experiments = sessionStorage ? JSON.parse(sessionStorage.getItem('canvassPreviewModeExperiments')) : {};
 
@@ -93,7 +94,7 @@ export class Config
             return null;
         }
 
-        const urlParams = new URLSearchParams(window.location.search);
+        const urlParams = new URLSearchParams(this.getWindowLocationSearch());
         const previewModeParam = urlParams.get('canvassPreviewMode');
 
         if (this.isJson(previewModeParam)) {
@@ -114,6 +115,14 @@ export class Config
         }
 
         return null;
+    }
+
+    getWindowLocationSearch() {
+        return window.location.search;
+    }
+
+    getSessionStorage() {
+        return sessionStorage;
     }
 
     getPreviewModeExperiments() {
