@@ -143,7 +143,17 @@ describe('Manager', () => {
     });
 
     describe('ActiveExperiment', () => {
-        it('sets the group on the experiment', () => {
+
+        let sandbox;
+        beforeEach(() => {
+            sandbox = sinon.sandbox.create();
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('sets the group on the experiment via the helper', () => {
             testManager.addExperiment(mockExperiment);
             let mockGetExperiment = sinon.spy(testManager, 'getExperiment');
             testManager.activateExperiment('FROG');
@@ -153,6 +163,51 @@ describe('Manager', () => {
 
             sinon.assert.calledOnce(mockHelper.triggerExperiment);
             sinon.assert.calledWith(mockHelper.triggerExperiment, mockExperiment.getId(), sinon.match((value) => typeof value === 'function'));
+
+            mockGetExperiment.restore();
+            testManager.removeExperiment('FROG');
+        });
+
+        it('if preview mode is "all", force set group to 1', () => {
+            const previewMode = 'all';
+            const expectedGroup = 1;
+            sandbox.stub(testManager.config, 'get').returns(previewMode);
+
+            testManager.addExperiment(mockExperiment);
+            testManager.activateExperiment('FROG');
+
+            sinon.assert.calledOnce(mockExperiment.setGroup);
+            sinon.assert.calledWith(mockExperiment.setGroup, expectedGroup);
+
+            testManager.removeExperiment('FROG');
+        });
+
+        it('if preview mode is "none", force set group to 0', () => {
+            const previewMode = 'none';
+            const expectedGroup = 0;
+            sandbox.stub(testManager.config, 'get').returns(previewMode);
+
+            testManager.addExperiment(mockExperiment);
+            testManager.activateExperiment('FROG');
+
+            sinon.assert.calledOnce(mockExperiment.setGroup);
+            sinon.assert.calledWith(mockExperiment.setGroup, expectedGroup);
+
+            testManager.removeExperiment('FROG');
+        });
+
+        it('if preview mode is "custom", set group from config', () => {
+            const previewMode = 'custom';
+            const previewModeExperiments = {FROG: 3};
+            const expectedGroup = 3;
+            sandbox.stub(testManager.config, 'get').returns(previewMode);
+            sandbox.stub(testManager.config, 'getPreviewModeExperiments').returns(previewModeExperiments);
+
+            testManager.addExperiment(mockExperiment);
+            testManager.activateExperiment('FROG');
+
+            sinon.assert.calledOnce(mockExperiment.setGroup);
+            sinon.assert.calledWith(mockExperiment.setGroup, expectedGroup);
 
             testManager.removeExperiment('FROG');
         });
@@ -196,8 +251,8 @@ describe('Manager', () => {
                 Group: mockExperiment.group,
                 ExistsOnHelper: true,
             }]);
-            mockLogger.expects('info').once().withArgs('Qubit Live Experiments (see more info at app.qubit.com):', []);
             mockLogger.expects('info').once().withArgs('Preview Mode: "off"');
+            mockLogger.expects('info').once().withArgs('Qubit Live Experiments (see more info at app.qubit.com):', []);
 
             testManager.printState();
 
