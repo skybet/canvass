@@ -146,26 +146,12 @@ class QubitHelper
     }
 
     /**
-     * Returns the qubit window object which we use to communicate with the smartserve
-     * script.
+     * Asks qubit to print all triggered experiments along with the traffic allocation
+     * for the group the user is in. This is helpful in debugging traffic allocation
+     * config changes.
      *
-     * @private
-     * @returns {object} Qubit window object
+     * @public
      */
-    getQubit() {
-        return window.__qubit;
-    }
-
-    /**
-     * Returns the qubit universal variable object which is used to send legacy events.
-     *
-     * @private
-     * @returns {object} Qubit universal variable object
-     */
-    getUniversalVariable() {
-        return window.universal_variable;
-    }
-
     printAllTriggeredExperimentsWithTrafficAllocation() {
         const experiments = this.getAllQubitExperiments();
         const qubitIdToExperimentIdMap = Object.keys(experiments).reduce((previous, current) => {
@@ -189,6 +175,27 @@ class QubitHelper
                 this.logger.info(`Experience: "${canvassExperimentId}" was triggered with traffic split: ${response.trafficAllocation}`);
             }
         }).replay();
+    }
+
+    /**
+     * Returns the qubit window object which we use to communicate with the smartserve
+     * script.
+     *
+     * @private
+     * @returns {object} Qubit window object
+     */
+    getQubit() {
+        return window.__qubit;
+    }
+
+    /**
+     * Returns the qubit universal variable object which is used to send legacy events.
+     *
+     * @private
+     * @returns {object} Qubit universal variable object
+     */
+    getUniversalVariable() {
+        return window.universal_variable;
     }
 
 }
