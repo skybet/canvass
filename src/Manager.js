@@ -1,9 +1,10 @@
 import Experiment from './Experiment';
 import EventEmitter from './Helpers/EventEmitter';
-import config from '~/src/Config';
+import config from '~/src/Config/Config';
+import {PreviewModes} from './Config/PreviewModeHelper';
 import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
-import CookieNames from '~/src/Helpers/CookieNames'
+import CookieNames from '~/src/Helpers/CookieNames';
 
 export class Manager extends EventEmitter
 {
@@ -138,28 +139,57 @@ export class Manager extends EventEmitter
             });
         });
         this.logger.table(status);
-        this.logger.info('Qubit Live Experiments', this.helper.getAllQubitExperiments());
+        this.logger.info(`Preview Mode: "${this.config.get('previewMode')}"`);
+        this.logger.info('Qubit Live Experiments (see more info at app.qubit.com):', this.helper.getAllQubitExperiments());
     }
 
     /**
      * Activates an experiment. Contacts the experiment reporting system via the helper and gets
-     * a group for this user
+     * a group for this user.
+     *
+     * If preview mode is on, deal with modes appropriately. If "all", set experiment group to
+     * 1 (default challenger). If "none", set to 0 (default control). If "custom", then set to
+     * the preview group defined in config.
      *
      * @private
      * @param {string} experimentId The unique ID for the experiment being activated
      */
     activateExperiment(experimentId) {
-        if (this.config.get('disableActivation')) {
-            this.logger.debug(`"${experimentId}" should have triggered, but experiments are disabled`);
+        this.logger.debug(`"${experimentId}" experiment is being triggered`);
+        const experiment = this.getExperiment(experimentId);
+
+        const previewMode = this.config.get('previewMode');
+
+        if (previewMode === PreviewModes.OFF) {
+            // Get group from helper
+            this.helper.triggerExperiment(experimentId, (group) => {
+                experiment.setGroup(group);
+                this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
+            });
             return;
         }
 
-        this.logger.debug(`"${experimentId}" experiment is being triggered`);
-        let experiment = this.getExperiment(experimentId);
-        this.helper.triggerExperiment(experimentId, (group) => {
-            this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
+        let group;
+        if (previewMode === PreviewModes.CUSTOM) {
+            const previewModeExperiments = this.config.getPreviewModeExperiments();
+            group = (experimentId in previewModeExperiments) ? this.config.getPreviewModeExperiments()[experimentId] : 0;
+        }
+        if (previewMode === PreviewModes.ALL) {
+            group = 1;
+        }
+        if (previewMode === PreviewModes.NONE) {
+            group = 0;
+        }
+
+        // In preview mode, we want to catch errors due to missing variants as this could be a user error.
+        try {
             experiment.setGroup(group);
-        });
+        } catch (e) {
+            this.logger.error(e.message);
+        }
+
+        this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
+
     }
 
     /**

@@ -95,7 +95,7 @@ class Experiment extends EventEmitter
      */
     getVariant() {
         if (!(this.group in this.variants)) {
-            throw new Error('There is no variant for the group: ' + this.group);
+            throw new Error(`"${this.id}" experiment has no variant for the group:  ${this.group}`);
         }
         return this.variants[this.group];
     }

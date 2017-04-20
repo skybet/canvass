@@ -146,6 +146,38 @@ class QubitHelper
     }
 
     /**
+     * Asks qubit to print all triggered experiments along with the traffic allocation
+     * for the group the user is in. This is helpful in debugging traffic allocation
+     * config changes.
+     *
+     * @public
+     */
+    printAllTriggeredExperimentsWithTrafficAllocation() {
+        const experiments = this.getAllQubitExperiments();
+        const qubitIdToExperimentIdMap = Object.keys(experiments).reduce((previous, current) => {
+            const qubitId = experiments[current].id;
+            if (qubitId) {
+                previous[qubitId] = current;
+                return previous;
+            }
+            this.logger.error(`Could not find qubit id for experiment: ${current}`);
+            return undefined;
+        }, {});
+
+        const qubit = this.getQubit();
+        if (!qubit || !qubit.uv) {
+            throw new Error('Qubit uv object could not be found so cannot find traffic allocation');
+        }
+
+        qubit.uv.on(/experience/, (response) => {
+            const canvassExperimentId = qubitIdToExperimentIdMap[response.experienceId];
+            if (canvassExperimentId) {
+                this.logger.info(`Experience: "${canvassExperimentId}" was triggered with traffic split: ${response.trafficAllocation}`);
+            }
+        }).replay();
+    }
+
+    /**
      * Returns the qubit window object which we use to communicate with the smartserve
      * script.
      *
