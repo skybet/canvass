@@ -22,10 +22,6 @@ export class Logger
         this.alreadyLogged = new Set();
     }
 
-    setPrefix(prefix) {
-        this.prefix = prefix;
-    }
-
     /**
      * Sets the logging object to use
      *
@@ -40,10 +36,20 @@ export class Logger
      * Sets the output level
      *
      * @public
-     * @param {Logger.LEVEL} [outputLevel] Level of logging to output
+     * @param {Logger.LEVEL} outputLevel Level of logging to output
      */
     setOutputLevel(outputLevel) {
         this.outputLevel = outputLevel;
+    }
+
+    /**
+     * Sets the prefix for the logger messages
+     *
+     * @public
+     * @param {string} prefix String to prefix to messages
+     */
+    setPrefix(prefix) {
+        this.prefix = prefix;
     }
 
     /**
@@ -125,8 +131,8 @@ export class Logger
      * this session.
      *
      * @private
-     * @param {array} [messages] Messages to log out
-     * @param {function} [logFunction] Function to log the messages with
+     * @param {array} messages Messages to log out
+     * @param {function} logFunction Function to log the messages with
      */
     logUniqueMessages(messages, logFunction) {
         let messagesString = JSON.stringify(messages);
