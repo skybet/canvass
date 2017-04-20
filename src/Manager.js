@@ -145,7 +145,11 @@ export class Manager extends EventEmitter
 
     /**
      * Activates an experiment. Contacts the experiment reporting system via the helper and gets
-     * a group for this user
+     * a group for this user.
+     *
+     * If preview mode is on, deal with modes appropriately. If "all", set experiment group to
+     * 1 (default challenger). If "none", set to 0 (default control). If "custom", then set to
+     * the preview group defined in config.
      *
      * @private
      * @param {string} experimentId The unique ID for the experiment being activated
