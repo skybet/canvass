@@ -22,38 +22,6 @@ export class Config
         this.configurePreviewMode();
     }
 
-    configureDebug() {
-        if (cookies.get(CookieNames.DEBUG)) {
-            this.set('debug', true);
-            this.logger.info('Detected "debug" cookie. Enabling debug logging.');
-        }
-    }
-
-    configurePreviewMode() {
-        // Load preview mode via helper
-        const helper = PreviewModeHelper;
-        const {mode, experiments} = helper.parse();
-        this.set('previewMode', mode);
-        this.setPreviewModeExperiments(experiments);
-
-        // Save to session storage for persistence on refresh
-        helper.saveToSessionStorage(mode, experiments);
-
-        // Setup logger for preview mode if enabled
-        if (mode !== PreviewModes.OFF) {
-            this.logger.info(`Enabling preview in "${mode}" mode.`);
-            this.logger.setPrefix(LOGGER_PREFIX_DEFAULT + '[preview-mode]');
-        }
-    }
-
-    getPreviewModeExperiments() {
-        return this.previewModeExperiments;
-    }
-
-    setPreviewModeExperiments(experiments) {
-        this.previewModeExperiments = experiments;
-    }
-
     /**
      * Gets the config option value associated with the supplied key
      *
@@ -74,6 +42,60 @@ export class Config
      */
     set(key, value) {
         this.config[key] = value;
+    }
+
+    /**
+     * Gets the list of experiments and groups to display in preview mode
+     *
+     * @public
+     * @returns {object} Experiment id and preview mode group pairs
+     */
+    getPreviewModeExperiments() {
+        return this.previewModeExperiments;
+    }
+
+    /**
+     * Sets the value of the preview mode experiments
+     *
+     * @private
+     * @param {object} experiments Experiment id and preview mode group pairs
+     */
+    setPreviewModeExperiments(experiments) {
+        this.previewModeExperiments = experiments;
+    }
+
+    /**
+     * Configured debug mode from the debug cookie
+     *
+     * @private
+     */
+    configureDebug() {
+        if (cookies.get(CookieNames.DEBUG)) {
+            this.set('debug', true);
+            this.logger.info('Detected "debug" cookie. Enabling debug logging.');
+        }
+    }
+
+    /**
+     * Configured preview mode using the Preview Mode Helper
+     *
+     * @private
+     */
+    configurePreviewMode() {
+        // Load preview mode via helper
+        const helper = PreviewModeHelper;
+        const {mode, experiments} = helper.parse();
+        this.set('previewMode', mode);
+        this.setPreviewModeExperiments(experiments);
+
+        // Save to session storage for persistence on refresh
+        helper.saveToSessionStorage(mode, experiments);
+
+        // Setup logger for preview mode if enabled
+        if (mode !== PreviewModes.OFF) {
+            this.logger.info(`Enabling preview in "${mode}" mode.`);
+            this.logger.setPrefix(LOGGER_PREFIX_DEFAULT + '[preview-mode]');
+        }
     }
 
 }
