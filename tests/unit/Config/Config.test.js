@@ -17,7 +17,6 @@ describe('Config', () => {
         global.document = {cookie: ''};
         testDefaults = configDefaults;
         mockCookies = sinon.mock(cookies);
-        // mockHelper = sinon.mock(PreviewModeHelper);
         mockHelper = sandbox.stub(PreviewModeHelper);
         mockHelper.parse.returns({mode: 'off', experiments: {}});
         mockLogger = sinon.mock(logger);
@@ -30,11 +29,9 @@ describe('Config', () => {
     });
 
     describe('Initialization', () => {
-
         beforeEach(() => {
             testConfig = new Config();
         });
-
 
         it('sets default configuration', () => {
             assert.deepEqual(testConfig.config, testDefaults);
