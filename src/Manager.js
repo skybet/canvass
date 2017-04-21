@@ -5,7 +5,7 @@ import {PreviewModes} from './Config/PreviewModeHelper';
 import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
-import DefaultHelper from '~/src/Helpers/DefaultHelper';
+import DefaultProvider from '~/src/Providers/Default';
 
 export class Manager extends EventEmitter
 {
@@ -16,7 +16,7 @@ export class Manager extends EventEmitter
         super();
         this.register = {};
         this.config = config;
-        this.helper = DefaultHelper;
+        this.provider = DefaultProvider;
 
         this.logger = logger;
         if (this.config.get('debug')) {
@@ -93,7 +93,7 @@ export class Manager extends EventEmitter
     }
 
     /**
-     * Track an event via the helper
+     * Track an event via the provider
      *
      * @public
      * @param {string} type The type of event
@@ -101,19 +101,19 @@ export class Manager extends EventEmitter
      * @param {object} value The value object of the event
      */
     trackEvent(type, name, value) {
-        this.helper.trackEvent(type, name, value);
+        this.provider.trackEvent(type, name, value);
     }
 
     /**
-     * Sets the helper to use to communicate with the external experiment reporting tool
+     * Sets the provider to use to trigger experiments or track events
      *
      * @public
-     * @param {Helper} helper The helper to use to communicate with the experiment reporting system
+     * @param {Provider} provider The provider to use to trigger experiments or track events
      * @return {Manager}
      */
-    setHelper(helper) {
-        this.logger.debug(`Setting helper to "${helper.displayName}"`);
-        this.helper = helper;
+    setProvider(provider) {
+        this.logger.debug(`Setting provider to "${provider.displayName}"`);
+        this.provider = provider;
         return this;
     }
 
@@ -140,12 +140,11 @@ export class Manager extends EventEmitter
         });
         this.logger.table(status);
         this.logger.info(`Preview Mode: "${this.config.get('previewMode')}"`);
-        if (this.helper.print) this.helper.print();
+        if (this.provider.print) this.provider.print();
     }
 
     /**
-     * Activates an experiment. Contacts the experiment reporting system via the helper and gets
-     * a group for this user.
+     * Activates an experiment. Uses the provider to get a group for the user
      *
      * If preview mode is on, deal with modes appropriately. If "all", set experiment group to
      * 1 (default challenger). If "none", set to 0 (default control). If "custom", then set to
@@ -161,8 +160,8 @@ export class Manager extends EventEmitter
         const previewMode = this.config.get('previewMode');
 
         if (previewMode === PreviewModes.OFF) {
-            // Get group from helper
-            this.helper.triggerExperiment(experimentId, (group) => {
+            // Get group from provider
+            this.provider.triggerExperiment(experimentId, (group) => {
                 experiment.setGroup(group);
                 this.logger.debug(`"${experimentId}" experiment group set to: ${group}`);
             });

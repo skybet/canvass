@@ -5,17 +5,17 @@ import EventEmitter from 'events';
 import logger from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
-import {DefaultHelper as DefaultHelperClass} from '~/src/Helpers/DefaultHelper';
+import {Default as DefaultProviderClass} from '~/src/Providers/Default';
 
 describe('Manager', () => {
 
-    let testManager, mockHelper, mockExperiment, mockLogger;
+    let testManager, mockProvider, mockExperiment, mockLogger;
 
     beforeEach(() => {
         global.document = {cookie: ''};
         mockLogger = sinon.mock(logger);
 
-        mockHelper = {
+        mockProvider = {
             triggerExperiment: sinon.stub().returns(0),
             trackEvent: sinon.spy(),
             getQubitExperimentTrigger: sinon.stub().returns(()=>{}),
@@ -32,7 +32,7 @@ describe('Manager', () => {
         mockExperiment.enroll = sinon.spy();
 
         testManager = Manager;
-        testManager.setHelper(mockHelper);
+        testManager.setProvider(mockProvider);
     });
 
     afterEach(() => {
@@ -40,13 +40,13 @@ describe('Manager', () => {
     });
 
     describe('Initialisation', () => {
-        it('should set the default helper on construction', () => {
+        it('should set the default provider on construction', () => {
             const manager = new ManagerClass();
-            assert(manager.helper instanceof DefaultHelperClass);
+            assert(manager.provider instanceof DefaultProviderClass);
         });
 
-        it('should take a helper and store it', () => {
-            assert.deepEqual(testManager.helper, mockHelper);
+        it('should take a provider and store it', () => {
+            assert.deepEqual(testManager.provider, mockProvider);
         });
     });
 
@@ -165,7 +165,7 @@ describe('Manager', () => {
             sandbox.restore();
         });
 
-        it('sets the group on the experiment via the helper', () => {
+        it('sets the group on the experiment via the provider', () => {
             testManager.addExperiment(mockExperiment);
             let mockGetExperiment = sinon.spy(testManager, 'getExperiment');
             testManager.activateExperiment('FROG');
@@ -173,8 +173,8 @@ describe('Manager', () => {
             sinon.assert.calledOnce(mockGetExperiment);
             sinon.assert.calledWith(mockGetExperiment, 'FROG');
 
-            sinon.assert.calledOnce(mockHelper.triggerExperiment);
-            sinon.assert.calledWith(mockHelper.triggerExperiment, mockExperiment.getId(), sinon.match((value) => typeof value === 'function'));
+            sinon.assert.calledOnce(mockProvider.triggerExperiment);
+            sinon.assert.calledWith(mockProvider.triggerExperiment, mockExperiment.getId(), sinon.match((value) => typeof value === 'function'));
 
             mockGetExperiment.restore();
             testManager.removeExperiment('FROG');
@@ -226,11 +226,11 @@ describe('Manager', () => {
     });
 
     describe('TrackEvent', () => {
-        it('should call trackEvent on the helper', () => {
+        it('should call trackEvent on the provider', () => {
             testManager.trackEvent('foo', 'bar', 'value');
 
-            sinon.assert.calledOnce(mockHelper.trackEvent);
-            sinon.assert.calledWith(mockHelper.trackEvent, 'foo', 'bar', 'value');
+            sinon.assert.calledOnce(mockProvider.trackEvent);
+            sinon.assert.calledWith(mockProvider.trackEvent, 'foo', 'bar', 'value');
         });
     });
 
@@ -256,9 +256,9 @@ describe('Manager', () => {
             mockLogger.verify();
         });
 
-        it('should call the helpers print function for more info', () => {
+        it('should call the providers print function for more info', () => {
             testManager.printState();
-            sinon.assert.calledOnce(mockHelper.print);
+            sinon.assert.calledOnce(mockProvider.print);
         });
 
     });

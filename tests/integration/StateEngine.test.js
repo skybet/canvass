@@ -5,7 +5,7 @@ import Experiment from '~/src/Experiment';
 import Manager from '~/src/Manager';
 
 describe('State Engine (Experiment, Registry, Manager)', () => {
-    let experiment, mockHelper, mockTriggers, mockVariants;
+    let experiment, mockProvider, mockTriggers, mockVariants;
 
     beforeEach(() => {
         mockVariants = {
@@ -18,12 +18,12 @@ describe('State Engine (Experiment, Registry, Manager)', () => {
         mockTrigger.setup = sinon.spy();
         mockTriggers = [mockTrigger];
 
-        mockHelper = {
+        mockProvider = {
             triggerExperiment: sinon.stub().returns('tadpole'),
         };
 
         experiment = new Experiment('POTATO', mockTriggers, mockVariants);
-        Manager.setHelper(mockHelper);
+        Manager.setProvider(mockProvider);
 
         Manager.addExperiment(experiment);
     });
