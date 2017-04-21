@@ -178,6 +178,13 @@ class QubitHelper
     }
 
     /**
+     * Prints any useful information about the helper
+     */
+    print() {
+        this.logger.info('Qubit Live Experiments (see more info at app.qubit.com):', this.getAllQubitExperiments());
+    }
+
+    /**
      * Returns the qubit window object which we use to communicate with the smartserve
      * script.
      *

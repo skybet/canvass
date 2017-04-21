@@ -127,7 +127,6 @@ export class Manager extends EventEmitter
             let experiment = this.getExperiment(entry);
             let triggers = experiment.triggers.map((t, i) => { return t.displayName || i; }).toString();
             let variants = Object.keys(experiment.variants).toString();
-            let existsOnHelper = Boolean(this.helper.getQubitExperimentTrigger(entry));
 
             status.push({
                 Experiment: experiment.id,
@@ -135,12 +134,11 @@ export class Manager extends EventEmitter
                 Triggers: triggers,
                 Variants: variants,
                 Group: experiment.group,
-                ExistsOnHelper: existsOnHelper,
             });
         });
         this.logger.table(status);
         this.logger.info(`Preview Mode: "${this.config.get('previewMode')}"`);
-        this.logger.info('Qubit Live Experiments (see more info at app.qubit.com):', this.helper.getAllQubitExperiments());
+        if (this.helper.print) this.helper.print();
     }
 
     /**

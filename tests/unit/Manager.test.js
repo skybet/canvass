@@ -18,6 +18,7 @@ describe('Manager', () => {
             trackEvent: sinon.spy(),
             getQubitExperimentTrigger: sinon.stub().returns(()=>{}),
             getAllQubitExperiments: sinon.stub().returns([]),
+            print: sinon.spy(),
         };
 
         mockExperiment = new EventEmitter();
@@ -249,15 +250,19 @@ describe('Manager', () => {
                 Triggers: 'TestTrigger',
                 Variants: '0,1',
                 Group: mockExperiment.group,
-                ExistsOnHelper: true,
             }]);
             mockLogger.expects('info').once().withArgs('Preview Mode: "off"');
-            mockLogger.expects('info').once().withArgs('Qubit Live Experiments (see more info at app.qubit.com):', []);
 
             testManager.printState();
 
             mockLogger.verify();
         });
+
+        it('should call the helpers print function for more info', () => {
+            testManager.printState();
+            sinon.assert.calledOnce(mockHelper.print);
+        });
+
     });
 
 });
