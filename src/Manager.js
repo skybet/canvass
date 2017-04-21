@@ -5,6 +5,7 @@ import {PreviewModes} from './Config/PreviewModeHelper';
 import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
+import DefaultHelper from '~/src/Helpers/DefaultHelper';
 
 export class Manager extends EventEmitter
 {
@@ -15,6 +16,7 @@ export class Manager extends EventEmitter
         super();
         this.register = {};
         this.config = config;
+        this.helper = DefaultHelper;
 
         this.logger = logger;
         if (this.config.get('debug')) {
