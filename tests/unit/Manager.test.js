@@ -5,13 +5,15 @@ import EventEmitter from 'events';
 import logger from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
+import {DefaultHelper as DefaultHelperClass} from '~/src/Helpers/DefaultHelper';
 
 describe('Manager', () => {
 
-    let testManager, mockHelper, mockExperiment;
+    let testManager, mockHelper, mockExperiment, mockLogger;
 
     beforeEach(() => {
         global.document = {cookie: ''};
+        mockLogger = sinon.mock(logger);
 
         mockHelper = {
             triggerExperiment: sinon.stub().returns(0),
@@ -33,7 +35,16 @@ describe('Manager', () => {
         testManager.setHelper(mockHelper);
     });
 
+    afterEach(() => {
+        mockLogger.restore();
+    });
+
     describe('Initialisation', () => {
+        it('should set the default helper on construction', () => {
+            const manager = new ManagerClass();
+            assert(manager.helper instanceof DefaultHelperClass);
+        });
+
         it('should take a helper and store it', () => {
             assert.deepEqual(testManager.helper, mockHelper);
         });
@@ -224,19 +235,6 @@ describe('Manager', () => {
     });
 
     describe('PrintState', () => {
-
-        let mockLogger;
-
-        beforeEach(() => {
-            mockLogger = sinon.mock(logger);
-
-        });
-
-        afterEach(() => {
-            mockLogger.restore();
-
-        });
-
         it('should call table on the logger with the correct data', () => {
             mockExperiment.id = 'test id';
             mockExperiment.status = 'test status';

@@ -1,6 +1,6 @@
 import logger from '~/src/Helpers/Logger';
 
-class DefaultHelper
+export class DefaultHelper
 {
     displayName = 'DefaultHelper';
 
@@ -42,7 +42,7 @@ class DefaultHelper
 
         this.logger.info(`[${type}] ${name}:${value}`);
     }
-    
+
 }
 
 export default new DefaultHelper();
