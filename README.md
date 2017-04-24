@@ -12,6 +12,10 @@ It currently optionally integrates with [Qubit](http://www.qubit.com/) for traff
  - Integrates with Qubit
  - Preview mode to let you control experiments when developing and testing
 
+## What is an experiment?
+
+An experiment defines what you would like to a/b test, when the experiment should start (called "triggers"), and what each group of users should see (called "variants").
+
 ## Install
 
 `npm install canvass`
@@ -30,9 +34,7 @@ let myExperiment = new Experiment('MyExperiment', triggers, variants);
 canvass.addExperiment(myExperiment);
 ```
 
-## What is an experiment?
-
-An experiment defines what you would like to a/b test, when the experiment should start (called "triggers"), and what each group of users should see (called "variants").
+For a full code example, see [examples/basic/App.js](examples/basic/App.js).
 
 ## Contributing
 
