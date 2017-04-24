@@ -4,17 +4,17 @@ An event based javascript library used to build and manage experiments (a/b/n te
 
 You build an experiment by defining when and what different groups of users experience when using your application.
 
-It currently integrates with [Qubit](http://www.qubit.com/) for traffic allocation and data tracking, but it's possible to write your own integration if you use a different a/b testing platform.
+It currently optionally integrates with [Qubit](http://www.qubit.com/) for traffic allocation and data tracking, but it's possible to write your own integration if you use a different a/b testing platform.
 
 ## Features
 
  - Easy interface for defining and running experiments
  - Integrates with Qubit
- - Preview mode to let you control experiments when developing and testing.
+ - Preview mode to let you control experiments when developing and testing
 
 ## Install
 
-`npm install canvass` // TODO get new package name, this is already taken
+`npm install canvass`
 
 ## Usage
 
