@@ -20,10 +20,9 @@ It currently optionally integrates with [Qubit](http://www.qubit.com/) for traff
 
 To start using canvass, simply import it as below and register an experiment.
 
-```
+```javascript
 import canvass from 'canvass';
 import Experiment from 'canvass/distribution/Experiment';
-
 
 ...
 let myExperiment = new Experiment('MyExperiment', triggers, variants);
