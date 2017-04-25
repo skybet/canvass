@@ -20,4 +20,4 @@ Canvass is made up of a few components:
 - Abstracts interface to third party platforms such as Qubit
 
 ## How They Fit Together
-![Architecture](images/architecture.png "Architecture")
+<img src="images/architecture.png" width="500">

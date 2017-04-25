@@ -2,7 +2,8 @@
 Experiments are the fundamental object of Canvass. They contain all the state and logic to do with a specific experiment. They are defined by a few key components which will be explained in this document.
 
 ## Overview
-![Experiment Overview](images/experimentoverview.png "Experiment Overview")
+<img src="images/experimentoverview.png" width="500">
+
 In this diagram, you can see that an experiment is made up of three main components:
 1. **Status** - This describes what state the experiment is in. See section Statuses for more info.
 2. **Triggers** - This array contains all triggers that need to be satisfied before this experiment is enrolled.
@@ -32,7 +33,7 @@ The state of an experiment can be described with one of the three statuses: Wait
 
 The experiment emits an event when it's status changes. You can find more information about events in the [Event Flow docs](EventFlow.md).
 
-Canvass remembers if an experiment was enrolled previously by storing it in a cookie (see [Cookies docs](Cookies.md)). If this is the case, the experiment's status is automatically set to enrolled. This ensures that a user stays in an experiment after triggering it. 
+Canvass remembers if an experiment was enrolled previously by storing it in a cookie (see [Cookies docs](Cookies.md)). If this is the case, the experiment's status is automatically set to enrolled. This ensures that a user stays in an experiment after triggering it.
 
 ## Triggers
 Triggers define the logic that describes when a user should be placed into a group in the experiment. For example, when the user visits some specific page, or performs some specific action in your application.

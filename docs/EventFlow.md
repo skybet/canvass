@@ -37,7 +37,8 @@ Canvass is event based which means you can attach listeners to any changes that 
 </table>
 
 ## Experiment Activating (Example)
-![Experiment Activating Event Flow Example](images/eventflowexample.png "Experiment Activating Event Flow Example")
+<img src="images/eventflowexample.png" width="500">
+
 
 1. When the trigger is satisfied, it emits TRIGGERED.
 2. The experiment, which is listening to the TRIGGERED event, becomes enrolled so emits ENROLLED.
