@@ -39,7 +39,7 @@ let myExperiment = new Experiment('MyExperiment', triggers, variants);
 canvass.addExperiment(myExperiment);
 ```
 
-For a full code example, see [examples/basic/App.js](examples/basic/App.js).
+For a full code example, see [examples/basic](examples/basic).
 
 ## Debugging
 Canvass has a few nice features to help you debug your experiments:

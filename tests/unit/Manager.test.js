@@ -48,6 +48,10 @@ describe('Manager', () => {
         it('should take a provider and store it', () => {
             assert.deepEqual(testManager.provider, mockProvider);
         });
+
+        it('should add the manager to the window for browser access', () => {
+            assert(window.canvass instanceof ManagerClass);
+        })
     });
 
     describe('Experiment', () => {
