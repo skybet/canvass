@@ -24,6 +24,10 @@ export class Manager extends EventEmitter
         }
 
         this.triggeredExperiments = this.getTriggeredExperimentsFromCookie();
+
+        if (window) {
+            window.canvass = this;
+        }
     }
 
     /**
