@@ -74,7 +74,7 @@ Contributions are welcome; Please submit all pull requests against the master br
 ## Authors
 
 - [Adam Blanchard](https://github.com/adamblanchard)
-- Steve Goode
+- [Steve Goode](https://github.com/stevangoode)
 
 ## License
 
