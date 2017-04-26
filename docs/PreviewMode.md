@@ -25,7 +25,7 @@ This mode enables you to explicitly define the group that you will receive for s
 
 will place you in group 1 when MyExperiment enrolls and group 2 when MyOtherExperiment enrolls. Note that any other experiments **not** explicitly named in custom mode will receive a group of 0 by default.
 
-### "Off" Modegi
+### "Off" Mode
 This mode is used to turn preview mode off.
 
 `?canvassPreviewMode=off`
