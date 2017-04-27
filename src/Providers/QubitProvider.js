@@ -14,9 +14,9 @@ export const EventType = {
  *
  * Data Tracking: Sends events to qubit via either the QProtocol method of the Universal Variable method.
  */
-class Qubit
+class QubitProvider
 {
-    displayName = 'Qubit';
+    displayName = 'QubitProvider';
 
     /**
      * @public
@@ -215,4 +215,4 @@ class Qubit
 
 }
 
-export default new Qubit();
+export default new QubitProvider();

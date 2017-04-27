@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import assert from 'assert';
 import logger from '~/src/Helpers/Logger';
-import QubitProvider, {EventType} from '~/src/Providers/Qubit';
+import QubitProvider, {EventType} from '~/src/Providers/QubitProvider';
 
 describe('QubitProvider', () => {
 

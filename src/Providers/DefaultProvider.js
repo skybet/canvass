@@ -7,9 +7,9 @@ import logger from '~/src/Helpers/Logger';
  *
  * Data Tracking: It doesn't send the data anywhere, just logs it to the console.
  */
-export class Default
+export class DefaultProvider
 {
-    displayName = 'Default';
+    displayName = 'DefaultProvider';
 
     constructor() {
         this.logger = logger;
@@ -52,4 +52,4 @@ export class Default
 
 }
 
-export default new Default();
+export default new DefaultProvider();

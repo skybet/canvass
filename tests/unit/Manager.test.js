@@ -5,7 +5,7 @@ import EventEmitter from 'events';
 import logger from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
-import {Default as DefaultProviderClass} from '~/src/Providers/Default';
+import {DefaultProvider as DefaultProviderClass} from '~/src/Providers/DefaultProvider';
 
 describe('Manager', () => {
 

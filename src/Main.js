@@ -1,2 +1,2 @@
 export {default} from './Manager';
-export {EventType as QubitEventType} from './Providers/Qubit';
+export {EventType as QubitEventType} from './Providers/QubitProvider';

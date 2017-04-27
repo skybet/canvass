@@ -5,7 +5,7 @@ import {PreviewModes} from './Config/PreviewModeHelper';
 import logger, {LEVEL as LoggerOutputLevels} from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
-import DefaultProvider from '~/src/Providers/Default';
+import DefaultProvider from '~/src/Providers/DefaultProvider';
 
 export class Manager extends EventEmitter
 {
