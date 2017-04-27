@@ -1,4 +1,4 @@
-index.html/*
+/*
  * Javascript Application
  */
 import canvass from 'canvass';

@@ -31,14 +31,14 @@ The state of an experiment can be described with one of the three statuses: Wait
   </tr>
 </table>
 
-The experiment emits an event when it's status changes. You can find more information about events in the [Event Flow docs](EventFlow.md).
+The experiment emits an event when its status changes. You can find more information about events in the [Event Flow docs](EventFlow.md).
 
 Canvass remembers if an experiment was enrolled previously by storing it in a cookie called "canvassTriggeredExperiments". If this is the case, the experiment's status is automatically set to enrolled. This ensures that a user stays in an experiment after it triggering.
 
 ## Triggers
 Triggers define the logic that describes when a user should be placed into a group in the experiment. For example, when the user visits some specific page, or performs some specific action in your application.
 
-An experiment can have multiple triggers defined. These are passed into the experiment in an array. When one of the triggers fires, the experiment checks if all of it's triggers are satisfied. The experiment will not become enrolled unless all triggers are simultaneously true.
+An experiment can have multiple triggers defined. These are passed into the experiment in an array. When one of the triggers fires, the experiment checks if all of its triggers are satisfied. The experiment will not become enrolled unless all triggers are simultaneously true.
 
 You should extend the BaseTrigger found in src/Toolkit and implement the abstract methods found there. For an example implementation, take a look in [examples/](../examples/).
 
