@@ -23,7 +23,7 @@ An experiment defines what you would like to a/b test, when the experiment shoul
 
 ## Install
 
-`npm install canvass`
+`npm install skybet/canvass`
 
 ## Usage
 
