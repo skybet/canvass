@@ -13,7 +13,7 @@ Canvass is event based which means you can attach listeners to any changes that 
   <tr>
     <td rowspan="3">**Experiment**</td>
     <td>WAITING</td>
-    <td rowspan="3">Emitted when the experiment changes state. See [Experiment docs](Experiment.md) for more info.</td>
+    <td rowspan="3">Emitted when the experiment changes state. See [Experiment docs](Experiments.md) for more info.</td>
   </tr>
   <tr>
     <td>ENROLLED</td>
