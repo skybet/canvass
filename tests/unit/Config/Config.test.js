@@ -10,15 +10,15 @@ import logger, {PREFIX_DEFAULT as LOGGER_PREFIX_DEFAULT} from '~/src/Helpers/Log
 
 describe('Config', () => {
 
-    let sandbox, testConfig, testDefaults, mockCookies, mockHelper, mockLogger;
+    let sandbox, testConfig, testDefaults, mockCookies, mockProvider, mockLogger;
 
     beforeEach(() => {
         sandbox = sinon.sandbox.create();
         global.document = {cookie: ''};
         testDefaults = configDefaults;
         mockCookies = sinon.mock(cookies);
-        mockHelper = sandbox.stub(PreviewModeHelper);
-        mockHelper.parse.returns({mode: 'off', experiments: {}});
+        mockProvider = sandbox.stub(PreviewModeHelper);
+        mockProvider.parse.returns({mode: 'off', experiments: {}});
         mockLogger = sinon.mock(logger);
     });
 
@@ -79,20 +79,20 @@ describe('Config', () => {
     });
 
     describe('Preview mode', () => {
-        it('overrides preview mode if helper returns different mode', () => {
+        it('overrides preview mode if provider returns different mode', () => {
             const mode = PreviewModes.ALL;
             const experiments = {};
-            mockHelper.parse.returns({mode, experiments});
+            mockProvider.parse.returns({mode, experiments});
 
             testConfig = new Config();
 
             assert.equal(testConfig.get('previewMode'), mode);
         });
 
-        it('sets experiments from the helper', () => {
+        it('sets experiments from the provider', () => {
             const mode = PreviewModes.CUSTOM;
             const experiments = {foo: 'bar'};
-            mockHelper.parse.returns({mode, experiments});
+            mockProvider.parse.returns({mode, experiments});
 
             testConfig = new Config();
 
@@ -102,7 +102,7 @@ describe('Config', () => {
 
         it('saves state to session storage', () => {
             const saveSpy = sandbox.spy();
-            mockHelper.saveToSessionStorage = saveSpy;
+            mockProvider.saveToSessionStorage = saveSpy;
 
             testConfig = new Config();
 
@@ -112,7 +112,7 @@ describe('Config', () => {
         it('if enabled, set logger prefix to include [preview-mode]', () => {
             const mode = PreviewModes.ALL;
             const experiments = {};
-            mockHelper.parse.returns({mode, experiments});
+            mockProvider.parse.returns({mode, experiments});
             mockLogger.expects('setPrefix').once().withArgs(LOGGER_PREFIX_DEFAULT + '[preview-mode]');
 
             testConfig = new Config();

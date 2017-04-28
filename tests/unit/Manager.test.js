@@ -5,19 +5,22 @@ import EventEmitter from 'events';
 import logger from '~/src/Helpers/Logger';
 import cookies from 'js-cookie';
 import CookieNames from '~/src/Helpers/CookieNames';
+import {DefaultProvider as DefaultProviderClass} from '~/src/Providers/DefaultProvider';
 
 describe('Manager', () => {
 
-    let testManager, mockHelper, mockExperiment;
+    let testManager, mockProvider, mockExperiment, mockLogger;
 
     beforeEach(() => {
         global.document = {cookie: ''};
+        mockLogger = sinon.mock(logger);
 
-        mockHelper = {
+        mockProvider = {
             triggerExperiment: sinon.stub().returns(0),
             trackEvent: sinon.spy(),
             getQubitExperimentTrigger: sinon.stub().returns(()=>{}),
             getAllQubitExperiments: sinon.stub().returns([]),
+            print: sinon.spy(),
         };
 
         mockExperiment = new EventEmitter();
@@ -29,13 +32,26 @@ describe('Manager', () => {
         mockExperiment.enroll = sinon.spy();
 
         testManager = Manager;
-        testManager.setHelper(mockHelper);
+        testManager.setProvider(mockProvider);
+    });
+
+    afterEach(() => {
+        mockLogger.restore();
     });
 
     describe('Initialisation', () => {
-        it('should take a helper and store it', () => {
-            assert.deepEqual(testManager.helper, mockHelper);
+        it('should set the default provider on construction', () => {
+            const manager = new ManagerClass();
+            assert(manager.provider instanceof DefaultProviderClass);
         });
+
+        it('should take a provider and store it', () => {
+            assert.deepEqual(testManager.provider, mockProvider);
+        });
+
+        it('should add the manager to the window for browser access', () => {
+            assert(window.canvass instanceof ManagerClass);
+        })
     });
 
     describe('Experiment', () => {
@@ -153,7 +169,7 @@ describe('Manager', () => {
             sandbox.restore();
         });
 
-        it('sets the group on the experiment via the helper', () => {
+        it('sets the group on the experiment via the provider', () => {
             testManager.addExperiment(mockExperiment);
             let mockGetExperiment = sinon.spy(testManager, 'getExperiment');
             testManager.activateExperiment('FROG');
@@ -161,8 +177,8 @@ describe('Manager', () => {
             sinon.assert.calledOnce(mockGetExperiment);
             sinon.assert.calledWith(mockGetExperiment, 'FROG');
 
-            sinon.assert.calledOnce(mockHelper.triggerExperiment);
-            sinon.assert.calledWith(mockHelper.triggerExperiment, mockExperiment.getId(), sinon.match((value) => typeof value === 'function'));
+            sinon.assert.calledOnce(mockProvider.triggerExperiment);
+            sinon.assert.calledWith(mockProvider.triggerExperiment, mockExperiment.getId(), sinon.match((value) => typeof value === 'function'));
 
             mockGetExperiment.restore();
             testManager.removeExperiment('FROG');
@@ -214,28 +230,15 @@ describe('Manager', () => {
     });
 
     describe('TrackEvent', () => {
-        it('should call trackEvent on the helper', () => {
+        it('should call trackEvent on the provider', () => {
             testManager.trackEvent('foo', 'bar', 'value');
 
-            sinon.assert.calledOnce(mockHelper.trackEvent);
-            sinon.assert.calledWith(mockHelper.trackEvent, 'foo', 'bar', 'value');
+            sinon.assert.calledOnce(mockProvider.trackEvent);
+            sinon.assert.calledWith(mockProvider.trackEvent, 'foo', 'bar', 'value');
         });
     });
 
     describe('PrintState', () => {
-
-        let mockLogger;
-
-        beforeEach(() => {
-            mockLogger = sinon.mock(logger);
-
-        });
-
-        afterEach(() => {
-            mockLogger.restore();
-
-        });
-
         it('should call table on the logger with the correct data', () => {
             mockExperiment.id = 'test id';
             mockExperiment.status = 'test status';
@@ -249,15 +252,19 @@ describe('Manager', () => {
                 Triggers: 'TestTrigger',
                 Variants: '0,1',
                 Group: mockExperiment.group,
-                ExistsOnHelper: true,
             }]);
             mockLogger.expects('info').once().withArgs('Preview Mode: "off"');
-            mockLogger.expects('info').once().withArgs('Qubit Live Experiments (see more info at app.qubit.com):', []);
 
             testManager.printState();
 
             mockLogger.verify();
         });
+
+        it('should call the providers print function for more info', () => {
+            testManager.printState();
+            sinon.assert.calledOnce(mockProvider.print);
+        });
+
     });
 
 });

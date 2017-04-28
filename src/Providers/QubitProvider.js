@@ -6,9 +6,17 @@ export const EventType = {
     UNIVERSAL_VARIABLE: 'UniversalVariable',
 };
 
-class QubitHelper
+/* Qubit Provider
+ * Provider to integrate with Qubit platform. Uses qubit window object (window.__qubit) to
+ * communicate with third party service. See https://docs.qubit.com/client-side-js.html
+ * Traffic Allocation: Random generation between groups defined in qubit. Consistent
+ *                     group returned for the same user.
+ *
+ * Data Tracking: Sends events to qubit via either the QProtocol method of the Universal Variable method.
+ */
+class QubitProvider
 {
-    displayName = 'QubitHelper';
+    displayName = 'QubitProvider';
 
     /**
      * @public
@@ -178,6 +186,13 @@ class QubitHelper
     }
 
     /**
+     * Prints any useful information about the provider
+     */
+    print() {
+        this.logger.info('Qubit Live Experiments (see more info at app.qubit.com):', this.getAllQubitExperiments());
+    }
+
+    /**
      * Returns the qubit window object which we use to communicate with the smartserve
      * script.
      *
@@ -200,4 +215,4 @@ class QubitHelper
 
 }
 
-export default new QubitHelper();
+export default new QubitProvider();
