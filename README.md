@@ -76,6 +76,9 @@ Contributions are welcome; Please submit all pull requests against the master br
 - [Adam Blanchard](https://github.com/adamblanchard)
 - [Steve Goode](https://github.com/stevangoode)
 
+## Disclaimer
+We are not affiliated or associated in any way with Qubit.
+
 ## License
 
  - [MIT License](http://opensource.org/licenses/MIT)
