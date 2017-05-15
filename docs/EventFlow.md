@@ -11,9 +11,9 @@ Canvass is event based which means you can attach listeners to any changes that 
   </tr>
 
   <tr>
-    <td rowspan="3">**Experiment**</td>
+    <td rowspan="3">Experiment</td>
     <td>WAITING</td>
-    <td rowspan="3">Emitted when the experiment changes state. See [Experiment docs](Experiments.md) for more info.</td>
+    <td rowspan="3">Emitted when the experiment changes state. See "Experiment" in docs folder for more info.</td>
   </tr>
   <tr>
     <td>ENROLLED</td>
@@ -23,13 +23,13 @@ Canvass is event based which means you can attach listeners to any changes that 
   </tr>
 
   <tr>
-    <td>**Manager**</td>
+    <td>Manager</td>
     <td>&lt;experimentId&gt;.ACTIVE</td>
     <td>Emitted when an experiment with that ID becomes active.</td>
   </tr>
 
   <tr>
-    <td>**Trigger**</td>
+    <td>Trigger</td>
     <td>TRIGGERED</td>
     <td>Emitted when a trigger is satisfied.</td>
   </tr>

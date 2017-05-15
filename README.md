@@ -58,7 +58,7 @@ Preview mode lets you control which experiments you see using a query string par
 
 `?canvassPreviewMode={"experimentId":<group>}`
 
-See [Preview Mode](docs/PreviewMode) docs for more options.
+See [Preview Mode](docs/PreviewMode.md) docs for more options.
 
 ### Seeing Inside Canvass
 There is a helpful method on the window that you can use to get a human readable printout of the current status of Canvass and all of the registered experiments:
